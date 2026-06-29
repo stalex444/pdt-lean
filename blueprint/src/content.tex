@@ -1,13 +1,11 @@
 % PDT-Lean — blueprint content.
-% Drop this in at blueprint/src/content.tex (replacing the stub that `leanblueprint new` generates).
 % Macros \lean{}, \leanok, \uses{} are provided by leanblueprint.
-%   \lean{Decl}  links a statement to the Lean declaration `Decl`
+%   \lean{Decl}  links a statement to ONE Lean declaration `Decl` (one per node, so the
+%                graph names every node cleanly; multiple decls per statement break naming)
 %   \leanok      marks the statement as fully formalized (green in the graph)
 %   \uses{...}   declares dependencies (the edges of the graph)
-% Note on the posit: the definition QisHilbert IS formalized, so it carries \leanok; what is
-% NOT proved is the *physical* claim that real systems realize it. That claim is `ass:posit`
-% below, which deliberately carries NO \leanok — it is the single amber (assumed) root, and
-% every quantum statement traces back to it.
+% The posit is `ass:posit`: it deliberately carries NO \leanok — the single assumed root
+% (amber), and the quantum statements trace back to it.
 
 \chapter{Quantum kinematics from a single posit}
 
@@ -57,10 +55,11 @@
   \label{thm:qm_from_q}
   \lean{PDT.QM_from_Q}
   \leanok
-  \uses{ass:posit, lem:born_form}
-  Given the posit, for a normalized two-outcome state the Born probabilities equal the
-  conjugate-twisted trace form $|z|^2$, are non-negative, and sum to one --- a genuine
-  probability rule, with \emph{no} independent Born postulate.
+  \uses{ass:posit, lem:born_form, lem:hermitian, lem:unitary}
+  The capstone, assembling the kinematics. Given the posit, for a normalized two-outcome
+  state the Born probabilities equal the conjugate-twisted trace form $|z|^2$, are
+  non-negative, and sum to one --- a genuine probability rule, with \emph{no} independent
+  Born postulate.
 \end{theorem}
 
 \chapter{The golden arithmetic bedrock}
@@ -78,11 +77,10 @@
   \leanok
   $\operatorname{disc}(x^4-x-1) = -283$. Since $283$ is prime
   (\lstinline{PDT.prime_283}) the discriminant is squarefree, so $\mathbb{Z}[Q]$ is the full
-  ring of integers and this is also the field discriminant of $\mathbb{Q}(Q)$. It equals the
-  determinant of the trace form (\cref{thm:sig_quartic}).
+  ring of integers and this is also the field discriminant of $\mathbb{Q}(Q)$.
 \end{proposition}
 
-\begin{proposition}[Norms]
+\begin{proposition}[Unit norms]
   \label{prop:norms}
   \lean{PDT.unit_norm_rhoQ}
   \leanok
@@ -93,50 +91,68 @@
 \chapter{The same arithmetic, through Mathlib's number-theory API}
 
 The previous chapter states the norm and discriminant values as elementary integer
-identities (closed by \texttt{norm\_num} on the explicit formulas). This chapter
-re-derives the \emph{same} facts through Mathlib's genuine number-theory API:
-\texttt{Algebra.norm}, \texttt{Algebra.discr}, and \texttt{Algebra.traceForm} over
-\texttt{AdjoinRoot}. This is the answer to ``the content is in the names'': the facts
-are theorems about the real field-theoretic invariants, not values substituted into a
-chosen expression.
+identities (closed by \texttt{norm\_num}). This chapter re-derives the \emph{same} facts
+through Mathlib's genuine number-theory API --- \texttt{Algebra.norm}, \texttt{Algebra.discr}
+and \texttt{Algebra.traceForm} over \texttt{AdjoinRoot}. This is the answer to ``the content
+is in the names'': they are theorems about the real field-theoretic invariants, and each
+rests on the polynomial being irreducible (so the \texttt{AdjoinRoot} quotient is a field).
 
-\begin{proposition}[Irreducibility via \texttt{minpoly}]
-  \label{prop:irred}
-  \lean{PDT.cubicQ_irreducible, PDT.quarticQ_irreducible}
+\begin{proposition}[Cubic irreducible]
+  \label{prop:irred_c}
+  \lean{PDT.cubicQ_irreducible}
   \leanok
-  $x^3-x-1$ and $x^4-x-1$ are \texttt{Irreducible} over $\mathbb{Q}$, so the
-  \texttt{AdjoinRoot} quotients are genuine number fields and the
-  norm / discriminant / trace-form invariants below are the field-theoretic objects
-  they claim to be.
+  $x^3-x-1$ is \texttt{Irreducible} over $\mathbb{Q}$, so $\mathbb{Q}[x]/(x^3-x-1)$ is a
+  genuine number field.
 \end{proposition}
 
-\begin{proposition}[Field norms via \texttt{Algebra.norm}]
-  \label{prop:alg_norm}
-  \lean{PDT.norm_Q, PDT.norm_ρ}
+\begin{proposition}[Quartic irreducible]
+  \label{prop:irred_q}
+  \lean{PDT.quarticQ_irreducible}
   \leanok
-  \uses{prop:irred}
-  $\operatorname{Algebra.norm}_{\mathbb{Q}}(Q) = -1$ and
-  $\operatorname{Algebra.norm}_{\mathbb{Q}}(\rho) = 1$, for $Q,\rho$ the
-  \texttt{AdjoinRoot} generators of $\mathbb{Q}[x]/(x^4-x-1)$ and
-  $\mathbb{Q}[x]/(x^3-x-1)$ --- the \texttt{Algebra.norm} computation itself, agreeing
-  with the elementary values of \cref{prop:norms}.
+  $x^4-x-1$ is \texttt{Irreducible} over $\mathbb{Q}$, so $\mathbb{Q}[x]/(x^4-x-1)$ is a
+  genuine number field.
 \end{proposition}
 
-\begin{proposition}[Discriminants via \texttt{Algebra.discr}]
-  \label{prop:alg_discr}
-  \lean{PDT.discr_cubic, PDT.discr_quartic}
+\begin{proposition}[Norm of $Q$ via \texttt{Algebra.norm}]
+  \label{prop:norm_q}
+  \lean{PDT.norm_Q}
   \leanok
-  \uses{prop:irred}
-  $\operatorname{Algebra.discr}_{\mathbb{Q}}$ of the power basis equals $-23$ for
-  $x^3-x-1$ and $-283$ for $x^4-x-1$ --- the genuine discriminant of the basis,
-  agreeing with \cref{prop:disc_cubic,prop:disc_quartic}.
+  \uses{prop:irred_q}
+  $\operatorname{Algebra.norm}_{\mathbb{Q}}(Q) = -1$: $Q$ is a unit of norm $-1$, computed by
+  the genuine \texttt{Algebra.norm} (agreeing with \cref{prop:norms}).
+\end{proposition}
+
+\begin{proposition}[Norm of $\rho$ via \texttt{Algebra.norm}]
+  \label{prop:norm_r}
+  \lean{PDT.norm_ρ}
+  \leanok
+  \uses{prop:irred_c}
+  $\operatorname{Algebra.norm}_{\mathbb{Q}}(\rho) = 1$: $\rho$ is a unit of norm $+1$.
+\end{proposition}
+
+\begin{proposition}[Cubic discriminant via \texttt{Algebra.discr}]
+  \label{prop:discr_c}
+  \lean{PDT.discr_cubic}
+  \leanok
+  \uses{prop:irred_c}
+  $\operatorname{Algebra.discr}_{\mathbb{Q}}$ of the cubic power basis $= -23$ --- the genuine
+  discriminant of the basis (agreeing with \cref{prop:disc_cubic}).
+\end{proposition}
+
+\begin{proposition}[Quartic discriminant via \texttt{Algebra.discr}]
+  \label{prop:discr_q}
+  \lean{PDT.discr_quartic}
+  \leanok
+  \uses{prop:irred_q}
+  $\operatorname{Algebra.discr}_{\mathbb{Q}}$ of the quartic power basis $= -283$ (agreeing
+  with \cref{prop:disc_quartic}).
 \end{proposition}
 
 \begin{proposition}[The trace form \emph{is} \texttt{Algebra.traceForm}]
-  \label{prop:alg_traceform}
+  \label{prop:traceform}
   \lean{PDT.traceForm_eq_M4}
   \leanok
-  \uses{prop:irred, thm:sig_quartic}
+  \uses{prop:irred_q, thm:sig_quartic}
   The Gram matrix $M_4$ behind the $(3,1)$ signature is \emph{exactly}
   $\operatorname{Algebra.traceForm}_{\mathbb{Q}}$ on the power basis of
   $\mathbb{Q}[x]/(x^4-x-1)$: $\operatorname{traceForm}(e_i,e_j) = (M_4)_{ij}$. So the
