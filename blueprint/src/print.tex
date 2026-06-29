@@ -1,0 +1,30 @@
+% This file makes a printable version of the blueprint
+% It should include all the \usepackage needed for the pdf version.
+% This preamble assumes a modern TeX compiler (xeLaTeX or luaLaTeX) with
+% unicode support and the Latin Modern Math font.
+% It uses expl3 to support the dependency-graph macros and provides stubs
+% for the web-only \lean / \leanok / \uses macros.
+
+\documentclass[a4paper]{report}
+
+\usepackage{geometry}
+
+\usepackage{expl3}
+
+\usepackage{amssymb, amsthm, mathtools}
+\usepackage[unicode,colorlinks=true,linkcolor=blue,urlcolor=magenta, citecolor=blue]{hyperref}
+\usepackage{cleveref}
+\usepackage{listings}
+
+\usepackage[warnings-off={mathtools-colon,mathtools-overbracket}]{unicode-math}
+
+\input{macros/common}
+\input{macros/print}
+
+\title{PDT-Lean: Pisot Dimensional Theory, formalized}
+\author{S. Alexander}
+
+\begin{document}
+\maketitle
+\input{content}
+\end{document}

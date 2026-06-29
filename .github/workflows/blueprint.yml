@@ -1,0 +1,105 @@
+name: Build Lean project and deploy blueprint
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+# Cancel an in-progress run when a new commit is pushed to the same ref.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+# Permissions required to deploy to GitHub Pages.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Build Lean project and blueprint
+    steps:
+      - name: Free disk space
+        uses: jlumbroso/free-disk-space@main
+        with:
+          tool-cache: false
+          android: true
+          dotnet: true
+          haskell: true
+          large-packages: false
+          docker-images: true
+          swap-storage: false
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # Installs elan at the toolchain pinned by lean-toolchain (leanprover/lean4:v4.31.0),
+      # then `lake exe cache get` + `lake build`. Mathlib is pinned to v4.31.0 in
+      # lake-manifest.json, so the prebuilt Mathlib cache is downloaded rather than rebuilt.
+      - name: Build Lean project
+        uses: leanprover/lean-action@v1
+        with:
+          build: true
+          test: false
+          lint: false
+          use-mathlib-cache: true
+
+      - name: Install Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install TeX Live (xelatex + latexmk)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            texlive-full latexmk
+        # texlive-full is the robust choice: it guarantees cleveref, listings,
+        # unicode-math, expl3, Latin Modern Math and every package the preamble pulls in.
+
+      - name: Install leanblueprint
+        run: |
+          python -m pip install --upgrade pip
+          pip install leanblueprint invoke
+
+      - name: Build blueprint PDF
+        run: leanblueprint pdf
+
+      # `leanblueprint web` runs plasTeX, which (besides the HTML) writes the file
+      # blueprint/lean_decls listing every \lean{...} declaration referenced by the
+      # blueprint. checkdecls consumes that file, so web MUST run before checkdecls.
+      - name: Build blueprint web
+        run: leanblueprint web
+
+      # Make the compiled PDF downloadable from the published site.
+      - name: Copy PDF into web output
+        run: |
+          mkdir -p blueprint/web
+          if [ -f blueprint/print/print.pdf ]; then
+            cp blueprint/print/print.pdf blueprint/web/blueprint.pdf
+          fi
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v6
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: blueprint/web
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    name: Deploy to GitHub Pages
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5

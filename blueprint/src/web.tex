@@ -1,0 +1,26 @@
+% This file makes a web version of the blueprint
+% It should include all the \usepackage needed for this version.
+% The template includes standard AMS packages.
+
+\documentclass{report}
+
+\usepackage{amssymb, amsthm, amsmath}
+\usepackage{hyperref}
+\usepackage{cleveref}
+\usepackage{listings}
+\usepackage[showmore, dep_graph]{blueprint}
+
+\input{macros/common}
+\input{macros/web}
+
+\home{https://stalex444.github.io/pdt-lean}
+\github{https://github.com/stalex444/pdt-lean}
+\dochome{}
+
+\title{PDT-Lean: Pisot Dimensional Theory, formalized}
+\author{S. Alexander}
+
+\begin{document}
+\maketitle
+\input{content}
+\end{document}
