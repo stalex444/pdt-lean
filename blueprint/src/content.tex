@@ -5,7 +5,7 @@
 %   \leanok      marks the statement as fully formalized (green in the graph)
 %   \uses{...}   declares dependencies (the edges of the graph)
 % `ass:posit` deliberately carries NO \leanok — the one identification the kernel does not
-% evaluate (amber); the quantum statements trace back to it.
+% evaluate (amber). The quantum statements are theorems about C and do not use it.
 
 \chapter{Quantum kinematics from a complex line}
 
@@ -24,7 +24,7 @@
   A physical quantum state space carries the complex structure of \cref{def:qishilbert}, and
   PDT identifies that $\mathbb{C}$ with the complex place of $Q$'s field --- the same $Q$ that
   fixes spacetime, so quantum mechanics and spacetime read off one arithmetic. The
-  complex-structure hypothesis is what the kinematics below use; whether the physical world's
+  kinematics below are theorems about $\mathbb{C}$ and do not use this identification; whether the physical world's
   complex structure \emph{is} $Q$'s place is the single step \emph{not evaluated here}. (No
   \texttt{\textbackslash leanok}, by design: the kernel certifies the mathematics, not the
   identification.)
@@ -53,13 +53,13 @@
   $z\cdot z^{\dagger} = 1 \implies \mathrm{normSq}\,z = 1$.
 \end{lemma}
 
-\begin{theorem}[The Born rule, derived]
+\begin{theorem}[Born probabilities on $\mathbb{C}$]
   \label{thm:qm_from_q}
   \lean{PDT.QM_from_Q}
   \leanok
-  \uses{ass:posit, lem:born_form, lem:hermitian, lem:unitary}
-  The capstone, assembling the kinematics. Given the complex structure, for a normalized two-outcome
-  state the Born probabilities equal the conjugate-twisted trace form $|z|^2$, are
+  \uses{lem:born_form, lem:hermitian, lem:unitary}
+  The capstone, assembling the $\mathbb{C}$-lemmas above. For normalized two-outcome amplitudes $a,b\in\mathbb{C}$,
+  the Born probabilities equal the conjugate-twisted trace form $|z|^2$, are
   non-negative, and sum to one --- a genuine probability rule, with \emph{no} independent
   Born postulate.
 \end{theorem}

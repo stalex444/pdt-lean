@@ -1,15 +1,15 @@
 /-
-PDT — "Quantum mechanics from Q's complex place": the kernel artifact (T0).
+PDT — the complex-number arithmetic behind single-qubit quantum kinematics.
 
-CLAUDE.md endgame: expose the SINGLE undischarged posit and show that the
-single-system QM kinematics is a THEOREM given it — kernel-checked by `lake build`.
+Every theorem below is a fact about ℂ, kernel-checked by `lake build`: the Born form
+`|z|²`, positivity, the dagger = complex conjugation = `starRingEnd ℂ`, Hermitian ⟹ real,
+and unitary ⟹ norm-preserving.
 
-THE ONE POSIT (T4, kept explicit, NOT hidden): the physical one-qubit state space
-is ℝ-linearly the complex place of Q's number field, i.e. ≃ₗ[ℝ] ℂ. Everything below
-is a THEOREM about ℂ (the forced part); given the posit's ℝ-linear equivalence it
-transports to the physical state space. The dagger = Galois conjugation of ℂ/ℝ =
-complex conjugation = `starRingEnd ℂ`. The oracle is the Lean kernel: a green build
-is the verification (digits already settled by sympy/numpy, FINDINGS 2026-06-21).
+THE NAMED POSIT (T4, kept explicit): `QisHilbert H` says a physical state space is
+ℝ-linearly the complex place of Q's field (≃ₗ[ℝ] ℂ). The theorems below are about ℂ
+directly and do NOT use this equivalence — the posit is stated, not yet load-bearing —
+and the identification with physical QM and with Q's complex place is interpretive, not
+kernel-checked. The oracle is the Lean kernel: a green build is the verification.
 -/
 import Mathlib
 
@@ -54,9 +54,10 @@ theorem unitary_normSq_one {z : ℂ} (h : z * (starRingEnd ℂ) z = 1) : normSq 
   rw [Complex.mul_conj] at h2
   simpa using h2
 
-/-- THE CAPSTONE (QM from Q): given the posit (amplitudes in ℂ) and a normalized two-outcome
-    state, the Born probabilities ARE the conjugate-twisted trace form, are nonnegative, and
-    sum to one — a genuine probability rule, DERIVED, with NO independent Born postulate. -/
+/-- THE CAPSTONE: for normalized two-outcome amplitudes `a b : ℂ`, the Born probabilities
+    are `|z|²` (the conjugate-twisted trace form), nonnegative, and sum to one — a genuine
+    probability rule assembling `born_form`/`normSq_nonneg`, with NO independent Born
+    postulate. A theorem about ℂ; `QisHilbert` is not used. -/
 theorem QM_from_Q {a b : ℂ} (hnorm : normSq a + normSq b = 1) :
     (a * (starRingEnd ℂ) a).re = normSq a ∧
     (b * (starRingEnd ℂ) b).re = normSq b ∧
@@ -64,9 +65,10 @@ theorem QM_from_Q {a b : ℂ} (hnorm : normSq a + normSq b = 1) :
     normSq a + normSq b = 1 :=
   ⟨born_form a, born_form b, normSq_nonneg a, normSq_nonneg b, hnorm⟩
 
-/-- The posit is the ONLY input: given `P : QisHilbert H`, the Born form on the physical
-    state space is nonnegative — the rest is the transported ℂ-theorem. `P` appears, so the
-    artifact genuinely exhibits the single hypothesis everything rests on. -/
+/-- `born_nonneg` for `P ψ`, where `P : QisHilbert H`. NOTE: this uses only that `P ψ : ℂ`
+    (via `normSq_nonneg`); the ℝ-linear-equivalence STRUCTURE of `P` is never used, so this
+    does NOT make the posit load-bearing — the theorems above are about ℂ directly. Making
+    the posit genuinely do work is future formalization, not yet done. -/
 theorem born_nonneg_physical {H : Type*} [AddCommGroup H] [Module ℝ H]
     (P : QisHilbert H) (ψ : H) : 0 ≤ normSq (P ψ) := normSq_nonneg _
 
