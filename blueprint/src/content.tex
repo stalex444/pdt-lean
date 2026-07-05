@@ -66,28 +66,50 @@
 
 \chapter{The golden arithmetic bedrock}
 
-\begin{proposition}[Cubic discriminant and the gauge dimension]
+\begin{proposition}[The ``23'' integer weld]
   \label{prop:disc_cubic}
   \lean{PDT.twentythree_weld}
   \leanok
-  $-\operatorname{disc}(x^3-x-1) = \dim\mathfrak{su}(3) + \dim\mathfrak{su}(4) = 23$.
+  The integer identity $-\bigl(-4(-1)^3-27(-1)^2\bigr) = (3^2-1)+(4^2-1)$, both $=23$.
 \end{proposition}
+
+\begin{corollary}[Cubic discriminant and the gauge dimension (prose)]
+  \uses{prop:disc_cubic}
+  The left-hand side of \cref{prop:disc_cubic} is $-\operatorname{disc}(x^3-x-1)$
+  (depressed-cubic formula $-4p^3-27q^2$, $p=q=-1$) and the right-hand side is
+  $\dim\mathfrak{su}(3)+\dim\mathfrak{su}(4)$. Those two identifications are standard and are
+  \emph{not} formalized ($\dim\mathfrak{su}(n)=n^2-1$ appears nowhere in the Lean development);
+  only the integer identity of \cref{prop:disc_cubic} is kernel-checked. (No
+  \texttt{\textbackslash leanok}: prose.)
+\end{corollary}
 
 \begin{proposition}[Quartic discriminant]
   \label{prop:disc_quartic}
   \lean{PDT.disc_quartic}
   \leanok
-  $\operatorname{disc}(x^4-x-1) = -283$. Since $283$ is prime
-  (\lstinline{PDT.prime_283}) the discriminant is squarefree, so $\mathbb{Z}[Q]$ is the full
-  ring of integers and this is also the field discriminant of $\mathbb{Q}(Q)$.
+  $\operatorname{disc}(x^4-x-1) = -283$ (as the integer identity
+  $-27(-1)^4+256(-1)^3 = -283$).
 \end{proposition}
 
-\begin{proposition}[Unit norms]
+\begin{corollary}[Field discriminant of $\mathbb{Q}(Q)$ (prose)]
+  \uses{prop:disc_quartic}
+  Since $283$ is prime (\lstinline{PDT.prime_283}), $-283$ is squarefree, hence $\mathbb{Z}[Q]$
+  is maximal and $-283$ is \emph{also} the field discriminant of $\mathbb{Q}(Q)$. This
+  is standard; the chain squarefree $\Rightarrow$ maximal-order $\Rightarrow$ field-discriminant
+  is a \emph{prose inference, not formalized}. (No \texttt{\textbackslash leanok}.)
+\end{corollary}
+
+\begin{proposition}[The compositum-norm numeral identity]
   \label{prop:norms}
   \lean{PDT.unit_norm_rhoQ}
   \leanok
-  $N(\rho) = 1$, $N(Q) = -1$, $N(\rho Q) = 1^4\cdot(-1)^3 = -1$ (the unit norm forcing
-  integer exponents), and $N(2Q-1) = -23$ (welding the ``$23$'' to $E_4$'s $2$-torsion).
+  The numeral identity $1^4\cdot(-1)^3 = -1$. Its intended reading is the norm-tower product
+  $N(\rho Q) = N(\rho)^4\cdot N(Q)^3 = -1$ (the unit norm forcing integer exponents), but the
+  compositum $\mathbb{Q}(\rho,Q)$, the $[K:\mathbb{Q}]=12$ linear disjointness, and the
+  norm-tower step are \emph{prose, not formalized} (see WO-4(ii)); only the numeral identity is
+  kernel-checked. The genuine field norms $N(Q)=-1$ and $N(\rho)=1$ are stamped separately in
+  \cref{prop:norm_q,prop:norm_r}; $N(2Q-1)=-23$ is the numeral identity \lstinline{PDT.norm_2Q_sub_one}
+  (welding the ``$23$'' to $E_4$'s $2$-torsion --- also prose).
 \end{proposition}
 
 \chapter{The same arithmetic, through Mathlib's number-theory API}
@@ -157,29 +179,50 @@ rests on the polynomial being irreducible (so the \texttt{AdjoinRoot} quotient i
   \uses{prop:irred_q, thm:sig_quartic}
   The Gram matrix $M_4$ behind the $(3,1)$ signature is \emph{exactly}
   $\operatorname{Algebra.traceForm}_{\mathbb{Q}}$ on the power basis of
-  $\mathbb{Q}[x]/(x^4-x-1)$: $\operatorname{traceForm}(e_i,e_j) = (M_4)_{ij}$. So the
+  $\mathbb{Q}[x]/(x^4-x-1)$: $\operatorname{traceForm}(e_i,e_j) = (M_4)_{ij}$. Together with the
+  kernel-level identity $M = M_4$ (\lstinline{PDT.M_eq_M4}, in \lstinline{PdtLinks}), the
   signature theorem is a statement about the genuine trace form, not a hand-built matrix.
 \end{proposition}
 
 \chapter{Trace-form signatures: 3-space and spacetime}
 
-\begin{theorem}[Spacetime signature $(3,1)$]
+\begin{theorem}[Spacetime signature certificate (quartic)]
   \label{thm:sig_quartic}
   \lean{PDT.signature_3_1}
   \leanok
-  The trace form of $\mathbb{Q}[x]/(x^4-x-1)$, in the power basis, is congruent over
-  $\mathbb{Q}$ to $\operatorname{diag}(4,4,-\tfrac94,\tfrac{283}{36})$ --- three positive,
-  one negative. With $\det = -283 < 0$, by Sylvester's law its signature is $(3,1)$.
+  The trace form $M$ of $\mathbb{Q}[x]/(x^4-x-1)$, in the power basis, is symmetric and there is a
+  unimodular rational $P$ with $P^{\mathsf T} M P = \operatorname{diag}(4,4,-\tfrac94,\tfrac{283}{36})$
+  (three positive diagonal entries, one negative) and $\det M = -283 < 0$. (A
+  \emph{Sylvester congruence certificate over $\mathbb{Q}$}; the statement contains no
+  signature vocabulary and no $\mathbb{R}$ base-change.)
 \end{theorem}
 
-\begin{theorem}[$3$-space signature $(2,1)$]
+\begin{corollary}[Signature $(3,1)$ (prose)]
+  \uses{thm:sig_quartic}
+  Base-changing to $\mathbb{R}$ and applying Sylvester's law of inertia, the certificate of
+  \cref{thm:sig_quartic} gives signature $(3,1)$. This final step is standard and carried in
+  prose, not formalized (see WO-4(i) for the route to a genuinely stamped
+  $\operatorname{sigPos}/\operatorname{sigNeg}$ node). (No \texttt{\textbackslash leanok}.)
+\end{corollary}
+
+\begin{theorem}[$3$-space signature certificate (cubic)]
   \label{thm:sig_cubic}
   \lean{PDT.signature_2_1}
   \leanok
-  The trace form of $\mathbb{Q}[x]/(x^3-x-1)$ is congruent over $\mathbb{Q}$ to
-  $\operatorname{diag}(3,2,-\tfrac{23}{6})$ --- two positive, one negative, $\det = -23$.
-  By Sylvester's law its signature is $(2,1)$.
+  The trace form $M_\rho$ of $\mathbb{Q}[x]/(x^3-x-1)$ is symmetric and congruent over
+  $\mathbb{Q}$, via a unimodular $P_\rho$, to $\operatorname{diag}(3,2,-\tfrac{23}{6})$ --- two
+  positive, one negative --- with $\det M_\rho = -23$. Moreover $M_\rho$ \emph{is} the genuine
+  $\operatorname{Algebra.traceMatrix}$ Gram matrix of the cubic power basis
+  (\lstinline{PDT.Mρ_eq_traceMatrix_fin3}, in \lstinline{PdtLinks}). (A Sylvester congruence
+  certificate over $\mathbb{Q}$.)
 \end{theorem}
+
+\begin{corollary}[Signature $(2,1)$ (prose)]
+  \uses{thm:sig_cubic}
+  As in the quartic case, base-change to $\mathbb{R}$ and Sylvester's law give signature $(2,1)$;
+  this final step is standard and carried in prose, not formalized. (No
+  \texttt{\textbackslash leanok}.)
+\end{corollary}
 
 \chapter{The Bell gap: classical $2$ versus quantum $2\sqrt2$}
 
@@ -189,17 +232,17 @@ rests on the polynomial being irreducible (so the \texttt{AdjoinRoot} quotient i
   \leanok
   In a commutative ordered $*$-ring, any CHSH tuple satisfies
   $A_0B_0 + A_0B_1 + A_1B_0 - A_1B_1 \le 2$ (via Mathlib's
-  \lstinline{CHSH_inequality_of_comm}).
+  \lstinline{CHSH_inequality_of_comm}). Commuting observables stop at $2$.
 \end{theorem}
 
 \begin{theorem}[Tsirelson bound, saturated]
   \label{thm:tsirelson}
   \lean{PDT.chsh_saturates}
   \leanok
-  \uses{thm:chsh_classical}
   The Tsirelson bound $2\sqrt2$ (Mathlib's \lstinline{tsirelson_inequality}) is attained:
   an explicit real-Pauli quadruple in $M_2(\mathbb{R})\otimes M_2(\mathbb{R})$ is a genuine
   CHSH tuple whose operator reaches eigenvalue $2\sqrt2$ on the Bell direction. The gap
-  $2 < 2\sqrt2$ (\lstinline{PDT.bell_gap}) is strict: commuting observables stop at $2$;
-  noncommutativity reaches $2\sqrt2$.
+  $2 < 2\sqrt2$ (\lstinline{PDT.bell_gap}) is strict. (This node is independent of
+  \cref{thm:chsh_classical}: \lstinline{chsh_saturates} makes no use of the classical bound,
+  so there is no formal dependency edge.)
 \end{theorem}
