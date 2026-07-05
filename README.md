@@ -2,7 +2,7 @@
 
 **The machine-verified core of Pisot Dimensional Theory.** A Lean 4 + Mathlib formalization that verifies, in the kernel, the complex-number arithmetic underlying single-qubit quantum kinematics, and checks the number-theoretic bedrock the theory rests on through Mathlib's genuine API, not hand-substituted values.
 
-![Lean](https://img.shields.io/badge/Lean-v4.31.0-blue) ![Mathlib](https://img.shields.io/badge/Mathlib-v4.31.0-blue) ![axioms](https://img.shields.io/badge/axioms-standard%20only-green) ![sorry-free](https://img.shields.io/badge/sorry--free-brightgreen) ![native__decide-free](https://img.shields.io/badge/native__decide--free-brightgreen)
+![Lean](https://img.shields.io/badge/Lean-v4.31.0-blue) ![Mathlib](https://img.shields.io/badge/Mathlib-v4.31.0-blue) ![axioms](https://img.shields.io/badge/axioms-standard%20only-green) ![sorry-free](https://img.shields.io/badge/sorry--free-brightgreen) ![native__decide-free](https://img.shields.io/badge/native__decide--free-brightgreen) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21210683.svg)](https://doi.org/10.5281/zenodo.21210683)
 
 > **185 declarations · 12 modules · no `sorry`, no `native_decide`.** Composition (per the adversarial audit): approximately 83 substantive results, ~40 API wrappers/plumbing, ~33 disclosed elementary numeral identities, plus the cross-module identification lemmas, all kernel-clean over the three standard axioms (`propext`, `Classical.choice`, `Quot.sound`). (126 of the 185 use the `theorem` keyword; the rest are `lemma` helpers.) The one-command verifier below builds the project and prints **PASS** with the full axiom trace — or fails loudly.
 
@@ -57,4 +57,8 @@ lake build              # green = kernel-verified
 
 ## License & citation
 
-Code: MIT (see [`LICENSE`](LICENSE)). Citable via the Zenodo DOI on archival (see [`.zenodo.json`](.zenodo.json)). Feedback on the formalization and on the precision of the scope statement above is exactly what this repository invites.
+Code: MIT (see [`LICENSE`](LICENSE)).
+
+**Citation (all versions):** Stephanie Alexander ([ORCID 0009-0003-7727-2565](https://orcid.org/0009-0003-7727-2565)), *PDT-Lean: a kernel-verified Lean 4 formalization of the Pisot Dimensional Theory core*, Zenodo, DOI [10.5281/zenodo.21210683](https://doi.org/10.5281/zenodo.21210683) (concept DOI — always resolves to the latest release).
+
+Feedback on the formalization and on the precision of the scope statement above is exactly what this repository invites.
