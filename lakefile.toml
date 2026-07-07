@@ -1,5 +1,5 @@
 name = "PdtQm"
-defaultTargets = ["PdtQm", "PdtGolden", "PdtArithmetic", "PdtSignature", "PdtSignatureRho", "PdtTsirelson", "PdtBellClassical", "PdtIrreducible", "PdtNorm", "PdtDiscriminant", "PdtTraceForm", "PdtLinks"]
+defaultTargets = ["PdtQm", "PdtGolden", "PdtArithmetic", "PdtSignature", "PdtSignatureRho", "PdtTsirelson", "PdtBellClassical", "PdtIrreducible", "PdtNorm", "PdtDiscriminant", "PdtTraceForm", "PdtLinks", "PdtSymplectic"]
 
 [[require]]
 name = "mathlib"
@@ -41,3 +41,6 @@ name = "PdtTraceForm"
 
 [[lean_lib]]
 name = "PdtLinks"
+
+[[lean_lib]]
+name = "PdtSymplectic"
