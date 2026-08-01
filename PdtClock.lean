@@ -1,23 +1,24 @@
 import Mathlib
 
 /-!
-# PdtClock — the β-clock's tick word is aperiodic but not random (Sturmian structure)
+# PdtClock — a mechanical (Beatty) word: two-valued, density β, aperiodic, balanced
 
-The PDT β-clock emits, tick after tick, a DURATION word: at step `n` the tick
-lasts `⌊(n+1)β⌋ − ⌊nβ⌋` units, where `β` is the (irrational) clock slope
-`β = ln|σ_Q| / (½ ln ρ) ≈ 0.4367860016 ∈ (0,1)`. This module certifies, in the
-kernel, the four properties that make that word **deterministic, structured and
-non-repeating** — the mechanical/Sturmian properties of a Beatty (mechanical)
+The mechanical (Beatty) word of a slope `β ∈ (0,1)` records, at step `n`, the
+increment `⌊(n+1)β⌋ − ⌊nβ⌋`. In PDT this word models a proposed tick/duration
+sequence at the slope `β = ln|σ_Q| / (½ ln ρ) ≈ 0.4367860016` — a reading held
+as a hypothesis, not established here (see Scope). This module certifies, in
+the kernel, the four properties that make the word **deterministic, structured
+and non-repeating** — the mechanical/Sturmian properties of a Beatty (mechanical)
 word of a general slope `β`:
 
-* **T1 — TWO-VALUED** (`m_mem`): for `0 < β < 1`, every duration is `0` or `1`.
-  The clock speaks a binary alphabet; there is no third symbol.
-* **T2 — DENSITY = β** (`sum_m_eq`, `sum_m_bounds`, `density_tendsto`): the
+* **(1) TWO-VALUED** (`m_mem`): for `0 < β < 1`, every duration is `0` or `1`.
+  The word uses a binary alphabet; there is no third symbol.
+* **(2) DENSITY = β** (`sum_m_eq`, `sum_m_bounds`, `density_tendsto`): the
   running 1-count telescopes exactly to `⌊Nβ⌋`, and the frequency of `1`'s
   converges to `β`. The long-run tick rate is the slope itself.
-* **T3 — APERIODIC** (`aperiodic`): for irrational `β` the word has NO period —
-  it never repeats. (Deterministic yet non-periodic: the hallmark of the clock.)
-* **T4 — BALANCED** (`balanced`): any two windows of the SAME length have
+* **(3) APERIODIC** (`aperiodic`): for irrational `β` the word has NO period —
+  it never repeats. (Deterministic yet non-periodic.)
+* **(4) BALANCED** (`balanced`): any two windows of the SAME length have
   1-counts differing by at most `1`. This is the precise "not random / maximally
   even" Sturmian balance property — the strongest single statement here.
 
@@ -31,11 +32,11 @@ non-elementary input is quarantined as a hypothesis, see Scope.
 
 * This module certifies the WORD'S structure for a general real slope `β`,
   taken abstractly. The identification of the PDT tick map `(δ, ℓ)` dynamics
-  with exactly this word `m β` is the dynamical / H4 piece and is **out of
-  scope** here.
+  with exactly this word `m β` is a separate dynamical identification —
+  proposed in the theory, not established — and is **out of scope** here.
 * That the PDT value `β = ln|σ_Q|/(½ ln ρ)` satisfies `0 < β < 1` is a separate
   numeric lemma (bounds on the two logs) and is **not** proved here; `0 < β`,
-  `β < 1` enter T1/T2 as hypotheses.
+  `β < 1` enter (1)/(2) as hypotheses.
 * That the PDT `β` is **irrational** rests on Baker's theorem (a ratio of logs of
   multiplicatively-independent algebraics is transcendental). Baker's theorem is
   **not in Mathlib**, so `Irrational β` is a **hypothesis** in T3/T4-adjacent

@@ -1,10 +1,10 @@
 import Mathlib
 
 /-!
-# PdtPisotBoundary — the settle/spiral fork is forced (ρ Pisot, Q non-Pisot)
+# PdtPisotBoundary — the Pisot dichotomy of the two defining polynomials (ρ Pisot, Q non-Pisot)
 
 The two defining polynomials of PDT, `f = x³ − x − 1` (root ρ, the plastic
-number, 3D/lepton base) and `g = x⁴ − x − 1` (root Q, 4D/quark base), sit on
+number) and `g = x⁴ − x − 1` (root Q), sit on
 opposite sides of the unit circle `|σ| = 1` — the **Pisot boundary**. This
 module kernel-verifies that dichotomy directly from the polynomials, with zero
 free parameters:
@@ -15,12 +15,12 @@ free parameters:
 * **the quartic spirals** (`quartic_conj_norm_gt_one`): every non-real root `w`
   of `x⁴ − x − 1` has `‖w‖ > 1` — the transverse mode EXPANDS, so Q is NOT a
   Pisot number and its arithmetic spirals (`‖w‖ ≈ 1.0633`);
-* **the fork** (`pisot_boundary_dichotomy`): `‖z‖ < 1 ∧ 1 < ‖w‖`. The 3D/lepton
-  sector settles; the 4D/quark sector does not. Forced, not chosen.
+* **the dichotomy** (`pisot_boundary_dichotomy`): `‖z‖ < 1 ∧ 1 < ‖w‖` — the
+  contraction/expansion split that PDT reads as its classical/quantum divide.
+  The split itself is the kernel-verified content; the reading is interpretive.
 
 This upgrades the previously-computed value `|σ_Q| = 1.0633` (a numerical fact)
-to a kernel theorem. It is the winnable half of Link 1 (settling ⟺ Pisot) of the
-necessity chain; it does NOT prove Siegel minimality (ρ = the *smallest* Pisot),
+to a kernel theorem. It does NOT prove Siegel minimality (ρ = the *smallest* Pisot),
 which requires Pisot theory absent from Mathlib.
 
 ## Method (elementary, self-contained)
@@ -131,11 +131,10 @@ theorem cubic_conj_norm_lt_one (z : ℂ) (hz : z ^ 3 = z + 1) (him : z.im ≠ 0)
   have hnorm : ‖z‖ ^ 2 = s := by rw [hs]; exact (Complex.normSq_eq_norm_sq z).symm
   nlinarith [norm_nonneg z, hs1, hnorm, sq_nonneg (‖z‖ - 1)]
 
-/-- **The Pisot-boundary dichotomy — the settle/spiral fork of PDT is forced.**
-From the two zero-parameter defining polynomials: the cubic's transverse mode
-contracts (`‖z‖ < 1`, ρ settles / is Pisot) and the quartic's expands
-(`‖w‖ > 1`, Q spirals / is non-Pisot). The 3D/lepton sector settles onto its
-arithmetic; the 4D/quark sector does not. -/
+/-- **The Pisot-boundary dichotomy.** From the two zero-parameter defining
+polynomials: the cubic's non-real roots contract (`‖z‖ < 1`; ρ is Pisot) and
+the quartic's expand (`‖w‖ > 1`; Q is not) — the two polynomials sit on
+opposite sides of the unit circle. -/
 theorem pisot_boundary_dichotomy
     (z : ℂ) (hz : z ^ 3 = z + 1) (hzim : z.im ≠ 0)
     (w : ℂ) (hw : w ^ 4 = w + 1) (hwim : w.im ≠ 0) :
