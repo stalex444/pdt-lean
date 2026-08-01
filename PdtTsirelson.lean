@@ -6,7 +6,7 @@ open scoped Real
 open Matrix
 
 /-!
-# The Tsirelson bound 2√2 (FINDINGS:82)
+# The Tsirelson bound 2√2
 
 We tie the PDT entanglement-bound claim to Mathlib's kernel-verified
 `tsirelson_inequality` (in `Mathlib.Algebra.Star.CHSH`), and we construct

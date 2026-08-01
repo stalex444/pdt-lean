@@ -246,3 +246,69 @@ rests on the polynomial being irreducible (so the \texttt{AdjoinRoot} quotient i
   \cref{thm:chsh_classical}: \lstinline{chsh_saturates} makes no use of the classical bound,
   so there is no formal dependency edge.)
 \end{theorem}
+
+
+\chapter{Two forms and one rotation on the complex place}
+
+\begin{theorem}[The dagger identity]
+  \label{thm:dagger_identity}
+  \lean{PDT.born_eq_trace_comp_conj}
+  \leanok
+  $G_{\mathrm{Born}} = G_{\mathrm{trace}} \circ \sigma$: the Born form is the trace form
+  precomposed with conjugation.
+\end{theorem}
+
+\begin{theorem}[$J$ is a Born isometry and a trace anti-isometry]
+  \label{thm:j_isometries}
+  \lean{PDT.J_born_isometry}
+  \leanok
+  \uses{thm:dagger_identity}
+  The same $J$ (multiplication by $i$) satisfies $J^{\top} G_{\mathrm{Born}} J = G_{\mathrm{Born}}$
+  and $J^{\top} G_{\mathrm{tr}} J = -G_{\mathrm{tr}}$ (companion: \texttt{J\_trace\_antiisometry}).
+\end{theorem}
+
+\begin{theorem}[The symplectic companion]
+  \label{thm:omega_symplectic}
+  \lean{PDT.omega_born_nondegenerate}
+  \leanok
+  \uses{thm:j_isometries}
+  $\omega = J^{\top} G_{\mathrm{Born}}$ is alternating and nondegenerate ($\det = 1$) — a symplectic
+  form — while the trace companion $J^{\top} G_{\mathrm{tr}}$ is symmetric (companions:
+  \texttt{omegaB\_eq}, \texttt{omega\_born\_skew}, \texttt{omega\_trace\_symm}).
+\end{theorem}
+
+\chapter{Anchored stabilizer dimensions}
+
+\begin{theorem}[Surjectivity of the anchored action]
+  \label{thm:slaction_surj}
+  \lean{PdtStabilizer.slAction_surjective}
+  \leanok
+  For $N \ge 2$ and $v \ne 0$, the map $X \mapsto Xv$ from trace-zero matrices onto
+  $\mathbb{Q}^N$ is surjective, by an explicit solver.
+\end{theorem}
+
+\begin{theorem}[The stabilizer has dimension $N^2-N-1$]
+  \label{thm:finrank_stab}
+  \lean{PdtStabilizer.finrank_stabilizer}
+  \leanok
+  \uses{thm:slaction_surj}
+  The sl-stabilizer of $v \ne 0$ has finrank $N^2-N-1$ (rank–nullity); instances:
+  $11$ at $N{=}4$, $19$ at $N{=}5$, $209$ at $N{=}15$.
+\end{theorem}
+
+\begin{theorem}[Corank one: the trace character]
+  \label{thm:corank_one}
+  \lean{PdtStabilizer.stabilizer_corank_one}
+  \leanok
+  \uses{thm:finrank_stab}
+  The gl-stabilizer has finrank $N^2-N$; the corank-1 gap to the sl-stabilizer is the trace
+  character, exhibited by an explicit trace-one witness.
+\end{theorem}
+
+\begin{theorem}[Orbit--stabilizer decomposition]
+  \label{thm:orbit_stab}
+  \lean{PdtStabilizer.finrank_sl_eq_add}
+  \leanok
+  \uses{thm:finrank_stab}
+  $\dim \mathfrak{sl}(N) = N + (N^2-N-1)$.
+\end{theorem}
