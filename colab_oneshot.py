@@ -59,32 +59,62 @@ sh("lake exe cache get")
 sh("lake build")
 
 # 4) enumerate every theorem/lemma and generate the axiom-audit driver
-names, imports = [], set()
+#    Lean identifiers are Unicode (norm_ρ, A₀_sq, detMρ), and a declaration may carry
+#    attributes (@[simp] lemma) or modifiers (private lemma), so the pattern has to allow
+#    all three. `private` declarations are skipped: they are not addressable by name from
+#    an importing file. Skipping them costs nothing, because #print axioms is transitive —
+#    a public result reports the axioms of everything it depends on, private helpers included.
+DECL = re.compile(
+    r"^[ \t]*(?:@\[[^\]]*\][ \t]*)*"
+    r"(?P<mods>(?:(?:private|protected|nonrec|noncomputable|partial|unsafe)[ \t]+)*)"
+    r"(?:theorem|lemma)[ \t]+([^\s:({\[⦃⟨]+)", re.M)
+names, imports, skipped = [], set(), []
 for fn in sorted(os.listdir(DIR)):
     if fn.startswith("Pdt") and fn.endswith(".lean"):
         txt = open(os.path.join(DIR, fn), encoding="utf-8").read()
-        ns  = re.search(r"namespace\s+([A-Za-z0-9_.]+)", txt)
+        ns  = re.search(r"namespace\s+([^\s({\[]+)", txt)
         pre = (ns.group(1) + ".") if ns else ""
         imports.add(fn[:-5])
-        for m in re.finditer(r"^\s*(?:theorem|lemma)\s+([A-Za-z0-9_']+)", txt, re.M):
-            names.append(pre + m.group(1))
+        for m in DECL.finditer(txt):
+            if "private" in m.group("mods"):
+                skipped.append(pre + m.group(2))
+                continue
+            names.append(pre + m.group(2))
 driver = "".join(f"import {m}\n" for m in sorted(imports)) \
        + "".join(f"#print axioms {n}\n" for n in names)
 open("CheckAll.lean", "w", encoding="utf-8").write(driver)
-print(f"\nChecking {len(names)} declarations across {len(imports)} modules ...", flush=True)
+print(f"\nChecking {len(names)} declarations across {len(imports)} modules "
+      f"({len(names) + len(skipped)} total; {len(skipped)} private, covered transitively) ...",
+      flush=True)
 
 # 5) run the audit; every axiom set must be a subset of the standard three
 res = sh("lake env lean CheckAll.lean", capture=True)
 os.remove("CheckAll.lean")
-bad = []
+bad, seen = [], set()
 for line in (res.stdout or "").splitlines():
     m = re.search(r"'([^']+)' depends on axioms: \[([^\]]*)\]", line)
     if m:
+        seen.add(m.group(1))
         ax = {a.strip() for a in m.group(2).split(",") if a.strip()}
         if not ax <= STD:            # sorryAx / native_decide / custom land here
             bad.append((m.group(1), sorted(ax - STD)))
+    m = re.search(r"'([^']+)' does not depend on any axioms", line)
+    if m:
+        seen.add(m.group(1))
+
+# Coverage guard: every name we asked about must come back with a verdict. Without this,
+# an enumerator defect silently shrinks the audit instead of failing it.
+unresolved = [n for n in names if n not in seen]
 
 print("=" * 64, flush=True)
+if unresolved:
+    print(f"FAIL — {len(unresolved)} of {len(names)} declarations returned no verdict:", flush=True)
+    for n in unresolved[:20]:
+        print(f"   {n}", flush=True)
+    if len(unresolved) > 20:
+        print(f"   ... and {len(unresolved) - 20} more", flush=True)
+    print("   (enumerator/driver defect — the audit is incomplete, not passing)", flush=True)
+    raise SystemExit(1)
 if bad:
     print("FAIL — non-standard axioms found:", flush=True)
     for n, extra in bad:

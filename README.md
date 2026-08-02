@@ -4,7 +4,7 @@
 
 ![Lean](https://img.shields.io/badge/Lean-v4.31.0-blue) ![Mathlib](https://img.shields.io/badge/Mathlib-v4.31.0-blue) ![axioms](https://img.shields.io/badge/axioms-standard%20only-green) ![sorry-free](https://img.shields.io/badge/sorry--free-brightgreen) ![native__decide-free](https://img.shields.io/badge/native__decide--free-brightgreen) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21210683.svg)](https://doi.org/10.5281/zenodo.21210683)
 
-> **228 declarations · 16 modules · no `sorry`, no `native_decide`.** A mix of substantive results, API wrappers, and disclosed elementary numeral identities — the per-module table below states what each module proves; all kernel-clean over the three standard axioms (`propext`, `Classical.choice`, `Quot.sound`). (160 of the 228 use the `theorem` keyword; the rest are `lemma` helpers.) The one-command verifier below builds the project and prints **PASS** with the full axiom trace — or fails loudly.
+> **236 declarations · 16 modules · no `sorry`, no `native_decide`.** A mix of substantive results, API wrappers, and disclosed elementary numeral identities — the per-module table below states what each module proves; all kernel-clean over the three standard axioms (`propext`, `Classical.choice`, `Quot.sound`). (160 use the `theorem` keyword; the remaining 76 are `lemma` helpers. Five of the 236 are `private` and so are not addressable by name from an importing file: the audit checks the other 231 directly, and those five transitively, since `#print axioms` reports the axioms of everything a result depends on.) The one-command verifier below builds the project and prints **PASS** with the full axiom trace — or fails loudly.
 
 ---
 
@@ -49,7 +49,7 @@ That is the whole discipline: one named assumption, a hard boundary around it, a
 
 ## Verify it yourself
 
-**Google Colab — one cell (most robust):** open a blank Colab notebook, paste the entire contents of [`colab_oneshot.py`](colab_oneshot.py) into a single cell, and run. Pure Python — it installs the toolchain, writes the project, builds against pinned Mathlib, and self-certifies. (Do **not** paste a `.ipynb` into a cell.) The first line it prints is a version banner; the last is **PASS** with the axiom trace, or a labelled failure.
+**Google Colab — one cell:** open a blank Colab notebook, paste the entire contents of [`colab_oneshot.py`](colab_oneshot.py) into a single cell, and run. Pure Python — it installs the toolchain, writes the project, builds against pinned Mathlib, and self-certifies. (Do **not** paste a `.ipynb` into a cell.) The first line it prints is a version banner; the last is **PASS** with the axiom trace, or a labelled failure.
 
 **Colab — the notebook:** in Colab choose **File → Upload notebook**, select [`PdtQm_Colab.ipynb`](PdtQm_Colab.ipynb), then Run all (CPU is fine).
 
