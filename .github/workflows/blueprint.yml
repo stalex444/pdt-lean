@@ -54,6 +54,16 @@ jobs:
         with:
           python-version: "3.12"
 
+      # Runs the SAME script the README tells readers to paste into Colab, against this
+      # checkout (PDT_LOCAL skips its clone/build stages, which the job has already done).
+      # Without this, a green run certified `lake build` only, and a defect in the
+      # verifier itself was invisible to CI. The script exits non-zero if any declaration
+      # returns no verdict or depends on a non-standard axiom.
+      - name: Axiom audit (the published verifier, against this checkout)
+        env:
+          PDT_LOCAL: ${{ github.workspace }}
+        run: python3 colab_oneshot.py
+
       - name: Install TeX Live (xelatex + latexmk)
         run: |
           sudo apt-get update
