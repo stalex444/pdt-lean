@@ -157,3 +157,60 @@ if bad:
 print(f"PASS — all {len(names)} declarations depend only on {sorted(STD)};", flush=True)
 print("       no sorry, no native_decide, no custom axioms.", flush=True)
 print("=" * 64, flush=True)
+
+# ============================================================
+# 6) README / .zenodo.json coverage guard.
+#    The axiom audit computes the counts; until now nothing checked that the
+#    published prose AGREES with them, so the headline numbers and the module
+#    table were maintained by hand and could drift silently — and did: two
+#    modules were listed twice and one was not listed at all. Reusing the
+#    enumeration above rather than re-deriving it keeps one copy of the logic.
+# ============================================================
+ROW = re.compile(r"^\|\s*\*\*(.+?)\*\*\s*\|", re.M)
+HEAD = re.compile(r"\*\*(\d+)\s+declarations\s*·\s*(\d+)\s+modules")
+
+readme_path = os.path.join(DIR, "README.md")
+problems = []
+if os.path.exists(readme_path):
+    rd = open(readme_path, encoding="utf-8").read()
+    listed = {}
+    for row in ROW.findall(rd):
+        for mod in re.split(r"\s*/\s*", row.strip()):
+            listed[mod] = listed.get(mod, 0) + 1
+
+    for mod in sorted(set(listed) - imports):
+        problems.append(f"README lists '{mod}', which is not a module in this repo")
+    for mod in sorted(imports - set(listed)):
+        problems.append(f"module '{mod}' is published but has no README table row")
+    for mod, k in sorted(listed.items()):
+        if k > 1:
+            problems.append(f"README lists '{mod}' {k} times (duplicate table row)")
+
+    h = HEAD.search(rd)
+    total = len(names) + len(skipped)
+    if not h:
+        problems.append("README headline '<N> declarations · <M> modules' not found")
+    else:
+        if int(h.group(1)) != total:
+            problems.append(f"README headline says {h.group(1)} declarations; the audit counts {total}")
+        if int(h.group(2)) != len(imports):
+            problems.append(f"README headline says {h.group(2)} modules; the audit counts {len(imports)}")
+
+zen_path = os.path.join(DIR, ".zenodo.json")
+if os.path.exists(zen_path):
+    zt = open(zen_path, encoding="utf-8").read()
+    zh = HEAD.search(zt) or re.search(r"(\d+)\s+declarations\s*·\s*(\d+)\s+modules", zt)
+    if zh:
+        if int(zh.group(1)) != len(names) + len(skipped):
+            problems.append(f".zenodo.json says {zh.group(1)} declarations; the audit counts {len(names) + len(skipped)}")
+        if int(zh.group(2)) != len(imports):
+            problems.append(f".zenodo.json says {zh.group(2)} modules; the audit counts {len(imports)}")
+
+if problems:
+    print("FAIL — published counts/table disagree with the audit:", flush=True)
+    for p in problems:
+        print(f"   {p}", flush=True)
+    raise SystemExit(1)
+print(f"       README and .zenodo.json agree: {len(names) + len(skipped)} declarations, "
+      f"{len(imports)} modules, every module described exactly once.", flush=True)
+print("=" * 64, flush=True)
