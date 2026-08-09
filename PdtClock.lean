@@ -36,11 +36,11 @@ non-elementary input is quarantined as a hypothesis, see Scope.
   proposed in the theory, not established — and is **out of scope** here.
 * That the PDT value `β = ln|σ_Q|/(½ ln ρ)` satisfies `0 < β < 1` is a separate
   numeric lemma (bounds on the two logs) and is **not** proved here; `0 < β`,
-  `β < 1` enter (1)/(2) as hypotheses.
+  `β < 1` enter the two-valued and density statements as hypotheses.
 * That the PDT `β` is **irrational** rests on Baker's theorem (a ratio of logs of
   multiplicatively-independent algebraics is transcendental). Baker's theorem is
-  **not in Mathlib**, so `Irrational β` is a **hypothesis** in T3/T4-adjacent
-  statements, never a kernel step. It is honestly carried, never discharged.
+  **not in Mathlib**, so `Irrational β` is a **hypothesis** in the aperiodicity
+  statement, never a kernel step. It is honestly carried, never discharged.
 
 All statements quantify over the slope `β`, so they apply to the PDT slope the
 instant the three scope facts above are supplied from outside.
@@ -89,9 +89,9 @@ theorem floor_add_cases (a b : ℝ) :
     omega
   omega
 
-/-! ## T1 — TWO-VALUED (the clock's binary alphabet) -/
+/-! ## TWO-VALUED (the clock's binary alphabet) -/
 
-/-- **T1 — TWO-VALUED.** For a slope `0 < β < 1`, every tick duration is `0`
+/-- **TWO-VALUED.** For a slope `0 < β < 1`, every tick duration is `0`
 or `1`: `m β n ∈ {0, 1}`. From `⌊nβ + β⌋ − ⌊nβ⌋ ∈ {⌊β⌋, ⌊β⌋+1} = {0,1}`. -/
 theorem m_mem (β : ℝ) (hβ0 : 0 < β) (hβ1 : β < 1) (n : ℕ) :
     m β n = 0 ∨ m β n = 1 := by
@@ -103,9 +103,9 @@ theorem m_mem (β : ℝ) (hβ0 : 0 < β) (hβ1 : β < 1) (n : ℕ) :
   · rw [h, hfβ]; left; omega
   · rw [h, hfβ]; right; omega
 
-/-! ## T2 — DENSITY (telescoping identity, two-sided bound, and the limit) -/
+/-! ## DENSITY (telescoping identity, two-sided bound, and the limit) -/
 
-/-- **T2 — telescoping identity.** The running 1-count telescopes exactly:
+/-- **telescoping identity.** The running 1-count telescopes exactly:
 `∑_{k<N} m β k = ⌊N·β⌋ = cumFloor β N`. -/
 theorem sum_m_eq (β : ℝ) (N : ℕ) :
     ∑ k ∈ Finset.range N, m β k = cumFloor β N := by
@@ -115,7 +115,7 @@ theorem sum_m_eq (β : ℝ) (N : ℕ) :
     rw [Finset.sum_range_succ, ih, m_eq_cumFloor β n]
     omega
 
-/-- **T2 — two-sided bound.** The running 1-count brackets `N·β`:
+/-- **two-sided bound.** The running 1-count brackets `N·β`:
 `⌊N·β⌋ ≤ N·β < ⌊N·β⌋ + 1`, written on the telescoped sum. -/
 theorem sum_m_bounds (β : ℝ) (N : ℕ) :
     ((∑ k ∈ Finset.range N, m β k : ℤ) : ℝ) ≤ (N : ℝ) * β ∧
@@ -124,7 +124,7 @@ theorem sum_m_bounds (β : ℝ) (N : ℕ) :
   unfold cumFloor
   exact ⟨Int.floor_le _, Int.lt_floor_add_one _⟩
 
-/-- **T2 — DENSITY = β.** The frequency of `1`'s converges to the slope:
+/-- **DENSITY = β.** The frequency of `1`'s converges to the slope:
 `(∑_{k<N} m β k)/N → β` as `N → ∞`. Squeeze on
 `β − 1/N < ⌊Nβ⌋/N ≤ β`. -/
 theorem density_tendsto (β : ℝ) :
@@ -154,7 +154,7 @@ theorem density_tendsto (β : ℝ) :
     have hle := Int.floor_le ((N : ℝ) * β)
     nlinarith [hle]
 
-/-! ## T4 — BALANCED (the crown: "not random" / maximally even) -/
+/-! ## BALANCED (the crown: "not random" / maximally even) -/
 
 /-- **Windowed telescoping.** The 1-count of the length-`L` window starting at
 `i` telescopes: `∑_{k<L} m β (i+k) = cumFloor β (i+L) − cumFloor β i`. -/
@@ -180,7 +180,7 @@ theorem window_mem (β : ℝ) (i L : ℕ) :
   · left; rw [h]; omega
   · right; rw [h]; omega
 
-/-- **T4 — BALANCED.** Any two windows of the SAME length `L` have 1-counts
+/-- **BALANCED.** Any two windows of the SAME length `L` have 1-counts
 differing by at most `1`:
 `|∑_{k<L} m β (i+k) − ∑_{k<L} m β (j+k)| ≤ 1`.
 Both counts lie in `{⌊Lβ⌋, ⌊Lβ⌋+1}` (`window_mem`), so they differ by ≤ 1.
@@ -191,9 +191,9 @@ theorem balanced (β : ℝ) (L i j : ℕ) :
   rcases window_mem β i L with hi | hi <;> rcases window_mem β j L with hj | hj <;>
     rw [hi, hj, abs_le] <;> omega
 
-/-! ## T3 — APERIODIC (the word never repeats, for irrational slope) -/
+/-! ## APERIODIC (the word never repeats, for irrational slope) -/
 
-/-- **T3 — APERIODIC.** For an irrational slope `β`, the tick word has NO
+/-- **APERIODIC.** For an irrational slope `β`, the tick word has NO
 period: there is no `p > 0` with `m β (n+p) = m β n` for all `n`.
 
 Proof: a period `p` forces the cumulative floor to be additive over the period,
