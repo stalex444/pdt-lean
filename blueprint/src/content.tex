@@ -312,3 +312,163 @@ rests on the polynomial being irreducible (so the \texttt{AdjoinRoot} quotient i
   \uses{thm:finrank_stab}
   $\dim \mathfrak{sl}(N) = N + (N^2-N-1)$.
 \end{theorem}
+
+\chapter{The Pisot boundary}
+
+Both statements are proved by a single Vieta reduction on the conjugate pair, from the
+defining equation alone --- no root-finding and no \lstinline{Polynomial} API. A non-real
+root is characterised only by $z^3 = z+1$, $\operatorname{im} z \neq 0$ (resp.\ $w^4 = w+1$),
+so each theorem quantifies over all such roots.
+
+\begin{theorem}[The cubic's non-real roots lie inside the unit circle]
+  \label{thm:cubic_lt_one}
+  \lean{PDT.cubic_conj_norm_lt_one}
+  \leanok
+  Every non-real root $z$ of $x^3-x-1$ has $\|z\| < 1$. Equivalently: $\rho$ is a Pisot
+  number.
+\end{theorem}
+
+\begin{theorem}[The quartic's non-real roots lie outside the unit circle]
+  \label{thm:quartic_gt_one}
+  \lean{PDT.quartic_conj_norm_gt_one}
+  \leanok
+  Every non-real root $w$ of $x^4-x-1$ has $\|w\| > 1$. Equivalently: $Q$ is not a Pisot
+  number.
+\end{theorem}
+
+\begin{theorem}[The Pisot-boundary dichotomy]
+  \label{thm:pisot_dichotomy}
+  \lean{PDT.pisot_boundary_dichotomy}
+  \leanok
+  \uses{thm:cubic_lt_one, thm:quartic_gt_one}
+  The two statements packaged as one: $\|z\| < 1$ and $\|w\| > 1$. The two zero-parameter
+  polynomials sit on opposite sides of the unit circle. This upgrades the computed moduli
+  $0.869$ and $1.063$ to a theorem.
+\end{theorem}
+
+\begin{assumption}[Reading the dichotomy dynamically (not evaluated here)]
+  \label{ass:settle_spiral}
+  \uses{thm:pisot_dichotomy}
+  Reading $\|z\| < 1$ as a state that \emph{settles} and $\|w\| > 1$ as one that
+  \emph{spirals} is an \emph{identification}. What the kernel proves is the two modulus
+  inequalities. (No \texttt{\textbackslash leanok}, by design.)
+\end{assumption}
+
+\chapter{The $\beta$-clock word}
+
+For a real slope $\beta$, the tick word is $m(n) = \lfloor (n+1)\beta\rfloor - \lfloor
+n\beta\rfloor$ (\lstinline{PDT.m}). Irrationality is never assumed globally: it is carried as
+an explicit hypothesis on the one statement that needs it.
+
+\begin{theorem}[Two-valued]
+  \label{thm:clock_two_valued}
+  \lean{PDT.m_mem}
+  \leanok
+  For $0 < \beta < 1$, every $m(n)$ is $0$ or $1$: the word is over a binary alphabet.
+\end{theorem}
+
+\begin{theorem}[Density exactly $\beta$]
+  \label{thm:clock_density}
+  \lean{PDT.density_tendsto}
+  \leanok
+  $\bigl(\sum_{k<N} m(k)\bigr)/N \to \beta$, by exact telescoping of the partial sums to
+  $\lfloor N\beta\rfloor$ and a squeeze.
+\end{theorem}
+
+\begin{theorem}[Balanced]
+  \label{thm:clock_balanced}
+  \lean{PDT.balanced}
+  \leanok
+  \uses{thm:clock_two_valued}
+  Any two windows of the same length $L$ have $1$-counts differing by at most $1$ --- the
+  Sturmian balance property; both counts lie in $\{\lfloor L\beta\rfloor, \lfloor
+  L\beta\rfloor + 1\}$.
+\end{theorem}
+
+\begin{theorem}[Aperiodic, for irrational slope]
+  \label{thm:clock_aperiodic}
+  \lean{PDT.aperiodic}
+  \leanok
+  For irrational $\beta$ --- carried as the explicit hypothesis
+  \lstinline{Irrational \beta} --- there is no $p > 0$ with $m(n+p) = m(n)$ for all $n$. A
+  period would force $M\cdot\operatorname{fract}(p\beta) < 1$ for every $M$, contradicting the
+  Archimedean property. Aperiodic but not random.
+\end{theorem}
+
+\chapter{Contraction and separation on the complex place of $\mathbb{Q}(\rho)$}
+
+Throughout: $r$ is the real root of $x^3-x-1$ and $z$ a non-real root of the same cubic,
+each characterised only by its defining equation, so every statement quantifies over all
+such $r,z$. Write $\sigma_1$ for the real and $\sigma_2$ for the complex embedding of
+$\mathbb{Q}(\rho)$, and identify an element of $\mathbb{Z}[\rho]$ with its coordinate
+triple in the power basis $(1,\rho,\rho^2)$.
+
+\begin{theorem}[Exact contraction rate]
+  \label{thm:tick_contraction}
+  \lean{PDT.tick_contraction}
+  \leanok
+  $r\cdot\|z\|^2 = 1$: multiplication by $z$ scales area on the complex place by exactly
+  $1/r$. This is the norm relation $N(\rho)=1$ read at the two archimedean places --- an
+  identity of the field, not a numerical estimate.
+\end{theorem}
+
+\begin{theorem}[Rate form: $\|z\| = r^{-1/2}$]
+  \label{thm:norm_z_rpow}
+  \lean{PDT.norm_z_eq_rpow}
+  \leanok
+  \uses{thm:tick_contraction}
+  Lengths on the complex place contract by exactly $r^{-1/2}$ under multiplication by $z$;
+  in particular $\|z\| < 1$ (\lstinline{PDT.norm_z_lt_one}), since $r > 1$.
+\end{theorem}
+
+\begin{theorem}[Integrality floor]
+  \label{thm:meyer_separation}
+  \lean{PDT.meyer_separation}
+  \leanok
+  \uses{prop:irred_c}
+  For every nonzero $x \in \mathbb{Z}[\rho]$, $\;1 \le |\sigma_1(x)|\cdot\|\sigma_2(x)\|^2$.
+  The product of the three embeddings of $x$ is the integer $N(x)$
+  (\lstinline{PDT.normForm_factor}), and $N(x) \neq 0$ because $x^3-x-1$ is irreducible
+  (\cref{prop:irred_c}); so the left-hand side is $|N(x)| \ge 1$.
+\end{theorem}
+
+\begin{theorem}[Radius form of the floor]
+  \label{thm:meyer_rpow}
+  \lean{PDT.meyer_separation_rpow}
+  \leanok
+  \uses{thm:meyer_separation}
+  $\|\sigma_2(x)\| \ge |\sigma_1(x)|^{-1/2}$ for every nonzero $x \in \mathbb{Z}[\rho]$.
+\end{theorem}
+
+\begin{theorem}[Windowed uniform discreteness]
+  \label{thm:windowed_separation}
+  \lean{PDT.windowed_separation}
+  \leanok
+  \uses{thm:meyer_rpow}
+  Two distinct points of $\mathbb{Z}[\rho]$ whose real embeddings differ by at most $H$ have
+  complex embeddings at distance at least $H^{-1/2}$.
+\end{theorem}
+
+\begin{theorem}[Windowed permanence]
+  \label{thm:certification}
+  \lean{PDT.certification_soundness}
+  \leanok
+  \uses{thm:windowed_separation, thm:norm_z_rpow}
+  If $\|w - \sigma_2(\ell)\| < \tfrac12 H^{-1/2}$ then for every $n$ the point $z^n w$ is
+  strictly closer to $z^n\sigma_2(\ell) = \sigma_2(\rho^n\ell)$ than to any other
+  $\sigma_2(\ell')$ whose real embedding lies within $H$ of that of $\rho^n\ell$
+  (multiplication by $z$ permutes $\sigma_2(\mathbb{Z}[\rho])$,
+  \lstinline{PDT.lattice_tick_invariant}). The window hypothesis is essential: the
+  unwindowed image $\sigma_2(\mathbb{Z}[\rho])$ is dense in $\mathbb{C}$, so no unwindowed
+  statement of this kind is true and none is claimed.
+\end{theorem}
+
+\begin{assumption}[The dynamical reading (not evaluated here)]
+  \label{ass:record}
+  \uses{thm:certification}
+  Reading multiplication by $z$ as one step of a dynamics, $\sigma_2(\mathbb{Z}[\rho])$ as a
+  record lattice, and \cref{thm:certification} as the permanence of a recorded outcome is an
+  \emph{identification}. The theorems above are statements about two embeddings of
+  $\mathbb{Q}(\rho)$ and the metric geometry of $\mathbb{C}$; the physical reading is stated
+  outside the kernel. (No \texttt{\textbackslash leanok}, by design.)
+\end{assumption}
