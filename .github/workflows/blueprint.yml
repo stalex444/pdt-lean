@@ -77,6 +77,12 @@ jobs:
           python -m pip install --upgrade pip
           pip install leanblueprint invoke
 
+      # Known sharp edge: plasTeX can hand \lean{} a TeXFragment instead of a
+      # string (content- and python-version-sensitive). Patch the installed
+      # package to tolerate both; the script fails loudly if upstream changed.
+      - name: Robustify leanblueprint (TeXFragment decls; pending upstream)
+        run: python3 .github/scripts/robustify_leanblueprint.py
+
       - name: Build blueprint PDF
         run: leanblueprint pdf
 
