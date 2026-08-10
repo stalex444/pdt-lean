@@ -83,8 +83,19 @@ jobs:
       # `leanblueprint web` runs plasTeX, which (besides the HTML) writes the file
       # blueprint/lean_decls listing every \lean{...} declaration referenced by the
       # blueprint. checkdecls consumes that file, so web MUST run before checkdecls.
+      # On failure, surface the actual plastex error as ::error annotations —
+      # annotations are readable through the public checks API without
+      # authentication, unlike step logs, so the failure diagnoses itself.
       - name: Build blueprint web
-        run: leanblueprint web
+        run: |
+          set -o pipefail
+          if ! leanblueprint web 2>&1 | tee weblog.txt; then
+            grep -n -E "ERROR|Error|Traceback|[A-Za-z]*Error|line [0-9]+" weblog.txt \
+              | tail -12 | while IFS= read -r l; do
+                echo "::error title=plastex::${l}"
+              done
+            exit 1
+          fi
 
       # Make the compiled PDF downloadable from the published site.
       - name: Copy PDF into web output
