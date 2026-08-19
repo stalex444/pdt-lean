@@ -1,32 +1,52 @@
 import Mathlib
 
 /-!
-# Challenge: tightness of the Tsirelson bound — the classical–quantum CHSH gap
+# Challenge: the exact CHSH constants — Tsirelson's bound as a characterization
 
 This module is the small, trusted surface to audit. Results with `sorry`
 placeholders; proved versions are in `Solution.lean`.
 
-**The story in three beats.** (1) For any CHSH tuple in an ordered star-ring,
-the CHSH operator is bounded by `2√2` (Tsirelson's bound, in its familiar
-form). (2) That bound is *attained*: an explicit real-Pauli quadruple in
-`M₄(ℝ)` — integer matrices up to one scalar `(√2)⁻¹` — is a genuine CHSH
-tuple whose CHSH operator has eigenvalue exactly `2√2` on an explicit nonzero
-vector. (3) In a *commutative* ordered star-ring the same expression is
-bounded by `2`, and `2 < 2√2` strictly: the gap between the classical and
-quantum bounds is real, and noncommutativity is exactly what crosses it.
+**The suite.** For a CHSH tuple (Mathlib's `IsCHSHTuple`: self-adjoint
+involutions `A₀, A₁, B₀, B₁` with the `A`s commuting with the `B`s), write
+`T = A₀B₀ + A₀B₁ + A₁B₀ − A₁B₁`.
 
-**Two operator-norm results.** In the l2 operator norm on `M₄(ℝ)`
-(Mathlib's scoped `Matrix.Norms.L2Operator` instances), the CHSH operator of
-the tuple has norm *exactly* `2√2` (`chsh_opNorm`) — the former prose
-inference from the eigen-equation, now a compared statement. Yet its square
-is *not* the scalar `8·1` (`chsh_sq_ne`): the operator is not `√8` times an
-involution, so the naive scalar-square route `P² = 8·1 ⇒ ‖P‖ = √8` is closed
-for this representation, and the norm equality must be reached another way.
+1. **The Landau identity** (`chsh_mul_self`): in any \*-ring,
+   `T² = 4 + [A₀,A₁]·[B₁,B₀]` — the exact, representation-independent
+   correction to the naive `T² = 8·1`.
+2. **Tsirelson's bound in norm form** (`chsh_norm_le`): in every unital real
+   C\*-normed algebra, `‖T‖ ≤ 2√2`.
+3. **The classical constant, exactly** (`chsh_norm_of_comm`): if either
+   party's pair commutes, `‖T‖ = 2` exactly — not merely `≤ 2`.
+4. **Necessity of noncommutativity** (`noncomm_of_chsh_norm_gt_two`): any
+   violation `‖T‖ > 2` forces `A₀A₁ ≠ A₁A₀` *and* `B₀B₁ ≠ B₁B₀`.
+5. **The exact constant of `M₄(ℝ)`** (`chsh_opNorm_isGreatest`): in the l2
+   operator norm, `2√2` is the *greatest* element of the set of CHSH operator
+   norms over 4×4 real matrices — an upper bound for every tuple, attained.
+
+Points 4 and 5 are the necessity/possibility pair: noncommutativity within
+both parties is *necessary* for any violation of the classical bound, and the
+explicit real-Pauli tuple below shows the maximal violation `2√2` is
+*possible* (attained).
+
+**The original three beats** remain compared. (1) `chsh_upper`: for any CHSH
+tuple in an ordered star-ring, `T ≤ (2√2) • 1`. (2) Attainment: an explicit
+real-Pauli quadruple in `M₄(ℝ)` — integer matrices up to one scalar `(√2)⁻¹`
+— is a genuine CHSH tuple (`tuple_isCHSH`) whose CHSH operator has eigenvalue
+exactly `2√2` on an explicit nonzero vector (`chsh_saturates`,
+`vsat_ne_zero`), and l2 operator norm exactly `2√2` (`chsh_opNorm`).
+(3) `classical_le_two`: in a *commutative* ordered star-ring the same
+expression is bounded by `2`, and `2 < 2√2` strictly (`bell_gap`). Along the
+way, a falsification (`chsh_sq_ne`): the saturating tuple's `T²` is *not* the
+scalar `8·1` (the operator is rank-deficient), so the naive scalar-square
+route `T² = 8·1 ⇒ ‖T‖ = √8` is closed for this representation — the norm
+results must go through the Landau identity and the C\*-identity instead.
 -/
 
 namespace TsirelsonTightness
 
 open Matrix
+
+/-! ## Generic results: any CHSH tuple, any carrier -/
 
 /-- **Tsirelson's bound, `2√2` form.** Any CHSH tuple in an ordered star-ring
 satisfies `A₀B₀ + A₀B₁ + A₁B₀ − A₁B₁ ≤ (2√2) • 1`. -/
@@ -36,6 +56,48 @@ theorem chsh_upper
     (A₀ A₁ B₀ B₁ : R) (T : IsCHSHTuple A₀ A₁ B₀ B₁) :
     A₀ * B₀ + A₀ * B₁ + A₁ * B₀ - A₁ * B₁ ≤ (2 * Real.sqrt 2) • (1 : R) := by
   sorry
+
+/-- **The Landau identity.** For any CHSH tuple in any \*-ring,
+`T² = 4 + [A₀,A₁]·[B₁,B₀]`: the deviation of `T²` from the scalar `4` is
+exactly the product of the two intra-party commutators (Landau 1987). -/
+theorem chsh_mul_self
+    {R : Type*} [Ring R] [StarRing R] {A₀ A₁ B₀ B₁ : R}
+    (h : IsCHSHTuple A₀ A₁ B₀ B₁) :
+    (A₀ * B₀ + A₀ * B₁ + A₁ * B₀ - A₁ * B₁) * (A₀ * B₀ + A₀ * B₁ + A₁ * B₀ - A₁ * B₁)
+      = 4 + (A₀ * A₁ - A₁ * A₀) * (B₁ * B₀ - B₀ * B₁) := by
+  sorry
+
+/-- **Tsirelson's inequality in norm form, for every CHSH tuple.** In any
+unital real C\*-normed algebra, `‖A₀B₀ + A₀B₁ + A₁B₀ − A₁B₁‖ ≤ 2√2`. -/
+theorem chsh_norm_le
+    {R : Type*} [NormedRing R] [StarRing R] [CStarRing R] [Nontrivial R]
+    [NormedAlgebra ℝ R] {A₀ A₁ B₀ B₁ : R}
+    (h : IsCHSHTuple A₀ A₁ B₀ B₁) :
+    ‖A₀ * B₀ + A₀ * B₁ + A₁ * B₀ - A₁ * B₁‖ ≤ 2 * Real.sqrt 2 := by
+  sorry
+
+/-- **The classical CHSH constant, exactly.** If either party's observables
+commute, the CHSH operator has norm exactly `2` — the commutator product in
+the Landau identity vanishes, so `T² = 4`. -/
+theorem chsh_norm_of_comm
+    {R : Type*} [NormedRing R] [StarRing R] [CStarRing R] [Nontrivial R]
+    [NormedAlgebra ℝ R] {A₀ A₁ B₀ B₁ : R}
+    (h : IsCHSHTuple A₀ A₁ B₀ B₁)
+    (hcomm : A₀ * A₁ = A₁ * A₀ ∨ B₀ * B₁ = B₁ * B₀) :
+    ‖A₀ * B₀ + A₀ * B₁ + A₁ * B₀ - A₁ * B₁‖ = 2 := by
+  sorry
+
+/-- **Necessity of noncommutativity.** Any CHSH tuple whose operator norm
+exceeds the classical bound `2` must be noncommuting in **both** parties. -/
+theorem noncomm_of_chsh_norm_gt_two
+    {R : Type*} [NormedRing R] [StarRing R] [CStarRing R] [Nontrivial R]
+    [NormedAlgebra ℝ R] {A₀ A₁ B₀ B₁ : R}
+    (h : IsCHSHTuple A₀ A₁ B₀ B₁)
+    (hgt : 2 < ‖A₀ * B₀ + A₀ * B₁ + A₁ * B₀ - A₁ * B₁‖) :
+    A₀ * A₁ ≠ A₁ * A₀ ∧ B₀ * B₁ ≠ B₁ * B₀ := by
+  sorry
+
+/-! ## The explicit saturating tuple in `M₄(ℝ)` -/
 
 /-- The scalar `(√2)⁻¹`. -/
 noncomputable def s : ℝ := (Real.sqrt 2)⁻¹
@@ -92,6 +154,8 @@ the noncommutative tuple above reaches `2√2`. -/
 theorem bell_gap : (2 : ℝ) < 2 * Real.sqrt 2 := by
   sorry
 
+/-! ## Operator-norm results over `M₄(ℝ)` (l2 operator norm) -/
+
 section OperatorNorm
 
 open scoped Matrix.Norms.L2Operator
@@ -104,10 +168,21 @@ theorem chsh_opNorm :
 
 /-- **Falsification:** the square of the CHSH operator is *not* the scalar
 `8·1` — the naive scalar-square route to the Tsirelson norm fails for this
-representation. -/
+representation (compare the Landau identity `chsh_mul_self`: the commutator
+product is not scalar here). -/
 theorem chsh_sq_ne :
     (A₀ * B₀ + A₀ * B₁ + A₁ * B₀ - A₁ * B₁) * (A₀ * B₀ + A₀ * B₁ + A₁ * B₀ - A₁ * B₁)
       ≠ (8 : ℝ) • (1 : Matrix (Fin 4) (Fin 4) ℝ) := by
+  sorry
+
+/-- **The exact CHSH constant of `M₄(ℝ)` is `2√2`:** it is the *greatest*
+element of the set of CHSH operator norms over 4×4 real matrices — an upper
+bound for every CHSH tuple, attained by the real-Pauli tuple above. Not a
+bound plus an example: the supremum, achieved. -/
+theorem chsh_opNorm_isGreatest :
+    IsGreatest {x : ℝ | ∃ A₀ A₁ B₀ B₁ : Matrix (Fin 4) (Fin 4) ℝ,
+        IsCHSHTuple A₀ A₁ B₀ B₁ ∧ x = ‖A₀ * B₀ + A₀ * B₁ + A₁ * B₀ - A₁ * B₁‖}
+      (2 * Real.sqrt 2) := by
   sorry
 
 end OperatorNorm

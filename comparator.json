@@ -3,13 +3,18 @@
   "solution_module": "Solution",
   "theorem_names": [
     "TsirelsonTightness.chsh_upper",
+    "TsirelsonTightness.chsh_mul_self",
+    "TsirelsonTightness.chsh_norm_le",
+    "TsirelsonTightness.chsh_norm_of_comm",
+    "TsirelsonTightness.noncomm_of_chsh_norm_gt_two",
     "TsirelsonTightness.tuple_isCHSH",
     "TsirelsonTightness.vsat_ne_zero",
     "TsirelsonTightness.chsh_saturates",
     "TsirelsonTightness.classical_le_two",
     "TsirelsonTightness.bell_gap",
     "TsirelsonTightness.chsh_opNorm",
-    "TsirelsonTightness.chsh_sq_ne"
+    "TsirelsonTightness.chsh_sq_ne",
+    "TsirelsonTightness.chsh_opNorm_isGreatest"
   ],
   "definition_names": [
     "TsirelsonTightness.s",

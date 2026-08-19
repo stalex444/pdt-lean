@@ -2,23 +2,34 @@
 version: "v0.4"
 
 project:
-  name: "Tightness of the Tsirelson bound: the classical–quantum CHSH gap, saturated by an explicit real-Pauli tuple"
+  name: "The exact CHSH constants: Tsirelson's bound in norm form for every CHSH tuple, the classical constant exactly 2 under one-party commutation, and 2√2 as the attained supremum over M₄(ℝ)"
   description: >-
-    Kernel-checked, in three beats. (1) Tsirelson's bound in its familiar
-    form: any CHSH tuple in an ordered star-ring satisfies
-    A₀B₀ + A₀B₁ + A₁B₀ − A₁B₁ ≤ (2√2)·1. (2) The bound is attained: an
-    explicit real-Pauli quadruple in M₄(ℝ) — integer matrices up to the one
-    scalar (√2)⁻¹ — is verified to be a genuine CHSH tuple (self-adjoint
-    involutions, A's commuting with B's), and its CHSH operator has
-    eigenvalue exactly 2√2 on the explicit nonzero vector (1, 0, 0, 1).
-    (3) In a commutative ordered star-ring the same expression is bounded by
-    2, and 2 < 2√2 strictly: the classical–quantum gap is real, and
-    noncommutativity is exactly what crosses it. Two operator-norm results
-    complete the picture: the CHSH operator of the tuple has l2 operator
-    norm exactly 2√2 (chsh_opNorm — the former prose inference, now a
-    compared theorem), and yet its square is not the scalar 8·1
-    (chsh_sq_ne), so the naive scalar-square route P² = 8·1 ⇒ ‖P‖ = √8 is
-    unavailable for this representation.
+    Kernel-checked exact-constant results for the CHSH operator
+    T = A₀B₀ + A₀B₁ + A₁B₀ − A₁B₁ of an arbitrary CHSH tuple (Mathlib's
+    IsCHSHTuple: self-adjoint involutions with the A's commuting with the
+    B's). (1) The Landau identity: in any *-ring,
+    T² = 4 + [A₀,A₁]·[B₁,B₀] — the exact, representation-independent
+    correction to the naive T² = 8·1 (chsh_mul_self). (2) Tsirelson's bound
+    in norm form: ‖T‖ ≤ 2√2 for every CHSH tuple in every unital real
+    C*-normed algebra (chsh_norm_le). (3) The classical constant, exactly:
+    if either party's pair commutes, ‖T‖ = 2 — not merely ≤ 2
+    (chsh_norm_of_comm). (4) Necessity of noncommutativity: any violation
+    ‖T‖ > 2 forces A₀A₁ ≠ A₁A₀ and B₀B₁ ≠ B₁B₀ — noncommutativity within
+    both parties is necessary for any violation of the classical bound
+    (noncomm_of_chsh_norm_gt_two). (5) The exact constant of M₄(ℝ): in the
+    l2 operator norm, 2√2 is the greatest element of the set of CHSH
+    operator norms over 4×4 real matrices — an upper bound for every tuple,
+    attained by an explicit real-Pauli tuple (chsh_opNorm_isGreatest), so
+    the maximal violation 2√2 is possible, not just bounded. The witness
+    side stays compared: the explicit quadruple is verified to be a genuine
+    CHSH tuple, its CHSH operator has eigenvalue exactly 2√2 on the explicit
+    nonzero vector (1,0,0,1) and l2 operator norm exactly 2√2; the ordered
+    star-ring bounds T ≤ (2√2)·1 and (commutative case) T ≤ 2 and the strict
+    gap 2 < 2√2 complete the picture. A falsification is compared alongside:
+    the saturating tuple's T² is NOT the scalar 8·1 (the operator is
+    rank-deficient), so the naive scalar-square route to the norm is closed
+    for this representation and the results above must go through the
+    Landau identity and the C*-identity.
   authors:
     - "Stephanie Alexander"
   license: "MIT"
@@ -36,12 +47,35 @@ sources:
     id: "Letters in Mathematical Physics 4 (1980), 93–100"
     type: "article"
     location: "https://doi.org/10.1007/BF00417500"
-    relationship: "independently-proves"
+    relationship: "formalizes"
     note: >-
       Tsirelson's paper establishes the bound and its attainability. This
-      project supplies a machine-checked attainment witness: an explicit
+      project formalizes both sides at operator level: the norm-form bound
+      ‖T‖ ≤ 2√2 for every CHSH tuple in a unital real C*-normed algebra
+      (proved via Landau's C*-argument rather than Tsirelson's original
+      route), and a machine-checked attainment witness — an explicit
       real-Pauli tuple verified to satisfy the CHSH axioms, with the exact
-      eigen-equation checked by the kernel.
+      eigen-equation and the exact operator-norm equality checked by the
+      kernel, packaged as an IsGreatest statement over M₄(ℝ).
+    license: "unknown"
+    author_endorsement: "n/a"
+  - title: "On the violation of Bell's inequality in quantum theory"
+    authors:
+      - "Lawrence J. Landau"
+    id: "Physics Letters A 120, no. 2 (1987), 54–56"
+    type: "article"
+    location: "https://doi.org/10.1016/0375-9601(87)90075-2"
+    relationship: "formalizes"
+    note: >-
+      Landau's identity T² = 4 + [A₀,A₁]·[B₁,B₀] is formalized as
+      chsh_mul_self (for any CHSH tuple in any *-ring), and the norm-level
+      suite follows Landau's C*-identity argument: the bound ‖T‖ ≤ 2√2
+      (chsh_norm_le), the exact classical constant ‖T‖ = 2 when either
+      party's commutator vanishes (chsh_norm_of_comm), and its
+      contrapositive, that any violation forces noncommutativity in both
+      parties (noncomm_of_chsh_norm_gt_two). Formalized here for real
+      C*-normed algebras; Landau's converse direction (every noncommuting
+      pair admits a violating state) is not formalized.
     license: "unknown"
     author_endorsement: "n/a"
   - title: "Proposed experiment to test local hidden-variable theories"
@@ -54,6 +88,12 @@ sources:
     type: "article"
     location: "https://doi.org/10.1103/PhysRevLett.23.880"
     relationship: "background"
+    note: >-
+      Origin of the CHSH expression and the classical bound 2. The compared
+      classical_le_two (commutative ordered star-ring, via Mathlib's
+      CHSH_inequality_of_comm) and chsh_norm_of_comm (norm form, exactly 2)
+      are algebraic renderings of that bound, not a formalization of the
+      paper's experimental content.
     license: "unknown"
     author_endorsement: "n/a"
 
@@ -61,27 +101,43 @@ related_formalizations:
   - id: "https://github.com/leanprover-community/mathlib4 (Mathlib's CHSH development: IsCHSHTuple, CHSH_inequality_of_comm, tsirelson_inequality)"
     relationship: "builds-on"
     note: >-
-      The two generic bounds are supplied by Mathlib's CHSH development; this
-      project contributes the saturation side (the verified tuple and the
-      exact eigen-equation) and packages the strict gap.
+      The two ordered star-ring bounds (chsh_upper, classical_le_two) are
+      supplied by Mathlib's CHSH development. The norm-level suite — the
+      Landau identity, the generic C*-norm bound, the exact classical
+      constant, the bilateral-noncommutativity necessity, and the IsGreatest
+      packaging over M₄(ℝ) — together with the verified saturating tuple and
+      its exact eigen-equation and operator norm, is this project's
+      contribution.
   - id: "https://github.com/leanprover-community/mathlib4/pull/41847"
     relationship: "other"
     note: >-
-      The same tightness material is under review for inclusion in Mathlib
-      (PR 41847, review feedback addressed 2026-08-12; placement discussion
-      ongoing — main library versus Archive).
+      The tightness portion of this material (the saturating tuple, its
+      verification, the eigen-equation, and the gap packaging) is under
+      review for inclusion in Mathlib (PR 41847, review feedback addressed
+      2026-08-12; placement discussion ongoing — main library versus
+      Archive). The exact-constant/characterization suite compared here
+      (chsh_mul_self, chsh_norm_le, chsh_norm_of_comm,
+      noncomm_of_chsh_norm_gt_two, chsh_opNorm_isGreatest) is not part of
+      that PR.
 
 status:
   scope: >-
-    Formalized: the generic 2√2 upper bound (via Mathlib's
-    tsirelson_inequality, rewritten to the 2√2 form); the verification that
-    the explicit real-Pauli quadruple is a CHSH tuple; the exact
-    eigen-equation of its CHSH operator on the explicit nonzero vector
-    (1, 0, 0, 1); the commutative bound ≤ 2; the strict inequality
-    2 < 2√2; the exact l2 operator-norm equality ‖P‖ = 2√2 for the tuple's
-    CHSH operator (in Mathlib's scoped Matrix.Norms.L2Operator instances);
-    and the falsification P·P ≠ 8·1 for the same operator. No physical
-    claim is part of the compared statements.
+    Formalized, 13 compared theorems. Generic: the Landau identity
+    T² = 4 + [A₀,A₁]·[B₁,B₀] for any CHSH tuple in any *-ring; the norm-form
+    Tsirelson bound ‖T‖ ≤ 2√2 in every unital real C*-normed algebra; the
+    exact classical constant ‖T‖ = 2 under one-party commutation; the
+    necessity theorem — ‖T‖ > 2 implies noncommutativity within both
+    parties; the ordered star-ring bounds T ≤ (2√2)·1 (any star-ring) and
+    T ≤ 2 (commutative); and the strict gap 2 < 2√2. Over M₄(ℝ) (Mathlib's
+    scoped Matrix.Norms.L2Operator instances): 2√2 is the greatest CHSH
+    operator norm (IsGreatest — upper bound for every 4×4 real CHSH tuple,
+    attained); the explicit real-Pauli quadruple is verified to be a CHSH
+    tuple, with exact eigen-equation on the explicit nonzero vector
+    (1,0,0,1), exact operator norm ‖P‖ = 2√2, and the falsification
+    P·P ≠ 8·1. No physical claim is part of the compared statements; in
+    particular, the compared theorems state that noncommutativity is
+    necessary for a violation and that the maximal violation is attained in
+    M₄(ℝ) — nothing stronger.
   sorry_count: 0
   sorry_in_definitions: 0
   axioms: []
@@ -119,35 +175,64 @@ automation:
   notes: >-
     Human-directed, machine-verified workflow: the author fixes statements
     and reviews all mathematics; AI assistance drafts and repairs proofs; the
-    Lean kernel is the acceptance criterion. The same material was submitted
-    to Mathlib (PR 41847) with the LLM-generated label duly applied.
+    Lean kernel is the acceptance criterion. The tightness portion of the
+    material was submitted to Mathlib (PR 41847) with the LLM-generated
+    label duly applied.
 
 fidelity:
   divergences: >-
-    None known. The compared statements are the eigen-equation, the nonzero
-    witness, the tuple verification, the two bounds, the operator-norm
-    equality ‖P‖ = 2√2, and the falsification P·P ≠ 8·1. The norm equality
-    is stated in Mathlib's scoped l2 operator norm on M₄(ℝ), named
-    explicitly in the Challenge module.
+    The norm-level results are stated for unital real C*-normed algebras
+    (Mathlib's NormedRing + StarRing + CStarRing + NormedAlgebra ℝ, with
+    Nontrivial), whereas Landau 1987 and Tsirelson 1980 work with complex
+    C*-algebras / operators on complex Hilbert space; the real setting is
+    what the M₄(ℝ) instantiation needs, and the C*-identity argument is
+    carried out in it directly. Landau's converse (every noncommuting pair
+    admits a violating state) is not formalized; the necessity direction is.
+    The IsGreatest statement is over 4×4 real matrices specifically — it
+    asserts nothing about other dimensions or carriers. The norm results are
+    stated in Mathlib's scoped l2 operator norm on M₄(ℝ), named explicitly
+    in the Challenge module.
 
 review:
-  status: "self-assessed; the same material is under external review at Mathlib (PR 41847)"
+  status: "self-assessed; the tightness portion is under external review at Mathlib (PR 41847)"
   reviewers:
     - "Stephanie Alexander"
   notes: >-
-    Statements audited by the author; the Mathlib pull request carrying this
-    material received reviewer feedback (docstring corrected same-day;
-    placement discussion ongoing), which constitutes partial external review
-    of the formalization.
+    Statements audited by the author; the Mathlib pull request carrying the
+    tightness portion received reviewer feedback (docstring corrected
+    same-day; placement discussion ongoing), which constitutes partial
+    external review of that portion. The exact-constant/characterization
+    suite is self-assessed, with the kernel and the axiom audit as the
+    acceptance criteria.
 
 alignment:
   namespace: "TsirelsonTightness"
   statements:
-    - source: "Tsirelson 1980 (the bound)"
+    - source: "Tsirelson 1980 (the bound, ordered form)"
       lean: "TsirelsonTightness.chsh_upper"
       module: "Solution"
       status: "proved"
-      note: "Generic 2√2 bound for CHSH tuples, from Mathlib's tsirelson_inequality."
+      note: "Generic 2√2 bound for CHSH tuples in an ordered star-ring, from Mathlib's tsirelson_inequality."
+    - source: "Landau 1987 (the identity)"
+      lean: "TsirelsonTightness.chsh_mul_self"
+      module: "Solution"
+      status: "proved"
+      note: "T² = 4 + [A₀,A₁]·[B₁,B₀] for any CHSH tuple in any *-ring."
+    - source: "Tsirelson 1980 / Landau 1987 (the bound, norm form)"
+      lean: "TsirelsonTightness.chsh_norm_le"
+      module: "Solution"
+      status: "proved"
+      note: "‖T‖ ≤ 2√2 for every CHSH tuple in every unital real C*-normed algebra, via the Landau identity and the C*-identity."
+    - source: "This work (classical constant, exact norm form)"
+      lean: "TsirelsonTightness.chsh_norm_of_comm"
+      module: "Solution"
+      status: "proved"
+      note: "One-party commutation forces ‖T‖ = 2 exactly — the classical CHSH constant, not merely an upper bound."
+    - source: "This work (necessity; contrapositive of the above)"
+      lean: "TsirelsonTightness.noncomm_of_chsh_norm_gt_two"
+      module: "Solution"
+      status: "proved"
+      note: "‖T‖ > 2 forces A₀A₁ ≠ A₁A₀ and B₀B₁ ≠ B₁B₀: noncommutativity within both parties is necessary for any violation."
     - source: "This work (explicit witness)"
       lean: "TsirelsonTightness.tuple_isCHSH"
       module: "Solution"
@@ -172,7 +257,7 @@ alignment:
       lean: "TsirelsonTightness.bell_gap"
       module: "Solution"
       status: "proved"
-      note: "2 < 2√2, so the classical and quantum bounds are strictly separated."
+      note: "2 < 2√2, so the classical and quantum constants are strictly separated."
     - source: "This work (operator norm)"
       lean: "TsirelsonTightness.chsh_opNorm"
       module: "Solution"
@@ -187,6 +272,13 @@ alignment:
       note: >-
         The square of the same CHSH operator is not the scalar 8·1: the
         naive scalar-square route to the norm fails for this representation.
+    - source: "This work (the exact constant of M₄(ℝ))"
+      lean: "TsirelsonTightness.chsh_opNorm_isGreatest"
+      module: "Solution"
+      status: "proved"
+      note: >-
+        IsGreatest: 2√2 is an upper bound on the CHSH operator norm of every
+        4×4 real CHSH tuple and is attained — the supremum, achieved.
 
 acknowledgements: >-
   Built on Mathlib and the Lean 4 toolchain — in particular Mathlib's CHSH
