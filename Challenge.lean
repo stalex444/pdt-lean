@@ -15,11 +15,13 @@ vector. (3) In a *commutative* ordered star-ring the same expression is
 bounded by `2`, and `2 < 2√2` strictly: the gap between the classical and
 quantum bounds is real, and noncommutativity is exactly what crosses it.
 
-The eigen-equation on a nonzero vector shows the operator reaches `2√2`
-(its operator norm is at least the eigenvalue); combined with beat (1) the
-bound is exact. That last inference is immediate and stated here in prose;
-the compared statements are the eigen-equation, the nonzero witness, and the
-two bounds.
+**Two operator-norm results.** In the l2 operator norm on `M₄(ℝ)`
+(Mathlib's scoped `Matrix.Norms.L2Operator` instances), the CHSH operator of
+the tuple has norm *exactly* `2√2` (`chsh_opNorm`) — the former prose
+inference from the eigen-equation, now a compared statement. Yet its square
+is *not* the scalar `8·1` (`chsh_sq_ne`): the operator is not `√8` times an
+involution, so the naive scalar-square route `P² = 8·1 ⇒ ‖P‖ = √8` is closed
+for this representation, and the norm equality must be reached another way.
 -/
 
 namespace TsirelsonTightness
@@ -89,5 +91,25 @@ theorem classical_le_two
 the noncommutative tuple above reaches `2√2`. -/
 theorem bell_gap : (2 : ℝ) < 2 * Real.sqrt 2 := by
   sorry
+
+section OperatorNorm
+
+open scoped Matrix.Norms.L2Operator
+
+/-- **Exact operator norm.** The CHSH operator of the real-Pauli tuple has
+l2 operator norm exactly `2√2`, the Tsirelson value. -/
+theorem chsh_opNorm :
+    ‖A₀ * B₀ + A₀ * B₁ + A₁ * B₀ - A₁ * B₁‖ = 2 * Real.sqrt 2 := by
+  sorry
+
+/-- **Falsification:** the square of the CHSH operator is *not* the scalar
+`8·1` — the naive scalar-square route to the Tsirelson norm fails for this
+representation. -/
+theorem chsh_sq_ne :
+    (A₀ * B₀ + A₀ * B₁ + A₁ * B₀ - A₁ * B₁) * (A₀ * B₀ + A₀ * B₁ + A₁ * B₀ - A₁ * B₁)
+      ≠ (8 : ℝ) • (1 : Matrix (Fin 4) (Fin 4) ℝ) := by
+  sorry
+
+end OperatorNorm
 
 end TsirelsonTightness

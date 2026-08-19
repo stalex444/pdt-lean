@@ -13,9 +13,12 @@ project:
     eigenvalue exactly 2√2 on the explicit nonzero vector (1, 0, 0, 1).
     (3) In a commutative ordered star-ring the same expression is bounded by
     2, and 2 < 2√2 strictly: the classical–quantum gap is real, and
-    noncommutativity is exactly what crosses it. The eigen-equation on a
-    nonzero vector shows the operator norm reaches 2√2; with (1) the bound
-    is exact — that final inference is immediate and stated in prose.
+    noncommutativity is exactly what crosses it. Two operator-norm results
+    complete the picture: the CHSH operator of the tuple has l2 operator
+    norm exactly 2√2 (chsh_opNorm — the former prose inference, now a
+    compared theorem), and yet its square is not the scalar 8·1
+    (chsh_sq_ne), so the naive scalar-square route P² = 8·1 ⇒ ‖P‖ = √8 is
+    unavailable for this representation.
   authors:
     - "Stephanie Alexander"
   license: "MIT"
@@ -74,10 +77,11 @@ status:
     tsirelson_inequality, rewritten to the 2√2 form); the verification that
     the explicit real-Pauli quadruple is a CHSH tuple; the exact
     eigen-equation of its CHSH operator on the explicit nonzero vector
-    (1, 0, 0, 1); the commutative bound ≤ 2; and the strict inequality
-    2 < 2√2. Stated in prose, not compared: the immediate inference from the
-    eigen-equation and nonzero witness to "the operator norm attains 2√2".
-    No physical claim is part of the compared statements.
+    (1, 0, 0, 1); the commutative bound ≤ 2; the strict inequality
+    2 < 2√2; the exact l2 operator-norm equality ‖P‖ = 2√2 for the tuple's
+    CHSH operator (in Mathlib's scoped Matrix.Norms.L2Operator instances);
+    and the falsification P·P ≠ 8·1 for the same operator. No physical
+    claim is part of the compared statements.
   sorry_count: 0
   sorry_in_definitions: 0
   axioms: []
@@ -120,9 +124,11 @@ automation:
 
 fidelity:
   divergences: >-
-    None known. The operator-norm reading of saturation is prose, as stated
-    in scope; the compared statements are the eigen-equation, the nonzero
-    witness, the tuple verification, and the two bounds.
+    None known. The compared statements are the eigen-equation, the nonzero
+    witness, the tuple verification, the two bounds, the operator-norm
+    equality ‖P‖ = 2√2, and the falsification P·P ≠ 8·1. The norm equality
+    is stated in Mathlib's scoped l2 operator norm on M₄(ℝ), named
+    explicitly in the Challenge module.
 
 review:
   status: "self-assessed; the same material is under external review at Mathlib (PR 41847)"
@@ -167,6 +173,20 @@ alignment:
       module: "Solution"
       status: "proved"
       note: "2 < 2√2, so the classical and quantum bounds are strictly separated."
+    - source: "This work (operator norm)"
+      lean: "TsirelsonTightness.chsh_opNorm"
+      module: "Solution"
+      status: "proved"
+      note: >-
+        The CHSH operator of the tuple has l2 operator norm exactly 2√2
+        (via the C*-identity; scoped Matrix.Norms.L2Operator instances).
+    - source: "This work (falsification)"
+      lean: "TsirelsonTightness.chsh_sq_ne"
+      module: "Solution"
+      status: "proved"
+      note: >-
+        The square of the same CHSH operator is not the scalar 8·1: the
+        naive scalar-square route to the norm fails for this representation.
 
 acknowledgements: >-
   Built on Mathlib and the Lean 4 toolchain — in particular Mathlib's CHSH

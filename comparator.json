@@ -7,7 +7,9 @@
     "TsirelsonTightness.vsat_ne_zero",
     "TsirelsonTightness.chsh_saturates",
     "TsirelsonTightness.classical_le_two",
-    "TsirelsonTightness.bell_gap"
+    "TsirelsonTightness.bell_gap",
+    "TsirelsonTightness.chsh_opNorm",
+    "TsirelsonTightness.chsh_sq_ne"
   ],
   "definition_names": [
     "TsirelsonTightness.s",

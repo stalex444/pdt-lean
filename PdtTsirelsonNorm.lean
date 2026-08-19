@@ -94,6 +94,16 @@ integer idempotent-like matrix `K` (NOT to `8·1`; see
 theorem Pchsh_sq : Pchsh * Pchsh = (1 / 2 : ℝ) • Kchsh := by
   rw [Pchsh_eq_smul, smul_mul_smul_comm, Mchsh_sq_eq, s_sq]
 
+/-- **Falsification, scaled form (kernel-certified):** `P² ≠ 8·1`. The `(0,0)`
+entry of `P²` is `4`, not `8` — the scalar-square shortcut `P² = 8·1 ⇒ ‖P‖ = √8`
+is not available for this representation. Scaled companion of
+`Mchsh_sq_ne_sixteen_one`. -/
+theorem Pchsh_sq_ne : Pchsh * Pchsh ≠ (8 : ℝ) • (1 : Mat) := by
+  rw [Pchsh_sq]
+  intro h
+  have h00 := congrArg (fun X : Mat => X 0 0) h
+  norm_num [Kchsh, Matrix.smul_apply, Matrix.one_apply] at h00
+
 /-- The integer CHSH matrix is self-adjoint (star of each product swaps the
 factors; cross-party commutation swaps them back). -/
 theorem Mchsh_sa : star Mchsh = Mchsh := by
@@ -153,6 +163,7 @@ end PDT
 #print axioms PDT.Kchsh_sa
 #print axioms PDT.Kchsh_ne_zero
 #print axioms PDT.Pchsh_sq
+#print axioms PDT.Pchsh_sq_ne
 #print axioms PDT.Mchsh_sa
 #print axioms PDT.Pchsh_sa
 #print axioms PDT.Pchsh_mulVec

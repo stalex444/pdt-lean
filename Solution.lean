@@ -1,4 +1,5 @@
 import PdtTsirelson
+import PdtTsirelsonNorm
 import PdtBellClassical
 
 /-!
@@ -65,4 +66,30 @@ theorem classical_le_two
 theorem bell_gap : (2 : ℝ) < 2 * Real.sqrt 2 :=
   PDT.bell_gap
 
+section OperatorNorm
+
+open scoped Matrix.Norms.L2Operator
+
+theorem chsh_opNorm :
+    ‖A₀ * B₀ + A₀ * B₁ + A₁ * B₀ - A₁ * B₁‖ = 2 * Real.sqrt 2 := by
+  have h := PDT.Pchsh_opNorm
+  unfold PDT.Pchsh PDT.A₀ PDT.A₁ PDT.B₀ PDT.B₁ PDT.B₀i PDT.B₁i PDT.s at h
+  unfold A₀ A₁ B₀ B₁ B₀i B₁i s
+  exact h
+
+theorem chsh_sq_ne :
+    (A₀ * B₀ + A₀ * B₁ + A₁ * B₀ - A₁ * B₁) * (A₀ * B₀ + A₀ * B₁ + A₁ * B₀ - A₁ * B₁)
+      ≠ (8 : ℝ) • (1 : Matrix (Fin 4) (Fin 4) ℝ) := by
+  have h := PDT.Pchsh_sq_ne
+  unfold PDT.Pchsh PDT.A₀ PDT.A₁ PDT.B₀ PDT.B₁ PDT.B₀i PDT.B₁i PDT.s at h
+  unfold A₀ A₁ B₀ B₁ B₀i B₁i s
+  exact h
+
+end OperatorNorm
+
 end TsirelsonTightness
+
+-- Axiom audit (repo idiom): the new compared theorems must depend on at most
+-- {propext, Classical.choice, Quot.sound}.
+#print axioms TsirelsonTightness.chsh_opNorm
+#print axioms TsirelsonTightness.chsh_sq_ne
