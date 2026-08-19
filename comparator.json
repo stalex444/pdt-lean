@@ -1,0 +1,34 @@
+{
+  "challenge_module": "Challenge",
+  "solution_module": "Solution",
+  "theorem_names": [
+    "ComplexPlaceArithmetic.cubic_irreducible",
+    "ComplexPlaceArithmetic.quartic_irreducible",
+    "ComplexPlaceArithmetic.norm_cubic_root",
+    "ComplexPlaceArithmetic.norm_quartic_root",
+    "ComplexPlaceArithmetic.quartic_congruence",
+    "ComplexPlaceArithmetic.quartic_gram_det",
+    "ComplexPlaceArithmetic.quartic_P_unimodular",
+    "ComplexPlaceArithmetic.cubic_congruence",
+    "ComplexPlaceArithmetic.cubic_gram_det",
+    "ComplexPlaceArithmetic.cubic_P_unimodular",
+    "ComplexPlaceArithmetic.two_rulers"
+  ],
+  "definition_names": [
+    "ComplexPlaceArithmetic.fρ",
+    "ComplexPlaceArithmetic.fQ",
+    "ComplexPlaceArithmetic.M4",
+    "ComplexPlaceArithmetic.P4",
+    "ComplexPlaceArithmetic.D4",
+    "ComplexPlaceArithmetic.M3",
+    "ComplexPlaceArithmetic.P3",
+    "ComplexPlaceArithmetic.D3",
+    "ComplexPlaceArithmetic.Gtr",
+    "ComplexPlaceArithmetic.Gborn",
+    "ComplexPlaceArithmetic.Jc",
+    "ComplexPlaceArithmetic.Cnj",
+    "ComplexPlaceArithmetic.omegaB"
+  ],
+  "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"],
+  "enable_nanoda": true
+}

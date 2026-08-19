@@ -1,0 +1,215 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/mathlib-initiative/formalization.yaml/main/schema/formalization.schema.json
+version: "v0.4"
+
+project:
+  name: "Arithmetic of the Pisot-boundary fields: irreducibility, unit norms, Sylvester certificates, and the two-rulers identity"
+  description: >-
+    Kernel-checked results in three groups. (A) The trinomials x³ − x − 1 and
+    x⁴ − x − 1 are irreducible over ℚ (by reduction mod 2 and Gauss's lemma),
+    and the genuine algebra norms of their adjoined roots are N(ρ) = 1 and
+    N(Q) = −1, computed through Mathlib's Algebra.norm on AdjoinRoot — both
+    roots are units. (B) Explicit unimodular Sylvester congruences diagonalise
+    the trace-form Gram matrices of the power bases: PᵀMP = diag(4, 4, −9/4,
+    283/36) with det M = −283 for the quartic (inertia (3,1)) and
+    PᵀMP = diag(3, 2, −23/6) with det M = −23 for the cubic (inertia (2,1)).
+    (C) On the two-dimensional rational model of a complex place, the positive
+    Born form equals the indefinite trace form composed with conjugation; the
+    rotation J is a Born isometry and a trace anti-isometry; the Born
+    companion Jᵀ·G_born is alternating with determinant one (a symplectic
+    form) while the trace companion is symmetric — one pairing, two readings,
+    differing by exactly the conjugation.
+  authors:
+    - "Stephanie Alexander"
+  license: "MIT"
+  responsible_maintainers:
+    - "Stephanie Alexander"
+
+classification:
+  arxiv: ["math.NT", "math.RA"]
+  msc2020: ["11R04", "11R09", "15A63", "15B36"]
+
+sources:
+  - title: "Quantum Mechanics as the Arithmetic of a Complex Place (deposited note stating these results informally)"
+    authors:
+      - "Stephanie Alexander"
+    id: "doi:10.5281/zenodo.21971268"
+    type: "article"
+    location: "https://doi.org/10.5281/zenodo.21971268"
+    relationship: "formalizes"
+    note: >-
+      The submitted modules formalize the arithmetic substrate stated in the
+      author's deposited note: the field irreducibility and unit norms, the
+      trace-form signature certificates, and the two-rulers/symplectic
+      identity on the rational model of the complex place. The note's physical
+      identification is not part of this submission; the compared declarations
+      are pure mathematics.
+    license: "unknown"
+    author_endorsement: "participated"
+  - title: "On the irreducibility of certain trinomials"
+    authors:
+      - "Ernst S. Selmer"
+    id: "Math. Scand. 4 (1956), 287–302"
+    type: "article"
+    location: "https://doi.org/10.7146/math.scand.a-10478"
+    relationship: "independently-proves"
+    note: >-
+      The irreducibility of xⁿ − x − 1 over ℚ is Selmer's classical theorem;
+      this project proves the two cases n = 3, 4 independently by reduction
+      modulo 2.
+    license: "unknown"
+    author_endorsement: "n/a"
+  - title: "Classical theory of trace forms and Sylvester's law of inertia"
+    type: "folklore"
+    relationship: "background"
+    note: >-
+      The signature-(r₁ + r₂, r₂) statement for number-field trace forms is
+      classical; the explicit rational congruence certificates verified here
+      are this project's. Reading the inertia off the diagonal of D is
+      Sylvester's law, applied in prose.
+    license: "unknown"
+    author_endorsement: "n/a"
+
+related_formalizations: []
+
+status:
+  scope: >-
+    Formalized: irreducibility of the two trinomials over ℚ; the algebra norms
+    of the adjoined roots via Mathlib's Algebra.norm; the two explicit
+    Sylvester congruence certificates (with Gram determinants −283 and −23 and
+    unimodular congruence matrices); and the packaged two-rulers identity on
+    the explicit 2×2 rational model. Not formalized: the identification of
+    the Gram matrices with Algebra.traceForm (proved elsewhere in this
+    repository via Mathlib's API but not part of the compared surface); the
+    base change to ℝ and the sign-count step of Sylvester's law (standard,
+    in prose); any statement about physics. The repository's wider modules
+    contain physics-motivated context and one named modeling posit; none of
+    that is part of this submission — the compared declarations are pure
+    mathematics with no physical claims.
+  sorry_count: 0
+  sorry_in_definitions: 0
+  axioms: []
+
+automation:
+  methods:
+    - method: "agent"
+      models: ["Anthropic Claude (Opus/Sonnet-class, 2026)"]
+      framework: "Claude Code"
+      tool_setup: >-
+        AI-assisted proof drafting, refactoring, and error-loop iteration in
+        Claude Code against lake build; the repository's one-cell Colab
+        verifier self-certifies via #print axioms that every declaration
+        depends only on the standard three axioms.
+      cost:
+        wall_time: "several weeks of part-time sessions across the development"
+        spend_usd: "subscription-based"
+        hardware: "local machine"
+      prompting_notes: >-
+        Theorem-by-theorem sessions; statements fixed by the author first,
+        proofs iterated against the compiler; cross-module identification
+        lemmas (PdtLinks) tie hand-written matrices to Mathlib's genuine
+        traceForm/traceMatrix API elsewhere in the repository.
+    - method: "manual"
+      models: []
+      framework: "n/a"
+      tool_setup: >-
+        Author-directed statement design, mathematical review, and acceptance
+        of every theorem; all statements audited by the author against their
+        informal descriptions.
+      cost:
+        wall_time: "included in the sessions above"
+        spend_usd: "not tracked"
+        hardware: "local machine"
+      prompting_notes: "n/a"
+  spend_usd: "subscription-based"
+  notes: >-
+    Human-directed, machine-verified workflow: the author fixes statements and
+    reviews all mathematics; AI assistance drafts and repairs proofs; the Lean
+    kernel is the acceptance criterion.
+
+fidelity:
+  divergences: >-
+    None known. The Gram matrices are stated as explicit rational literals;
+    their identification with Algebra.traceForm is proved in the repository
+    (PdtLinks) but is outside the compared surface, and the ℝ base-change
+    step of the signature reading is prose, as stated in scope.
+
+review:
+  status: "self-assessed"
+  reviewers:
+    - "Stephanie Alexander"
+  notes: >-
+    Statements audited by the author against the informal claims in the
+    deposited note; the repository's Colab verifier reruns the build and a
+    per-declaration axiom audit reproducibly.
+
+alignment:
+  namespace: "ComplexPlaceArithmetic"
+  statements:
+    - source: "Selmer 1956 (n = 3)"
+      lean: "ComplexPlaceArithmetic.cubic_irreducible"
+      module: "Solution"
+      status: "proved"
+      note: "Irreducibility of x³ − x − 1 over ℚ."
+    - source: "Selmer 1956 (n = 4)"
+      lean: "ComplexPlaceArithmetic.quartic_irreducible"
+      module: "Solution"
+      status: "proved"
+      note: "Irreducibility of x⁴ − x − 1 over ℚ."
+    - source: "Deposited note (unit norms)"
+      lean: "ComplexPlaceArithmetic.norm_cubic_root"
+      module: "Solution"
+      status: "proved"
+      note: "Algebra.norm ℚ ρ = 1 on AdjoinRoot (x³ − x − 1)."
+    - source: "Deposited note (unit norms)"
+      lean: "ComplexPlaceArithmetic.norm_quartic_root"
+      module: "Solution"
+      status: "proved"
+      note: "Algebra.norm ℚ Q = −1 on AdjoinRoot (x⁴ − x − 1)."
+    - source: "Deposited note (signature certificate, quartic)"
+      lean: "ComplexPlaceArithmetic.quartic_congruence"
+      module: "Solution"
+      status: "proved"
+      note: "P4ᵀ·M4·P4 = D4 with diagonal (4, 4, −9/4, 283/36); inertia (3,1) read off by Sylvester in prose."
+    - source: "Deposited note (signature certificate, quartic)"
+      lean: "ComplexPlaceArithmetic.quartic_gram_det"
+      module: "Solution"
+      status: "proved"
+      note: "det M4 = −283."
+    - source: "Deposited note (signature certificate, quartic)"
+      lean: "ComplexPlaceArithmetic.quartic_P_unimodular"
+      module: "Solution"
+      status: "proved"
+      note: "det P4 = −1."
+    - source: "Deposited note (signature certificate, cubic)"
+      lean: "ComplexPlaceArithmetic.cubic_congruence"
+      module: "Solution"
+      status: "proved"
+      note: "P3ᵀ·M3·P3 = D3 with diagonal (3, 2, −23/6); inertia (2,1)."
+    - source: "Deposited note (signature certificate, cubic)"
+      lean: "ComplexPlaceArithmetic.cubic_gram_det"
+      module: "Solution"
+      status: "proved"
+      note: "det M3 = −23."
+    - source: "Deposited note (signature certificate, cubic)"
+      lean: "ComplexPlaceArithmetic.cubic_P_unimodular"
+      module: "Solution"
+      status: "proved"
+      note: "det P3 = 1."
+    - source: "Deposited note (the two-rulers identity)"
+      lean: "ComplexPlaceArithmetic.two_rulers"
+      module: "Solution"
+      status: "proved"
+      note: >-
+        Packaged conjunction: Born = trace∘conjugation; J a Born isometry and
+        trace anti-isometry; the Born companion alternating and nondegenerate
+        (symplectic); the trace companion symmetric.
+    - source: "Deposited note (model of the place)"
+      lean: "ComplexPlaceArithmetic.Gborn"
+      module: "Challenge"
+      status: "proved"
+      note: "Explicit 2×2 rational model matrices; compared as definitions alongside fρ, fQ, M4, P4, D4, M3, P3, D3, Gtr, Jc, Cnj, omegaB."
+
+acknowledgements: >-
+  Built on Mathlib and the Lean 4 toolchain; thanks to the leanprover
+  community. Developed with AI assistance (Anthropic Claude, in Claude Code)
+  under the author's direction. Dedicated to the memory of David N. Schramm.

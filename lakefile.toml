@@ -1,5 +1,5 @@
 name = "PdtQm"
-defaultTargets = ["PdtQm", "PdtGolden", "PdtArithmetic", "PdtSignature", "PdtSignatureRho", "PdtTsirelson", "PdtBellClassical", "PdtIrreducible", "PdtNorm", "PdtDiscriminant", "PdtTraceForm", "PdtLinks", "PdtSymplectic", "PdtPisotBoundary", "PdtClock", "PdtStabilizer", "PdtCommitment"]
+defaultTargets = ["Challenge", "Solution", "PdtQm", "PdtGolden", "PdtArithmetic", "PdtSignature", "PdtSignatureRho", "PdtTsirelson", "PdtBellClassical", "PdtIrreducible", "PdtNorm", "PdtDiscriminant", "PdtTraceForm", "PdtLinks", "PdtSymplectic", "PdtPisotBoundary", "PdtClock", "PdtStabilizer", "PdtCommitment"]
 
 [[require]]
 name = "mathlib"
@@ -56,3 +56,9 @@ name = "PdtStabilizer"
 
 [[lean_lib]]
 name = "PdtCommitment"
+
+[[lean_lib]]
+name = "Challenge"
+
+[[lean_lib]]
+name = "Solution"
