@@ -2,22 +2,20 @@
 version: "v0.4"
 
 project:
-  name: "Arithmetic of the Pisot-boundary fields: irreducibility, unit norms, Sylvester certificates, and the two-rulers identity"
+  name: "Tightness of the Tsirelson bound: the classical–quantum CHSH gap, saturated by an explicit real-Pauli tuple"
   description: >-
-    Kernel-checked results in three groups. (A) The trinomials x³ − x − 1 and
-    x⁴ − x − 1 are irreducible over ℚ (by reduction mod 2 and Gauss's lemma),
-    and the genuine algebra norms of their adjoined roots are N(ρ) = 1 and
-    N(Q) = −1, computed through Mathlib's Algebra.norm on AdjoinRoot — both
-    roots are units. (B) Explicit unimodular Sylvester congruences diagonalise
-    the trace-form Gram matrices of the power bases: PᵀMP = diag(4, 4, −9/4,
-    283/36) with det M = −283 for the quartic (inertia (3,1)) and
-    PᵀMP = diag(3, 2, −23/6) with det M = −23 for the cubic (inertia (2,1)).
-    (C) On the two-dimensional rational model of a complex place, the positive
-    Born form equals the indefinite trace form composed with conjugation; the
-    rotation J is a Born isometry and a trace anti-isometry; the Born
-    companion Jᵀ·G_born is alternating with determinant one (a symplectic
-    form) while the trace companion is symmetric — one pairing, two readings,
-    differing by exactly the conjugation.
+    Kernel-checked, in three beats. (1) Tsirelson's bound in its familiar
+    form: any CHSH tuple in an ordered star-ring satisfies
+    A₀B₀ + A₀B₁ + A₁B₀ − A₁B₁ ≤ (2√2)·1. (2) The bound is attained: an
+    explicit real-Pauli quadruple in M₄(ℝ) — integer matrices up to the one
+    scalar (√2)⁻¹ — is verified to be a genuine CHSH tuple (self-adjoint
+    involutions, A's commuting with B's), and its CHSH operator has
+    eigenvalue exactly 2√2 on the explicit nonzero vector (1, 0, 0, 1).
+    (3) In a commutative ordered star-ring the same expression is bounded by
+    2, and 2 < 2√2 strictly: the classical–quantum gap is real, and
+    noncommutativity is exactly what crosses it. The eigen-equation on a
+    nonzero vector shows the operator norm reaches 2√2; with (1) the bound
+    is exact — that final inference is immediate and stated in prose.
   authors:
     - "Stephanie Alexander"
   license: "MIT"
@@ -25,66 +23,61 @@ project:
     - "Stephanie Alexander"
 
 classification:
-  arxiv: ["math.NT", "math.RA"]
-  msc2020: ["11R04", "11R09", "15A63", "15B36"]
+  arxiv: ["quant-ph", "math.OA"]
+  msc2020: ["81P40", "81P45", "46L60", "15A18"]
 
 sources:
-  - title: "Quantum Mechanics as the Arithmetic of a Complex Place (deposited note stating these results informally)"
+  - title: "Quantum generalizations of Bell's inequality"
     authors:
-      - "Stephanie Alexander"
-    id: "doi:10.5281/zenodo.21971268"
+      - "Boris S. Tsirelson"
+    id: "Letters in Mathematical Physics 4 (1980), 93–100"
     type: "article"
-    location: "https://doi.org/10.5281/zenodo.21971268"
-    relationship: "formalizes"
-    note: >-
-      The submitted modules formalize the arithmetic substrate stated in the
-      author's deposited note: the field irreducibility and unit norms, the
-      trace-form signature certificates, and the two-rulers/symplectic
-      identity on the rational model of the complex place. The note's physical
-      identification is not part of this submission; the compared declarations
-      are pure mathematics.
-    license: "unknown"
-    author_endorsement: "participated"
-  - title: "On the irreducibility of certain trinomials"
-    authors:
-      - "Ernst S. Selmer"
-    id: "Math. Scand. 4 (1956), 287–302"
-    type: "article"
-    location: "https://doi.org/10.7146/math.scand.a-10478"
+    location: "https://doi.org/10.1007/BF00417500"
     relationship: "independently-proves"
     note: >-
-      The irreducibility of xⁿ − x − 1 over ℚ is Selmer's classical theorem;
-      this project proves the two cases n = 3, 4 independently by reduction
-      modulo 2.
+      Tsirelson's paper establishes the bound and its attainability. This
+      project supplies a machine-checked attainment witness: an explicit
+      real-Pauli tuple verified to satisfy the CHSH axioms, with the exact
+      eigen-equation checked by the kernel.
     license: "unknown"
     author_endorsement: "n/a"
-  - title: "Classical theory of trace forms and Sylvester's law of inertia"
-    type: "folklore"
+  - title: "Proposed experiment to test local hidden-variable theories"
+    authors:
+      - "John F. Clauser"
+      - "Michael A. Horne"
+      - "Abner Shimony"
+      - "Richard A. Holt"
+    id: "Physical Review Letters 23 (1969), 880–884"
+    type: "article"
+    location: "https://doi.org/10.1103/PhysRevLett.23.880"
     relationship: "background"
-    note: >-
-      The signature-(r₁ + r₂, r₂) statement for number-field trace forms is
-      classical; the explicit rational congruence certificates verified here
-      are this project's. Reading the inertia off the diagonal of D is
-      Sylvester's law, applied in prose.
     license: "unknown"
     author_endorsement: "n/a"
 
-related_formalizations: []
+related_formalizations:
+  - id: "https://github.com/leanprover-community/mathlib4 (Mathlib's CHSH development: IsCHSHTuple, CHSH_inequality_of_comm, tsirelson_inequality)"
+    relationship: "builds-on"
+    note: >-
+      The two generic bounds are supplied by Mathlib's CHSH development; this
+      project contributes the saturation side (the verified tuple and the
+      exact eigen-equation) and packages the strict gap.
+  - id: "https://github.com/leanprover-community/mathlib4/pull/41847"
+    relationship: "other"
+    note: >-
+      The same tightness material is under review for inclusion in Mathlib
+      (PR 41847, review feedback addressed 2026-08-12; placement discussion
+      ongoing — main library versus Archive).
 
 status:
   scope: >-
-    Formalized: irreducibility of the two trinomials over ℚ; the algebra norms
-    of the adjoined roots via Mathlib's Algebra.norm; the two explicit
-    Sylvester congruence certificates (with Gram determinants −283 and −23 and
-    unimodular congruence matrices); and the packaged two-rulers identity on
-    the explicit 2×2 rational model. Not formalized: the identification of
-    the Gram matrices with Algebra.traceForm (proved elsewhere in this
-    repository via Mathlib's API but not part of the compared surface); the
-    base change to ℝ and the sign-count step of Sylvester's law (standard,
-    in prose); any statement about physics. The repository's wider modules
-    contain physics-motivated context and one named modeling posit; none of
-    that is part of this submission — the compared declarations are pure
-    mathematics with no physical claims.
+    Formalized: the generic 2√2 upper bound (via Mathlib's
+    tsirelson_inequality, rewritten to the 2√2 form); the verification that
+    the explicit real-Pauli quadruple is a CHSH tuple; the exact
+    eigen-equation of its CHSH operator on the explicit nonzero vector
+    (1, 0, 0, 1); the commutative bound ≤ 2; and the strict inequality
+    2 < 2√2. Stated in prose, not compared: the immediate inference from the
+    eigen-equation and nonzero witness to "the operator norm attains 2√2".
+    No physical claim is part of the compared statements.
   sorry_count: 0
   sorry_in_definitions: 0
   axioms: []
@@ -105,9 +98,7 @@ automation:
         hardware: "local machine"
       prompting_notes: >-
         Theorem-by-theorem sessions; statements fixed by the author first,
-        proofs iterated against the compiler; cross-module identification
-        lemmas (PdtLinks) tie hand-written matrices to Mathlib's genuine
-        traceForm/traceMatrix API elsewhere in the repository.
+        proofs iterated against the compiler.
     - method: "manual"
       models: []
       framework: "n/a"
@@ -122,94 +113,63 @@ automation:
       prompting_notes: "n/a"
   spend_usd: "subscription-based"
   notes: >-
-    Human-directed, machine-verified workflow: the author fixes statements and
-    reviews all mathematics; AI assistance drafts and repairs proofs; the Lean
-    kernel is the acceptance criterion.
+    Human-directed, machine-verified workflow: the author fixes statements
+    and reviews all mathematics; AI assistance drafts and repairs proofs; the
+    Lean kernel is the acceptance criterion. The same material was submitted
+    to Mathlib (PR 41847) with the LLM-generated label duly applied.
 
 fidelity:
   divergences: >-
-    None known. The Gram matrices are stated as explicit rational literals;
-    their identification with Algebra.traceForm is proved in the repository
-    (PdtLinks) but is outside the compared surface, and the ℝ base-change
-    step of the signature reading is prose, as stated in scope.
+    None known. The operator-norm reading of saturation is prose, as stated
+    in scope; the compared statements are the eigen-equation, the nonzero
+    witness, the tuple verification, and the two bounds.
 
 review:
-  status: "self-assessed"
+  status: "self-assessed; the same material is under external review at Mathlib (PR 41847)"
   reviewers:
     - "Stephanie Alexander"
   notes: >-
-    Statements audited by the author against the informal claims in the
-    deposited note; the repository's Colab verifier reruns the build and a
-    per-declaration axiom audit reproducibly.
+    Statements audited by the author; the Mathlib pull request carrying this
+    material received reviewer feedback (docstring corrected same-day;
+    placement discussion ongoing), which constitutes partial external review
+    of the formalization.
 
 alignment:
-  namespace: "ComplexPlaceArithmetic"
+  namespace: "TsirelsonTightness"
   statements:
-    - source: "Selmer 1956 (n = 3)"
-      lean: "ComplexPlaceArithmetic.cubic_irreducible"
+    - source: "Tsirelson 1980 (the bound)"
+      lean: "TsirelsonTightness.chsh_upper"
       module: "Solution"
       status: "proved"
-      note: "Irreducibility of x³ − x − 1 over ℚ."
-    - source: "Selmer 1956 (n = 4)"
-      lean: "ComplexPlaceArithmetic.quartic_irreducible"
+      note: "Generic 2√2 bound for CHSH tuples, from Mathlib's tsirelson_inequality."
+    - source: "This work (explicit witness)"
+      lean: "TsirelsonTightness.tuple_isCHSH"
       module: "Solution"
       status: "proved"
-      note: "Irreducibility of x⁴ − x − 1 over ℚ."
-    - source: "Deposited note (unit norms)"
-      lean: "ComplexPlaceArithmetic.norm_cubic_root"
+      note: "The real-Pauli quadruple is a genuine CHSH tuple."
+    - source: "This work (explicit witness)"
+      lean: "TsirelsonTightness.chsh_saturates"
       module: "Solution"
       status: "proved"
-      note: "Algebra.norm ℚ ρ = 1 on AdjoinRoot (x³ − x − 1)."
-    - source: "Deposited note (unit norms)"
-      lean: "ComplexPlaceArithmetic.norm_quartic_root"
+      note: "Exact eigen-equation: the CHSH operator sends (1,0,0,1) to (2√2)·(1,0,0,1)."
+    - source: "This work"
+      lean: "TsirelsonTightness.vsat_ne_zero"
       module: "Solution"
       status: "proved"
-      note: "Algebra.norm ℚ Q = −1 on AdjoinRoot (x⁴ − x − 1)."
-    - source: "Deposited note (signature certificate, quartic)"
-      lean: "ComplexPlaceArithmetic.quartic_congruence"
+      note: "The witness vector is nonzero."
+    - source: "CHSH 1969 / Mathlib's CHSH_inequality_of_comm"
+      lean: "TsirelsonTightness.classical_le_two"
       module: "Solution"
       status: "proved"
-      note: "P4ᵀ·M4·P4 = D4 with diagonal (4, 4, −9/4, 283/36); inertia (3,1) read off by Sylvester in prose."
-    - source: "Deposited note (signature certificate, quartic)"
-      lean: "ComplexPlaceArithmetic.quartic_gram_det"
+      note: "Commutative bound ≤ 2."
+    - source: "Elementary"
+      lean: "TsirelsonTightness.bell_gap"
       module: "Solution"
       status: "proved"
-      note: "det M4 = −283."
-    - source: "Deposited note (signature certificate, quartic)"
-      lean: "ComplexPlaceArithmetic.quartic_P_unimodular"
-      module: "Solution"
-      status: "proved"
-      note: "det P4 = −1."
-    - source: "Deposited note (signature certificate, cubic)"
-      lean: "ComplexPlaceArithmetic.cubic_congruence"
-      module: "Solution"
-      status: "proved"
-      note: "P3ᵀ·M3·P3 = D3 with diagonal (3, 2, −23/6); inertia (2,1)."
-    - source: "Deposited note (signature certificate, cubic)"
-      lean: "ComplexPlaceArithmetic.cubic_gram_det"
-      module: "Solution"
-      status: "proved"
-      note: "det M3 = −23."
-    - source: "Deposited note (signature certificate, cubic)"
-      lean: "ComplexPlaceArithmetic.cubic_P_unimodular"
-      module: "Solution"
-      status: "proved"
-      note: "det P3 = 1."
-    - source: "Deposited note (the two-rulers identity)"
-      lean: "ComplexPlaceArithmetic.two_rulers"
-      module: "Solution"
-      status: "proved"
-      note: >-
-        Packaged conjunction: Born = trace∘conjugation; J a Born isometry and
-        trace anti-isometry; the Born companion alternating and nondegenerate
-        (symplectic); the trace companion symmetric.
-    - source: "Deposited note (model of the place)"
-      lean: "ComplexPlaceArithmetic.Gborn"
-      module: "Challenge"
-      status: "proved"
-      note: "Explicit 2×2 rational model matrices; compared as definitions alongside fρ, fQ, M4, P4, D4, M3, P3, D3, Gtr, Jc, Cnj, omegaB."
+      note: "2 < 2√2, so the classical and quantum bounds are strictly separated."
 
 acknowledgements: >-
-  Built on Mathlib and the Lean 4 toolchain; thanks to the leanprover
-  community. Developed with AI assistance (Anthropic Claude, in Claude Code)
-  under the author's direction. Dedicated to the memory of David N. Schramm.
+  Built on Mathlib and the Lean 4 toolchain — in particular Mathlib's CHSH
+  development; thanks to the leanprover community. Developed with AI
+  assistance (Anthropic Claude, in Claude Code) under the author's direction.
+  Dedicated to the memory of David N. Schramm.
