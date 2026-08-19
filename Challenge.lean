@@ -36,11 +36,12 @@ exactly `2√2` on an explicit nonzero vector (`chsh_saturates`,
 `vsat_ne_zero`), and l2 operator norm exactly `2√2` (`chsh_opNorm`).
 (3) `classical_le_two`: in a *commutative* ordered star-ring the same
 expression is bounded by `2`, and `2 < 2√2` strictly (`bell_gap`). Along the
-way, a falsification (`chsh_sq_ne`): the saturating tuple's `T²` is *not* the
-scalar `8·1` (its square is not a scalar multiple of the identity), so the
-naive scalar-square route `T² = 8·1 ⇒ ‖T‖ = √8` is closed for this
-representation; the norm results here go through the C\*-identity (and, for
-the generic bound, the Landau identity) instead.
+way, a falsification (`chsh_sq_ne`): the saturating tuple's `T²` is *not*
+`c • 1` for *any* real `c` (its square is not ANY scalar multiple of the
+identity — `chsh_sq_ne` quantifies over every `c : ℝ`), so the naive
+scalar-square route `T² = c·1 ⇒ ‖T‖ = √c` is closed for every scalar, not
+just `8`; the norm results here go through the C\*-identity (and, for the
+generic bound, the Landau identity) instead.
 -/
 
 namespace TsirelsonTightness
@@ -167,13 +168,14 @@ theorem chsh_opNorm :
     ‖A₀ * B₀ + A₀ * B₁ + A₁ * B₀ - A₁ * B₁‖ = 2 * Real.sqrt 2 := by
   sorry
 
-/-- **Falsification:** the square of the CHSH operator is *not* the scalar
-`8·1` — the naive scalar-square route to the Tsirelson norm fails for this
-representation (compare the Landau identity `chsh_mul_self`: the commutator
-product is not scalar here). -/
+/-- **Falsification:** the square of the CHSH operator is *not* `c • 1` for
+*any* real `c` — the naive scalar-square route to the Tsirelson norm,
+`T² = c·1 ⇒ ‖T‖ = √c`, fails for this representation for every scalar
+(compare the Landau identity `chsh_mul_self`: the commutator product is not
+scalar here). -/
 theorem chsh_sq_ne :
-    (A₀ * B₀ + A₀ * B₁ + A₁ * B₀ - A₁ * B₁) * (A₀ * B₀ + A₀ * B₁ + A₁ * B₀ - A₁ * B₁)
-      ≠ (8 : ℝ) • (1 : Matrix (Fin 4) (Fin 4) ℝ) := by
+    ∀ c : ℝ, (A₀ * B₀ + A₀ * B₁ + A₁ * B₀ - A₁ * B₁) * (A₀ * B₀ + A₀ * B₁ + A₁ * B₀ - A₁ * B₁)
+      ≠ c • (1 : Matrix (Fin 4) (Fin 4) ℝ) := by
   sorry
 
 /-- **The exact CHSH constant of `M₄(ℝ)` is `2√2`:** it is the *greatest*

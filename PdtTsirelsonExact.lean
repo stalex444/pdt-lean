@@ -58,8 +58,9 @@ theorem chsh_sa (h : IsCHSHTuple A₀ A₁ B₀ B₁) :
 
 /-- **The CHSH square identity.** For any CHSH tuple in any \*-ring,
 `T² = 4 + [A₀,A₁]·[B₁,B₀]`. This is the exact, representation-independent
-correction to the naive `T² = 8·1` (which `PdtTsirelsonNorm.Pchsh_sq_ne`
-refutes for the real-Pauli tuple): the deviation of `T²` from the scalar `4`
+correction to the naive `T² = 8·1` (which `PdtTsirelsonNorm.Pchsh_sq_ne_smul`
+refutes for the real-Pauli tuple, for every scalar `c`, not just `8`): the
+deviation of `T²` from the scalar `4`
 is precisely the product of the two intra-party commutators. -/
 theorem chsh_mul_self (h : IsCHSHTuple A₀ A₁ B₀ B₁) :
     (A₀ * B₀ + A₀ * B₁ + A₁ * B₀ - A₁ * B₁) * (A₀ * B₀ + A₀ * B₁ + A₁ * B₀ - A₁ * B₁)

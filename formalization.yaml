@@ -26,10 +26,10 @@ project:
     nonzero vector (1,0,0,1) and l2 operator norm exactly 2√2; the ordered
     star-ring bounds T ≤ (2√2)·1 and (commutative case) T ≤ 2 and the strict
     gap 2 < 2√2 complete the picture. A falsification is compared alongside:
-    the saturating tuple's T² is NOT the scalar 8·1, so the naive
-    scalar-square route to the norm is closed for this representation; the
-    norm results here go through the C*-identity (and, for the generic
-    bound, the Landau identity) instead.
+    the saturating tuple's T² is not c·1 for ANY real c (chsh_sq_ne
+    quantifies over every scalar), so the scalar-square route to the norm
+    is closed for every scalar; the norm results here go through the
+    C*-identity (and, for the generic bound, the Landau identity) instead.
   authors:
     - "Stephanie Alexander"
   license: "MIT"
@@ -136,7 +136,8 @@ status:
     attained); the explicit real-Pauli quadruple is verified to be a CHSH
     tuple, with exact eigen-equation on the explicit nonzero vector
     (1,0,0,1), exact operator norm ‖P‖ = 2√2, and the falsification
-    P·P ≠ 8·1. No physical claim is part of the compared statements; in
+    P·P ≠ c·1 for every real c. No physical claim is part of the compared
+    statements; in
     particular, the compared theorems state that noncommutativity is
     necessary for a violation and that the maximal violation is attained in
     M₄(ℝ) — nothing stronger.
@@ -272,8 +273,9 @@ alignment:
       module: "Solution"
       status: "proved"
       note: >-
-        The square of the same CHSH operator is not the scalar 8·1: the
-        naive scalar-square route to the norm fails for this representation.
+        The square of the same CHSH operator is not any scalar multiple of
+        the identity — the theorem quantifies over every c : ℝ — so the
+        scalar-square route to the norm is closed for every scalar.
     - source: "This work (the exact constant of M₄(ℝ))"
       lean: "TsirelsonTightness.chsh_opNorm_isGreatest"
       module: "Solution"

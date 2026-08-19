@@ -116,9 +116,9 @@ theorem chsh_opNorm :
   exact h
 
 theorem chsh_sq_ne :
-    (A₀ * B₀ + A₀ * B₁ + A₁ * B₀ - A₁ * B₁) * (A₀ * B₀ + A₀ * B₁ + A₁ * B₀ - A₁ * B₁)
-      ≠ (8 : ℝ) • (1 : Matrix (Fin 4) (Fin 4) ℝ) := by
-  have h := PDT.Pchsh_sq_ne
+    ∀ c : ℝ, (A₀ * B₀ + A₀ * B₁ + A₁ * B₀ - A₁ * B₁) * (A₀ * B₀ + A₀ * B₁ + A₁ * B₀ - A₁ * B₁)
+      ≠ c • (1 : Matrix (Fin 4) (Fin 4) ℝ) := by
+  have h := PDT.Pchsh_sq_ne_smul
   unfold PDT.Pchsh PDT.A₀ PDT.A₁ PDT.B₀ PDT.B₁ PDT.B₀i PDT.B₁i PDT.s at h
   unfold A₀ A₁ B₀ B₁ B₀i B₁i s
   exact h

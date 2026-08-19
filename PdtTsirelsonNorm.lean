@@ -20,9 +20,11 @@ where `‖·‖` is the l2 **operator** norm on `Matrix (Fin 4) (Fin 4) ℝ`
 (Mathlib's scoped `Matrix.Norms.L2Operator` instances, under which `M₄(ℝ)` is
 a C*-algebra).
 
-**A falsification, kernel-certified along the way** (`Mchsh_sq_ne_sixteen_one`):
-the tempting identity `M² = 16·1` (equivalently `P² = 8·1`) is FALSE for this
-real-Pauli representation. `P = √2·(X⊗X + Z⊗Z)` has spectrum `{2√2, 0, 0, −2√2}`
+**A falsification, kernel-certified along the way** (`Mchsh_sq_ne_sixteen_one`,
+strengthened to every scalar in `Pchsh_sq_ne_smul`): the tempting identity
+`M² = 16·1` (equivalently `P² = 8·1`) is FALSE for this real-Pauli
+representation — and indeed `P²` is not `c·1` for ANY real `c`
+(`Pchsh_sq_ne_smul`). `P = √2·(X⊗X + Z⊗Z)` has spectrum `{2√2, 0, 0, −2√2}`
 — it has a 2-dimensional kernel — so `M = √2·P` has spectrum `{4, 0, 0, −4}` and
 `M²` has eigenvalues `{16, 16, 0, 0}`, not `16` on all of `ℝ⁴`. The naive CHSH
 algebra `P² = 4·1 + [A₀,A₁]·[B₁,B₀] = 8·1` fails here because the commutator
@@ -62,7 +64,8 @@ theorem Mchsh_sq_eq : Mchsh * Mchsh = Kchsh := by
 
 /-- **Falsification (kernel-certified):** `M² ≠ 16·1`. The `(0,0)` entry of
 `M²` is `8`, not `16` — `M` has a 2-dimensional kernel, so no identity of the
-form `M² = c·1` with `c ≠ 0` can hold. Equivalently `P² ≠ 8·1`: the naive
+form `M² = c·1` with `c ≠ 0` can hold (kernel-certified for every scalar, in
+scaled form, as `Pchsh_sq_ne_smul`). Equivalently `P² ≠ 8·1`: the naive
 CHSH-algebra shortcut to the Tsirelson norm is not available for this
 representation. -/
 theorem Mchsh_sq_ne_sixteen_one : Mchsh * Mchsh ≠ (16 : ℝ) • (1 : Mat) := by
@@ -103,6 +106,18 @@ theorem Pchsh_sq_ne : Pchsh * Pchsh ≠ (8 : ℝ) • (1 : Mat) := by
   intro h
   have h00 := congrArg (fun X : Mat => X 0 0) h
   norm_num [Kchsh, Matrix.smul_apply, Matrix.one_apply] at h00
+
+/-- **Universal falsification (kernel-certified):** `P²` is not `c • 1` for
+ANY real `c`. The `(0,3)` entry of `P² = (1/2)·K` is `4` — nonzero and
+off-diagonal — while every scalar multiple of the identity has all
+off-diagonal entries `0`, so a single entry refutes every scalar at once.
+Strengthens `Pchsh_sq_ne` from `c = 8` to all of `ℝ`: the scalar-square
+route `P² = c·1 ⇒ ‖P‖ = √c` is closed for every scalar, not just `8`. -/
+theorem Pchsh_sq_ne_smul : ∀ c : ℝ, Pchsh * Pchsh ≠ c • (1 : Mat) := by
+  intro c h
+  rw [Pchsh_sq] at h
+  have h03 := congrArg (fun X : Mat => X 0 3) h
+  simp [Kchsh, Matrix.smul_apply, show (0 : Fin 4) ≠ 3 by decide] at h03
 
 /-- The integer CHSH matrix is self-adjoint (star of each product swaps the
 factors; cross-party commutation swaps them back). -/
@@ -164,6 +179,7 @@ end PDT
 #print axioms PDT.Kchsh_ne_zero
 #print axioms PDT.Pchsh_sq
 #print axioms PDT.Pchsh_sq_ne
+#print axioms PDT.Pchsh_sq_ne_smul
 #print axioms PDT.Mchsh_sa
 #print axioms PDT.Pchsh_sa
 #print axioms PDT.Pchsh_mulVec
