@@ -10,7 +10,9 @@ open Matrix
 
 `PdtTsirelson.lean` gives the Tsirelson bound for one order-theoretic setting and
 one explicit saturating tuple; `PdtTsirelsonNorm.lean` computes `‖P‖ = 2√2` for
-that one tuple. This file proves the **characterization**:
+that one tuple. This file proves the **exact-constant suite** — necessity and
+attainment; Landau's converse (that every noncommuting pair admits a violating
+state) is *not* formalized here:
 
 * `chsh_norm_le` / `chsh_opNorm_le` — for **every** CHSH tuple (Mathlib's
   `IsCHSHTuple`: self-adjoint involutions, A's commuting with B's) in a unital
@@ -23,7 +25,7 @@ that one tuple. This file proves the **characterization**:
 
 * `chsh_norm_of_comm` / `chsh_opNorm_eq_two_of_comm` — if either party's pair
   commutes (`A₀A₁ = A₁A₀` or `B₀B₁ = B₁B₀`), then `‖T‖ = 2` **exactly**: the
-  classical CHSH constant, also characterized.
+  classical CHSH constant, exactly.
 
 * `noncomm_of_chsh_norm_gt_two` — necessity, formally: any violation `‖T‖ > 2`
   forces noncommutativity in **both** parties. Instantiated on the concrete

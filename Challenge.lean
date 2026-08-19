@@ -1,7 +1,7 @@
 import Mathlib
 
 /-!
-# Challenge: the exact CHSH constants — Tsirelson's bound as a characterization
+# Challenge: the exact CHSH constants — necessity, attainment, and the supremum over M₄(ℝ)
 
 This module is the small, trusted surface to audit. Results with `sorry`
 placeholders; proved versions are in `Solution.lean`.
@@ -13,8 +13,8 @@ involutions `A₀, A₁, B₀, B₁` with the `A`s commuting with the `B`s), wri
 1. **The Landau identity** (`chsh_mul_self`): in any \*-ring,
    `T² = 4 + [A₀,A₁]·[B₁,B₀]` — the exact, representation-independent
    correction to the naive `T² = 8·1`.
-2. **Tsirelson's bound in norm form** (`chsh_norm_le`): in every unital real
-   C\*-normed algebra, `‖T‖ ≤ 2√2`.
+2. **Tsirelson's bound in norm form** (`chsh_norm_le`): in every nontrivial
+   unital real C\*-normed algebra, `‖T‖ ≤ 2√2`.
 3. **The classical constant, exactly** (`chsh_norm_of_comm`): if either
    party's pair commutes, `‖T‖ = 2` exactly — not merely `≤ 2`.
 4. **Necessity of noncommutativity** (`noncomm_of_chsh_norm_gt_two`): any
@@ -37,9 +37,10 @@ exactly `2√2` on an explicit nonzero vector (`chsh_saturates`,
 (3) `classical_le_two`: in a *commutative* ordered star-ring the same
 expression is bounded by `2`, and `2 < 2√2` strictly (`bell_gap`). Along the
 way, a falsification (`chsh_sq_ne`): the saturating tuple's `T²` is *not* the
-scalar `8·1` (the operator is rank-deficient), so the naive scalar-square
-route `T² = 8·1 ⇒ ‖T‖ = √8` is closed for this representation — the norm
-results must go through the Landau identity and the C\*-identity instead.
+scalar `8·1` (its square is not a scalar multiple of the identity), so the
+naive scalar-square route `T² = 8·1 ⇒ ‖T‖ = √8` is closed for this
+representation; the norm results here go through the C\*-identity (and, for
+the generic bound, the Landau identity) instead.
 -/
 
 namespace TsirelsonTightness
