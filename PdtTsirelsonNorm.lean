@@ -25,8 +25,9 @@ strengthened to every scalar in `Pchsh_sq_ne_smul`): the tempting identity
 `M² = 16·1` (equivalently `P² = 8·1`) is FALSE for this real-Pauli
 representation — and indeed `P²` is not `c·1` for ANY real `c`
 (`Pchsh_sq_ne_smul`). For orientation (spectral facts stated as prose, not
-kernel-checked here — the kernel-checked facts in this file are the
-eigen-equation, the norm equality, and the falsifications): `P = √2·(X⊗X + Z⊗Z)`
+kernel-checked here — what this file kernel-checks is the route itemized
+below: the scaling, square, and idempotency identities, self-adjointness,
+the falsifications, the eigen-equation, and the norm equalities): `P = √2·(X⊗X + Z⊗Z)`
 has spectrum `{2√2, 0, 0, −2√2}` — a 2-dimensional kernel — so `M = √2·P` has
 spectrum `{4, 0, 0, −4}` and `M²` has eigenvalues `{16, 16, 0, 0}`, not `16`
 on all of `ℝ⁴`. The naive CHSH
