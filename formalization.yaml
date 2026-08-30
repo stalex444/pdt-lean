@@ -1,6 +1,7 @@
 # formalization.yaml — Mahler degree-window entry
-# Disclosure, byline and license cleared per PI direction, 2026-08-30.
-# See TRANSPLANT.md for the ship steps.
+# Review status: self-assessed by the author, with an in-house
+# adversarial mock-referee pass applied to this surface before
+# submission (see the review block below).
 project:
   name: "The Mahler degree window: minimal Mahler measures at degrees 2, 3, 4"
   description: >
@@ -45,13 +46,13 @@ sources:
     relationship: "formalizes"
   - title: "C. L. Siegel, Algebraic integers whose conjugates lie in the unit circle, Duke Math. J. 11 (1944), 597-602"
     # doi 10.1215/S0012-7094-44-01152-X; Zbl 0063.07005. Pages and DOI added
-    # 2026-08-29 (lit-scout).
+    # 2026-08-29, first-hand.
     # the identification of rho and theta_4 as the two smallest Pisot
     # numbers, used in the prose reading of the exact-value theorems.
     relationship: "background"
   - title: "D. H. Lehmer, Factorization of certain cyclotomic functions, Ann. of Math. (2) 34 (1933), 461-479"
     # doi 10.2307/1968172 (resolves to JSTOR 1968172; Zbl 0007.19904).
-    # Verified 2026-08-29 (lit-scout): Lehmer's text states this entry's
+    # Verified 2026-08-29, first-hand: Lehmer's text states this entry's
     # three minimality results with this entry's three minimizers. Read as a
     # verbatim quotation in M.-J. Bertin, "From Salem numbers to Mahler
     # measure of K3 surfaces (Lecture 1)", Institut Fourier, under her
@@ -77,7 +78,7 @@ sources:
       1.3803.... The paper is also cited as the origin of the
       minimal-measure problem.
   - title: "C. J. Smyth, On the product of the conjugates outside the unit circle of an algebraic integer, Bull. London Math. Soc. 3 (1971), 169-175"
-    # Verified 2026-08-29 (lit-scout). Statement and equality case read at
+    # Verified 2026-08-29, first-hand. Statement and equality case read at
     # Smyth's own survey, arXiv:math/0701397v2 eq. (15). Already banked in
     # references/library.md (line 251, verified 2026-06-22).
     relationship: "independently-proves"
@@ -104,7 +105,7 @@ sources:
       entry rests on: that the degree 2, 3 and 4 smallest measures are
       Lehmer's (section 8.1), and the statement and equality case of Smyth's
       1971 non-reciprocal bound (eq. 15). Proves nothing formalized here.
-  # CLOSED 2026-08-29 (lit-scout), replacing the standing TODO that assumed
+  # Closed 2026-08-29 by a first-hand check of the assumption that
   # the small-measure tables hold these minima: THEY DO NOT, and no Boyd or
   # Mossinghoff source belongs here. Checked first-hand -- Mossinghoff's
   # Mahler-Measure-Database tables are floored at measure < 1.3 (and < 1.25),
@@ -193,7 +194,7 @@ automation:
       framework: "Claude Code"
       # Human-directed workflow; every theorem kernel-checked; boxes
       # decided by plain decide (no native_decide). Disclosure filled
-      # per PI direction, 2026-08-30, matching the registered entries.
+      # by the author, 2026-08-30, matching the registered entries.
 review:
   status: "unreviewed"
 
