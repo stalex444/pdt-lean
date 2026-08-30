@@ -1,98 +1,67 @@
 /-
-# The Mahler degree window: minimality at degrees 2, 3, 4
+# Busch's theorem: Born-rule uniqueness on quantum effects (finite dimension)
 
-For d ∈ {2, 3, 4}, the polynomial `x^d − x − 1` attains the minimal Mahler
-measure among monic irreducible integer polynomials of degree d with Mahler
-measure above one. The minimizers' membership in the competitor class is
-part of the compared surface (irreducibility below; measure above one is
-the second conjunct of each exact-value theorem), and the three minimal
-values are pinned exactly: the golden ratio (M² = M + 1), the plastic
-ratio (M³ = M + 1), and the root of x⁴ − x³ − 1 above one (M⁴ = M³ + 1).
-By Siegel's classical theorem (Duke Math. J. 11, 1944 — cited as
-background, not formalized here) the latter two are the smallest and
-second-smallest Pisot numbers.
+Busch (2003): any generalized probability measure on the effects of a
+finite-dimensional complex matrix algebra — a function that is nonnegative
+on effects, additive whenever a sum of effects is again an effect, and
+normalized at the identity — is represented by a unique density matrix.
+This is the uniqueness of the Born rule in the POVM reading, and it holds
+already at dimension 2, where Gleason's theorem (which requires dimension
+at least 3) does not apply.
 
-The degree-4 twist: classically, x⁴ − x − 1 is not itself a Pisot
-polynomial — three of its roots lie outside the unit circle (kernel-backed
-in the ambient repository by `PDT.quartic_conj_norm_gt_one`, not part of
-this compared surface) — yet its Mahler measure lands back on the Pisot
-list, as the Pisot root of the reciprocal transform x⁴ − x³ − 1.
+No continuity is assumed anywhere: additivity together with nonnegativity
+forces real homogeneity on the effect interval (the monotone squeeze),
+which is the analytic heart of the proof. `homogeneity_automatic` states
+that step separately.
 
-The Mahler measure is Mathlib's `Polynomial.mahlerMeasure`; integer
-polynomials enter via `Polynomial.map (Int.castRingHom ℂ)`.
+Effects are spelled in Mathlib vocabulary: `a.PosSemidef` together with
+`(1 - a).PosSemidef`. Mathlib's order on matrices is the Loewner order,
+provided as a scoped instance (`open scoped MatrixOrder`, in
+`Mathlib.Analysis.Matrix.Order`, where `Matrix.nonneg_iff_posSemidef`
+gives `0 ≤ A ↔ A.PosSemidef`); the statements here spell the effect
+interval via `PosSemidef` directly, so they need no scoped order
+instance.
+
+Source: P. Busch, "Quantum states and generalized observables: a simple
+proof of Gleason's theorem", Phys. Rev. Lett. 91, 120403 (2003);
+quant-ph/9909073.
 -/
-import Mathlib.Analysis.Polynomial.MahlerMeasure
-import Mathlib.NumberTheory.MahlerMeasure
+import Mathlib.LinearAlgebra.Matrix.PosDef
+import Mathlib.Analysis.Matrix.Spectrum
+import Mathlib.Analysis.Matrix.PosDef
+import Mathlib.Analysis.Complex.Order
 
-namespace MahlerWindow
+namespace BuschTheorem
 
-open Polynomial
+open Matrix
+open scoped ComplexOrder
 
-/-- Degree 2 minimality: among monic irreducible integer quadratics with
-Mahler measure above one, `x² − x − 1` attains the minimum. -/
-theorem quadratic_min (p : ℤ[X]) (hm : p.Monic) (hd : p.natDegree = 2)
-    (hi : Irreducible p)
-    (h1 : 1 < (p.map (Int.castRingHom ℂ)).mahlerMeasure) :
-    ((((X : ℤ[X]) ^ 2 - X - 1)).map (Int.castRingHom ℂ)).mahlerMeasure
-      ≤ (p.map (Int.castRingHom ℂ)).mahlerMeasure := sorry
+variable {n : Type*} [Fintype n] [DecidableEq n]
 
-/-- Degree 2 exact value: the measure of `x² − x − 1` satisfies `M² = M + 1`
-with `M > 1` — it is the golden ratio. -/
-theorem quadratic_exact :
-    ((((X : ℤ[X]) ^ 2 - X - 1)).map (Int.castRingHom ℂ)).mahlerMeasure ^ 2
-        = ((((X : ℤ[X]) ^ 2 - X - 1)).map (Int.castRingHom ℂ)).mahlerMeasure + 1
-      ∧ 1 < ((((X : ℤ[X]) ^ 2 - X - 1)).map (Int.castRingHom ℂ)).mahlerMeasure :=
-  sorry
+/-- **Automatic homogeneity**: a nonnegative, additive, normalized
+function on effects is automatically real-homogeneous on the effect
+interval. No continuity hypothesis; monotonicity substitutes. -/
+theorem homogeneity_automatic (f : Matrix n n ℂ → ℝ)
+    (h0 : ∀ a : Matrix n n ℂ, a.PosSemidef → (1 - a).PosSemidef → 0 ≤ f a)
+    (hadd : ∀ a b : Matrix n n ℂ, a.PosSemidef → b.PosSemidef →
+      (1 - (a + b)).PosSemidef → f (a + b) = f a + f b)
+    (h1 : f 1 = 1)
+    {a : Matrix n n ℂ} (ha : a.PosSemidef) (ha1 : (1 - a).PosSemidef)
+    {t : ℝ} (ht0 : 0 ≤ t) (ht1 : t ≤ 1) :
+    f (t • a) = t * f a := sorry
 
-/-- The degree-2 minimizer is in the competitor class: `x² − x − 1` is
-irreducible over ℤ. -/
-theorem quadratic_min_irreducible : Irreducible ((X : ℤ[X]) ^ 2 - X - 1) :=
-  sorry
+/-- **Busch's theorem**, finite dimension: every generalized probability
+measure on the effects of `Matrix n n ℂ` is `a ↦ trace (ρ * a)` for a
+unique density matrix `ρ` (positive semidefinite, trace one). Valid in
+every finite dimension, in particular at dimension 2, where Gleason's
+theorem does not apply. -/
+theorem busch_representation [Nonempty n] (f : Matrix n n ℂ → ℝ)
+    (h0 : ∀ a : Matrix n n ℂ, a.PosSemidef → (1 - a).PosSemidef → 0 ≤ f a)
+    (hadd : ∀ a b : Matrix n n ℂ, a.PosSemidef → b.PosSemidef →
+      (1 - (a + b)).PosSemidef → f (a + b) = f a + f b)
+    (h1 : f 1 = 1) :
+    ∃! ρ : Matrix n n ℂ, ρ.PosSemidef ∧ ρ.trace = 1 ∧
+      ∀ a : Matrix n n ℂ, a.PosSemidef → (1 - a).PosSemidef →
+        (ρ * a).trace = (f a : ℂ) := sorry
 
-/-- Degree 3 minimality: among monic irreducible integer cubics with Mahler
-measure above one, `x³ − x − 1` attains the minimum. -/
-theorem cubic_min (p : ℤ[X]) (hm : p.Monic) (hd : p.natDegree = 3)
-    (hi : Irreducible p)
-    (h1 : 1 < (p.map (Int.castRingHom ℂ)).mahlerMeasure) :
-    ((((X : ℤ[X]) ^ 3 - X - 1)).map (Int.castRingHom ℂ)).mahlerMeasure
-      ≤ (p.map (Int.castRingHom ℂ)).mahlerMeasure := sorry
-
-/-- Degree 3 exact value: the measure of `x³ − x − 1` satisfies `M³ = M + 1`
-with `M > 1` — it is the plastic ratio (by Siegel's classical theorem, the
-smallest Pisot number; the ordering is cited, not formalized here). -/
-theorem cubic_exact :
-    ((((X : ℤ[X]) ^ 3 - X - 1)).map (Int.castRingHom ℂ)).mahlerMeasure ^ 3
-        = ((((X : ℤ[X]) ^ 3 - X - 1)).map (Int.castRingHom ℂ)).mahlerMeasure + 1
-      ∧ 1 < ((((X : ℤ[X]) ^ 3 - X - 1)).map (Int.castRingHom ℂ)).mahlerMeasure :=
-  sorry
-
-/-- The degree-3 minimizer is in the competitor class: `x³ − x − 1` is
-irreducible over ℤ. -/
-theorem cubic_min_irreducible : Irreducible ((X : ℤ[X]) ^ 3 - X - 1) :=
-  sorry
-
-/-- Degree 4 minimality: among monic irreducible integer quartics with
-Mahler measure above one, `x⁴ − x − 1` attains the minimum. -/
-theorem quartic_min (p : ℤ[X]) (hm : p.Monic) (hd : p.natDegree = 4)
-    (hi : Irreducible p)
-    (h1 : 1 < (p.map (Int.castRingHom ℂ)).mahlerMeasure) :
-    ((((X : ℤ[X]) ^ 4 - X - 1)).map (Int.castRingHom ℂ)).mahlerMeasure
-      ≤ (p.map (Int.castRingHom ℂ)).mahlerMeasure := sorry
-
-/-- Degree 4 exact value: the measure of `x⁴ − x − 1` satisfies `M⁴ = M³ + 1`
-with `M > 1` — it is the root of `x⁴ − x³ − 1` above one (by Siegel's
-classical theorem, the second-smallest Pisot number; the ordering is cited,
-not formalized here — see the module docstring for the non-Pisot twist). -/
-theorem quartic_exact :
-    ((((X : ℤ[X]) ^ 4 - X - 1)).map (Int.castRingHom ℂ)).mahlerMeasure ^ 4
-        = ((((X : ℤ[X]) ^ 4 - X - 1)).map (Int.castRingHom ℂ)).mahlerMeasure ^ 3
-            + 1
-      ∧ 1 < ((((X : ℤ[X]) ^ 4 - X - 1)).map (Int.castRingHom ℂ)).mahlerMeasure :=
-  sorry
-
-/-- The degree-4 minimizer is in the competitor class: `x⁴ − x − 1` is
-irreducible over ℤ. -/
-theorem quartic_min_irreducible : Irreducible ((X : ℤ[X]) ^ 4 - X - 1) :=
-  sorry
-
-end MahlerWindow
+end BuschTheorem
