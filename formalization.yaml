@@ -1,206 +1,204 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/mathlib-initiative/formalization.yaml/main/schema/formalization.schema.json
-version: "v0.4"
-# STAGED DRAFT — PI: review every field before submission. Items
-# carrying the PI sentinel require your keystroke or a lit-scout
-# verification; the ship gate (TRANSPLANT step 3) greps for the
-# sentinel across the shipped files. Template: the registered 000007
-# yaml (two registered entries as of 2026-08-19).
-
+# formalization.yaml — Mahler degree-window entry
+# Disclosure, byline and license cleared per PI direction, 2026-08-30.
+# See TRANSPLANT.md for the ship steps.
 project:
-  name: "Busch's theorem: Born-rule uniqueness on quantum effects (finite dimension)"
-  description: >-
-    Kernel-checked proof of Busch's theorem in finite dimension: every
-    generalized probability measure on the effects of a complex matrix
-    algebra — nonnegative on effects, additive whenever a sum of effects
-    is again an effect, normalized at the identity — is represented by a
-    unique density matrix via the trace pairing. Existence and
-    uniqueness are both compared (busch_representation). The result is
-    the uniqueness of the Born rule in the POVM reading; it is valid in
-    every finite dimension (the compared statement assumes only
-    [Nonempty n]) and holds already at dimension 2, where Gleason's
-    theorem (which requires dimension at least 3) does not apply. No
-    continuity is assumed: nonnegativity plus additivity force real
-    homogeneity on the effect interval (scalars in [0,1]), compared
-    separately as homogeneity_automatic. The compared statements use
-    only Mathlib vocabulary (Matrix.PosSemidef, Matrix.trace).
+  name: "The Mahler degree window: minimal Mahler measures at degrees 2, 3, 4"
+  description: >
+    For each degree d in {2, 3, 4}, the polynomial x^d - x - 1 attains the
+    minimal Mahler measure among monic irreducible integer polynomials of
+    degree d with Mahler measure above one, and the three minimal values
+    are exactly the golden ratio (M^2 = M + 1), the plastic ratio
+    (M^3 = M + 1), and the root of x^4 - x^3 - 1 above one (M^4 = M^3 + 1);
+    by Siegel's classical theorem (1944, cited as background, not
+    formalized here) the latter two are the smallest and second-smallest
+    Pisot numbers. Classically the degree-4 minimizer is not itself a
+    Pisot polynomial, yet its measure lands back on the Pisot list via
+    the reciprocal transform. The minimizers' irreducibility is part of
+    the compared surface. Proofs are
+    by a Graeffe-certificate architecture: an effective coefficient-bound
+    box from Mathlib's norm_coeff_le_choose_mul_mahlerMeasure, then one
+    integer certificate per box element (tie orbit, cyclotomic cofactor,
+    explicit factorization, or an iterated Graeffe coefficient bound),
+    6,171 + 147 + 21 certificates kernel-decided with plain decide — no
+    native_decide anywhere. The exact values follow from a root-inversion
+    identity and a (sigma, s)-reduction localizing the conjugate pairs,
+    with multiplicity excluded by kernel-certified measure brackets.
   authors:
     - "Stephanie Alexander"
-  license: "MIT"
+  license: "MIT"  # verified 2026-08-30: matches pdt-lean's LICENSE (MIT)
   responsible_maintainers:
     - "Stephanie Alexander"
-
 classification:
-  arxiv: ["quant-ph", "math-ph"]
-  msc2020: ["81P16", "81P15", "46N50"]
-
+  arxiv:
+    - "math.NT"
+  msc2020:
+    - "11R06"   # Pisot and Salem numbers
+    - "11R09"   # polynomials over global fields
+    - "12D10"   # location of real zeros
 sources:
-  - title: "Quantum states and generalized observables: a simple proof of Gleason's theorem"
-    authors:
-      - "Paul Busch"
-    id: "Physical Review Letters 91, 120403 (2003)"
-    type: "article"
-    location: "https://doi.org/10.1103/PhysRevLett.91.120403"
+  - title: "Quantum Mechanics as the Arithmetic of a Complex Place (v8B)"
+    # doi 10.5281/zenodo.21971268 — the paper's Edit-8 trace row states the
+    # DEGREE-4 minimality instance (with fourfold attainment) that
+    # quartic_min formalizes; the full d=2,3,4 window and tie sets are in
+    # the deposited computational artifacts beside it (sweep.py,
+    # OUTPUT.txt). "formalizes" is claimed for the degree-4 row.
+    relationship: "formalizes"
+  - title: "C. L. Siegel, Algebraic integers whose conjugates lie in the unit circle, Duke Math. J. 11 (1944), 597-602"
+    # doi 10.1215/S0012-7094-44-01152-X; Zbl 0063.07005. Pages and DOI added
+    # 2026-08-29 (lit-scout).
+    # the identification of rho and theta_4 as the two smallest Pisot
+    # numbers, used in the prose reading of the exact-value theorems.
+    relationship: "background"
+  - title: "D. H. Lehmer, Factorization of certain cyclotomic functions, Ann. of Math. (2) 34 (1933), 461-479"
+    # doi 10.2307/1968172 (resolves to JSTOR 1968172; Zbl 0007.19904).
+    # Verified 2026-08-29 (lit-scout): Lehmer's text states this entry's
+    # three minimality results with this entry's three minimizers. Read as a
+    # verbatim quotation in M.-J. Bertin, "From Salem numbers to Mahler
+    # measure of K3 surfaces (Lecture 1)", Institut Fourier, under her
+    # lead-in "Now I cite Lehmer [Le33]" -- "The best quadratic is x^2-x-1,
+    # for which Omega = 1.61803399... The best cubic is x^3-x-1, for which
+    # Omega = 1.32471796.. The best quartic is x^4-x-1, for which Omega =
+    # 1.380277569..." -- and corroborated independently by Smyth's survey
+    # (arXiv:math/0701397v2 section 8.1). NOT read in the 1933 original.
     relationship: "formalizes"
     note: >-
-      The paper states the theorem for generalized probability measures
-      — sigma-additive over countable collections of effects with sum at
-      most the identity — on the effects of a complex Hilbert space,
-      with no dimension restriction. This entry formalizes the
-      finite-dimensional case, with additivity weakened to binary
-      additivity; that is a weaker hypothesis, so the paper's
-      finite-dimensional instance follows from the compared theorem. The
-      infinite-dimensional sigma-additive statement is not covered by
-      this entry. arXiv: quant-ph/9909073 (journal reference matches).
-    license: "unknown"
-    author_endorsement: "n/a"
-  - title: "Measures on the closed subspaces of a Hilbert space"
-    authors:
-      - "Andrew M. Gleason"
-    id: "Journal of Mathematics and Mechanics 6 (1957), 885–893"
-    type: "article"
-    # DOI verified 2026-08-29 (lit-scout, first-hand): LIVE, and correct.
-    # doi.org 302-redirects to a free 9-page scan whose page-1 footer reads
-    # verbatim "Journal of Mathematics and Mechanics, Vol. 6, No. 6 (1957)",
-    # folio 885, last folio 893. The id line above is the historically
-    # correct citation and needs no change. FOR A REFEREE WHO FOLLOWS THE
-    # LINK: the publisher registered this DOI in 2013 and retro-labels its
-    # whole back run under the journal's current name, so Crossref and the
-    # landing page say "Indiana Univ. Math. J. 6 No. 4 (1957), 885-893".
-    # Same article. J. Math. Mech. ran from vol. 6 (1957) and became IUMJ at
-    # vol. 20; zbMATH (Zbl 0078.28803) records the contemporaneous series
-    # under its own ISSN 0095-9057 against IUMJ's 0022-2518. No issue number
-    # is given above deliberately: the printed article says No. 6, the
-    # publisher's metadata says No. 4.
-    location: "https://doi.org/10.1512/iumj.1957.6.56050"
+      Lehmer records the same three minimizers and the same three minimal
+      values this entry proves: x^2 - x - 1 at 1.61803399..., x^3 - x - 1 at
+      1.32471796..., x^4 - x - 1 at 1.380277569.... The relationship is
+      scoped to the three minimality theorems and their numerical values.
+      Lehmer states neither the three exact-value identities (M^2 = M + 1,
+      M^3 = M + 1, M^4 = M^3 + 1) nor the minimizers' irreducibility nor the
+      tie sets, and he gives the values as the outcome of an examination,
+      not as a completeness certificate -- supplying that certificate, in
+      the kernel, is what this entry adds. The result is Lehmer's under the
+      standard irreducible reading, which is how the literature states it;
+      the unrestricted monic reading is false at degree 4, since the
+      reducible quartic (x^3 - x - 1)(x + 1) has measure 1.3247... <
+      1.3803.... The paper is also cited as the origin of the
+      minimal-measure problem.
+  - title: "C. J. Smyth, On the product of the conjugates outside the unit circle of an algebraic integer, Bull. London Math. Soc. 3 (1971), 169-175"
+    # Verified 2026-08-29 (lit-scout). Statement and equality case read at
+    # Smyth's own survey, arXiv:math/0701397v2 eq. (15). Already banked in
+    # references/library.md (line 251, verified 2026-06-22).
+    relationship: "independently-proves"
+    note: >-
+      Scoped to cubic_min ONLY. Smyth proves that a non-reciprocal algebraic
+      integer has Mahler measure at least M(x^3 - x - 1) = 1.3247..., with
+      equality only for conjugates of (+-theta_0)^(+-1/k). Every monic
+      irreducible cubic over Z is non-reciprocal (a reciprocal polynomial of
+      odd degree has +1 or -1 as a root), so his theorem covers this entry's
+      entire degree-3 competitor class and yields cubic_min; his equality
+      case at k = 1 gives the same fourfold degree-3 tie set the
+      certificates enumerate. It does NOT give quadratic_min or quartic_min
+      (both minima lie strictly above his bound, and reciprocal quartics are
+      outside his hypothesis), and it states none of the three exact-value
+      identities or the irreducibility theorems.
+  - title: "C. Smyth, The Mahler measure of algebraic numbers: a survey, in Number Theory and Polynomials, LMS Lecture Note Series 352, CUP (2008), 322-349"
+    # arXiv:math/0701397v2. Read first-hand 2026-08-29: section 8.1
+    # attributes the degree-2,3,4 smallest measures to Lehmer 1933 and
+    # describes the scope of the Boyd and Mossinghoff tables; eq. (15)
+    # states Smyth's 1971 theorem with its equality case. Open access.
     relationship: "background"
     note: >-
-      Cited for the dimension contrast only: Gleason's theorem requires
-      dimension at least 3, while the theorem formalized here holds
-      already at dimension 2. Gleason's theorem is not formalized in
-      this entry. (This is the quantum-measure Gleason theorem; it is
-      unrelated to the topological Gleason theorem already in Mathlib.)
-    license: "unknown"
-    author_endorsement: "n/a"
-
-related_formalizations:
-  - id: "https://github.com/leanprover-community/mathlib4 (Matrix.PosSemidef, the Hermitian spectral theorem and eigenvector unitary, Unitary.conjStarAlgAut, the trace API)"
-    relationship: "builds-on"
-    note: >-
-      The compared statements use only Mathlib vocabulary
-      (Matrix.PosSemidef, Matrix.trace, smul, the real-to-complex
-      coercion) — zero custom definitions on the compared surface. The
-      proof builds on Mathlib's Hermitian spectral theorem (eigenvalues,
-      the eigenvector unitary) and star-algebra conjugation. The
-      frame-function development itself — effect frame functions, the
-      no-continuity homogeneity bootstrap, the spectral scale/shift
-      extension to Hermitian matrices, the entrywise density-matrix
-      assembly — has no Mathlib counterpart.
-  - id: "https://github.com/leanprover-community/physlib (QuantumInfo POVM development)"
-    relationship: "other"
-    note: >-
-      Physlib defines POVMs (positive semidefinite matrices summing to
-      the identity) and measurement channels but contains no
-      Busch/Gleason-type representation theorem for effect measures
-      (checked 2026-08-24) — adjacent infrastructure, not this theorem.
-
-status:
-  scope: >-
-    Formalized, 2 compared theorems, finite dimension (matrices over the
-    complex numbers, nonempty finite index type). busch_representation:
-    existence AND uniqueness — every generalized probability measure on
-    effects satisfies f a = trace (rho * a) for exactly one density
-    matrix rho (positive semidefinite, trace one).
-    homogeneity_automatic: the no-continuity step compared separately —
-    nonnegativity plus additivity force f (t • a) = t * f a for every
-    effect a and every scalar t in [0,1]. No physical claim is part of
-    the compared statements: they assert the unique trace representation
-    of effect measures, nothing stronger.
-  sorry_count: 0
-  sorry_in_definitions: 0
-  axioms: []
+      The open-access secondary locus for both classical attributions this
+      entry rests on: that the degree 2, 3 and 4 smallest measures are
+      Lehmer's (section 8.1), and the statement and equality case of Smyth's
+      1971 non-reciprocal bound (eq. 15). Proves nothing formalized here.
+  # CLOSED 2026-08-29 (lit-scout), replacing the standing TODO that assumed
+  # the small-measure tables hold these minima: THEY DO NOT, and no Boyd or
+  # Mossinghoff source belongs here. Checked first-hand -- Mossinghoff's
+  # Mahler-Measure-Database tables are floored at measure < 1.3 (and < 1.25),
+  # while all three minima exceed 1.3; his BestByDegree_200.txt is even-degree
+  # only and its first row is d = 8; Mossinghoff-Rhin-Wu, Exp. Math. 17 (2008)
+  # 451-458 determines the minimum only for even 8 <= d <= 54 (zbMATH Zbl
+  # 1194.11100); and Boyd, Math. Comp. 35 (1980) 1361-1377 and 53 (1989)
+  # 355-357 are restricted to RECIPROCAL polynomials of measure <= 1.3, while
+  # every minimizer here is non-reciprocal. The degrees 2, 3, 4 window sits in
+  # the gap those tables leave; its published loci are Lehmer 1933 above and
+  # Smyth 1971. Source relationships must be precise -- the Gahler lesson.
+alignment:
+  namespace: "MahlerWindow"
+  # ADDED 2026-08-29. This entry compared nine theorems with no claim-to-Lean
+  # trace table at all — the only one of the five staged entries missing its
+  # alignment block. PI: review each source attribution before submission.
+  statements:
+    - source: "Lehmer 1933 (the degree-2 minimum; see the source note for what he does and does not state)"
+      lean: "MahlerWindow.quadratic_min"
+      module: "Solution"
+      status: "proved"
+      note: >-
+        Among monic irreducible integer polynomials of degree 2 with Mahler
+        measure above 1, x^2 - X - 1 attains the minimum. Lehmer records the
+        same minimizer and value; the completeness certificate is this entry's.
+    - source: "this work (exact value; v8B)"
+      lean: "MahlerWindow.quadratic_exact"
+      module: "Solution"
+      status: "proved"
+      note: >-
+        The minimum M satisfies M^2 = M + 1 exactly, and M > 1 — the golden
+        ratio. Not an approximation and not in Lehmer, who gives 1.61803399...
+        as a decimal.
+    - source: "this work (supporting: the minimizer is irreducible)"
+      lean: "MahlerWindow.quadratic_min_irreducible"
+      module: "Solution"
+      status: "proved"
+      note: "x^2 - X - 1 is irreducible over the integers, so it is in the competitor class it minimizes."
+    - source: "Lehmer 1933 (the degree-3 minimum) / Smyth 1971 (independently, over the whole non-reciprocal class)"
+      lean: "MahlerWindow.cubic_min"
+      module: "Solution"
+      status: "proved"
+      note: >-
+        Among monic irreducible integer polynomials of degree 3 with measure
+        above 1, x^3 - X - 1 attains the minimum. This is the one row with two
+        independent published sources: Lehmer states it, and Smyth's 1971 bound
+        for non-reciprocal algebraic integers covers the entire degree-3 class,
+        since every monic irreducible cubic is non-reciprocal.
+    - source: "this work (exact value; v8B)"
+      lean: "MahlerWindow.cubic_exact"
+      module: "Solution"
+      status: "proved"
+      note: "The minimum M satisfies M^3 = M + 1 exactly, and M > 1 — the plastic number."
+    - source: "this work (supporting: the minimizer is irreducible)"
+      lean: "MahlerWindow.cubic_min_irreducible"
+      module: "Solution"
+      status: "proved"
+      note: "x^3 - X - 1 is irreducible over the integers."
+    - source: "Lehmer 1933 (the degree-4 minimum)"
+      lean: "MahlerWindow.quartic_min"
+      module: "Solution"
+      status: "proved"
+      note: >-
+        Among monic irreducible integer polynomials of degree 4 with measure
+        above 1, x^4 - X - 1 attains the minimum. The IRREDUCIBILITY hypothesis
+        is essential and not decorative: the unrestricted monic reading is FALSE
+        here, since the reducible quartic (x^3 - X - 1)(X + 1) has measure
+        1.3247... below this minimum's 1.3803....
+    - source: "this work (exact value; v8B)"
+      lean: "MahlerWindow.quartic_exact"
+      module: "Solution"
+      status: "proved"
+      note: >-
+        The minimum M satisfies M^4 = M^3 + 1 exactly, and M > 1. Note the shape
+        differs from the degree 2 and 3 rows — it is not M^4 = M + 1.
+    - source: "this work (supporting: the minimizer is irreducible)"
+      lean: "MahlerWindow.quartic_min_irreducible"
+      module: "Solution"
+      status: "proved"
+      note: "x^4 - X - 1 is irreducible over the integers."
 
 automation:
   methods:
     - method: "agent"
       models: ["Anthropic Claude (Opus/Fable-class, 2026)"]
       framework: "Claude Code"
-      tool_setup: >-
-        AI-assisted proof drafting and error-loop iteration against lake
-        build; every compared declaration kernel-checked and
-        axiom-audited (#print axioms: propext, Classical.choice,
-        Quot.sound).
-      cost:
-        wall_time: "one session, 2026-08-24 (scoping to kernel closure)"
-        spend_usd: "subscription-based"
-        hardware: "remote development container"
-      prompting_notes: >-
-        Statements fixed from the source paper first; proofs iterated
-        against the compiler gate by gate (bootstrap and homogeneity,
-        spectral scale/shift extension, entrywise density-matrix
-        construction, uniqueness).
-    - method: "manual"
-      models: []
-      framework: "n/a"
-      tool_setup: >-
-        Author-directed target selection, statement design, and
-        acceptance; statements audited by the author against the source
-        paper's hypotheses.
-      cost:
-        wall_time: "included in the session above"
-        spend_usd: "not tracked"
-        hardware: "local machine"
-      prompting_notes: "n/a"
-  spend_usd: "subscription-based"
-  notes: >-
-    Human-directed, machine-verified workflow: the author fixes targets
-    and reviews statements; AI assistance drafts and repairs proofs; the
-    Lean kernel is the acceptance criterion.
-
-fidelity:
-  divergences: >-
-    The source states the theorem for a complex Hilbert space of any
-    dimension, with additivity over countable collections of effects
-    (sigma-additivity). This entry is the finite-dimensional case
-    (matrices over the complex numbers), and additivity is weakened to
-    binary additivity — a weaker hypothesis, so the compared theorem
-    implies the paper's finite-dimensional instance. The
-    infinite-dimensional sigma-additive statement is not formalized. The
-    paper's upper bound f <= 1 on effects is derived in the development,
-    not assumed.
-
+      # Human-directed workflow; every theorem kernel-checked; boxes
+      # decided by plain decide (no native_decide). Disclosure filled
+      # per PI direction, 2026-08-30, matching the registered entries.
 review:
-  status: "self-assessed"
-  reviewers:
-    - "Stephanie Alexander"
-  notes: >-
-    Statements audited by the author against the source paper's
-    hypotheses; the kernel and the axiom audit are the acceptance
-    criteria. An in-house adversarial mock-referee pass (2026-08-24) was
-    applied to this surface before submission, and its blocking findings
-    were fixed (2026-08-25).
-
-alignment:
-  namespace: "BuschTheorem"
-  statements:
-    - source: "Busch 2003 (the theorem, finite-dimensional case)"
-      lean: "BuschTheorem.busch_representation"
-      module: "Solution"
-      status: "proved"
-      note: >-
-        Existence and uniqueness of the representing density matrix:
-        every generalized probability measure on effects satisfies
-        f a = trace (rho * a) for exactly one PSD, trace-one rho.
-    - source: "Busch 2003 (the homogeneity step of the proof)"
-      lean: "BuschTheorem.homogeneity_automatic"
-      module: "Solution"
-      status: "proved"
-      note: >-
-        Real homogeneity on the effect interval (scalars in [0,1]) with
-        no continuity hypothesis: additivity gives rational homogeneity
-        and monotonicity, and a monotone squeeze upgrades to all real
-        scalars in [0,1].
+  status: "unreviewed"
 
 acknowledgements: >-
-  Built on Mathlib and the Lean 4 toolchain — in particular Mathlib's
-  matrix positive-semidefiniteness and Hermitian spectral theory; thanks
-  to the leanprover community. Developed with AI assistance (Anthropic Claude, in Claude Code) under the author's direction.
+  Built on Mathlib and the Lean 4 toolchain — in particular its integer
+  polynomial, coefficient-bound, and decidability machinery; thanks to
+  the leanprover community. Developed with AI assistance (Anthropic
+  Claude, in Claude Code) under the author's direction.
