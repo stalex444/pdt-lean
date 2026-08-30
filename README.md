@@ -4,7 +4,7 @@
 
 ![Lean](https://img.shields.io/badge/Lean-v4.31.0-blue) ![Mathlib](https://img.shields.io/badge/Mathlib-v4.31.0-blue) ![axioms](https://img.shields.io/badge/axioms-standard%20only-green) ![sorry-free](https://img.shields.io/badge/proofs-sorry--free-brightgreen) ![native__decide-free](https://img.shields.io/badge/native__decide--free-brightgreen) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21210683.svg)](https://doi.org/10.5281/zenodo.21210683)
 
-> **441 declarations · 24 modules · no `sorry` outside the Palomar comparator's `Challenge.lean` stubs (which state 9 compared theorems, all proved in `Solution.lean`) · no `native_decide`.** A mix of substantive results, API wrappers, and disclosed elementary numeral identities — the per-module table below states what each module proves; all kernel-clean over the three standard axioms (`propext`, `Classical.choice`, `Quot.sound`). (210 use the `theorem` keyword; the remaining 231 are `lemma` helpers. Six of the 441 are `private` and so are not addressable by name from an importing file: the audit checks the other 435 directly, and those six transitively, since `#print axioms` reports the axioms of everything a result depends on.) The one-command verifier below builds the project and prints **PASS** with the full axiom trace — or fails loudly.
+> **498 declarations · 25 modules · no `sorry` outside the Palomar comparator's `Challenge.lean` stubs (which state 2 compared theorems, all proved in `Solution.lean`) · no `native_decide`.** A mix of substantive results, API wrappers, and disclosed elementary numeral identities — the per-module table below states what each module proves; all kernel-clean over the three standard axioms (`propext`, `Classical.choice`, `Quot.sound`). (211 use the `theorem` keyword; the remaining 287 are `lemma` helpers. Six of the 498 are `private` and so are not addressable by name from an importing file: the audit checks the other 492 directly, and those six transitively, since `#print axioms` reports the axioms of everything a result depends on.) The one-command verifier below builds the project and prints **PASS** with the full axiom trace — or fails loudly.
 
 ---
 
@@ -37,6 +37,7 @@ with **zero adjustable parameters**. The full theory develops those numerical de
 | **PdtCommitment** | The two archimedean places of ℚ(ρ) and the image σ₂(ℤ[ρ]) ⊆ ℂ of the order ℤ[ρ]. Three groups: (i) the **exact contraction rate** r·\|z\|² = 1, equivalently \|z\| = r^(−1/2) (`tick_contraction`, `norm_z_eq_rpow`) — the norm relation N(ρ) = 1 read at the two places, an identity of the field rather than a numerical estimate; (ii) the **integrality floor** 1 ≤ \|σ₁(x)\|·\|σ₂(x)\|² for every nonzero x ∈ ℤ[ρ], hence \|σ₂(x)\| ≥ \|σ₁(x)\|^(−1/2) (`meyer_separation`, `meyer_separation_rpow`), proved from the norm form of a nonzero element being a nonzero rational integer; (iii) **windowed permanence** — multiplication by z permutes σ₂(ℤ[ρ]) (ρ is a unit); two lattice points whose real embeddings differ by at most H are at least H^(−1/2) apart; and a point within (1/2)·H^(−1/2) of σ₂(ℓ) remains, after any number of multiplications by z, strictly nearest to the image of ℓ among all lattice points in the window (`certification_soundness`). The window hypothesis is explicit and essential — the unwindowed image is dense. Reading these as a dynamics with recorded outcomes is an **identification**, marked as such in the file and not kernel-checked. |
 | **PdtGolden / PdtArithmetic** | The same bedrock re-expressed as elementary integer identities (`decide`/`norm_num`; the genuine field invariants are the API row above): disc(x³−x−1) = −23 = dim 𝔰𝔲(3)+𝔰𝔲(4); disc(x⁴−x−1) = −283; 23, 283 prime; N(2Q−1) = −23; the norm-tower product N(ρQ) = N(ρ)⁴·N(Q)³ = 1⁴·(−1)³ = −1, an elementary numeral identity (the compositum ℚ(ρ,Q) is not formalized); dim 𝔰𝔲(4) = 15. |
 | **PdtMahler / PdtMahlerBox / PdtMahlerMain / PdtMahlerTheta / PdtMahlerWindow** | The **Mahler degree window**: for d ∈ {2, 3, 4}, `x^d − x − 1` attains the **minimal Mahler measure** among monic irreducible integer polynomials of degree d with measure above one, and the minima are pinned exactly — M² = M+1 (φ), M³ = M+1 (ρ), M⁴ = M³+1 (θ₄). Graeffe-certificate architecture: Mathlib's coefficient bound cuts each degree to a finite box; all 6,339 certificates (21 / 147 / 6,171) kernel-decided with plain `decide`. Attainment is theorem-backed (the minimizers' irreducibility is on the compared surface); Siegel 1944 (smallest / second-smallest Pisot) is cited, not formalized. |
+| **PdtBusch** | **Busch's theorem** (2003), finite dimension: every generalized probability measure on quantum effects — nonnegative, additive where the sum stays an effect, normalized — is trace against a **unique** density matrix (existence **and** uniqueness, `busch`). No continuity assumed anywhere: additivity plus nonnegativity force real homogeneity on the effect interval (the monotone squeeze), then spectral scale/shift extension and an entrywise density-matrix assembly. Valid already at dimension 2, where Gleason's theorem (cited, not formalized) does not apply. Effects in Mathlib vocabulary (`Matrix.PosSemidef`). |
 
 A clickable **dependency graph** (built with [`leanblueprint`](https://github.com/PatrickMassot/leanblueprint)) is published on this repo's **GitHub Pages** — the headline statements green, with the lone node the kernel does not check (the identification) set apart.
 
@@ -72,6 +73,29 @@ come from a root-inversion identity (reversal invariance at unit constant
 term) plus a (σ, s)-reduction in the style of `PdtPisotBoundary`
 localizing the conjugate pairs, with root multiplicity excluded by
 kernel-certified measure brackets rather than discriminants.
+
+## Busch's theorem (PdtBusch)
+
+Kernel-checked Busch (2003), finite dimension: every generalized
+probability measure on quantum effects is trace against a unique density
+matrix (`busch_representation`: existence and uniqueness). Effects are
+PSD matrices below the identity, spelled via `Matrix.PosSemidef`; no
+continuity is assumed anywhere, since nonnegativity plus additivity
+already force real homogeneity on the effect interval — scalars in
+[0,1] (`homogeneity_automatic`, compared separately). This is Born-rule
+uniqueness in the POVM reading, valid already at dimension 2, where
+Gleason's theorem (which requires dimension at least 3) does not apply;
+Gleason's theorem itself is not formalized here. The
+infinite-dimensional sigma-additive statement is out of scope for this
+entry and stated so.
+
+Method: the frame function is bootstrapped from additivity to rational
+and then real homogeneity by a monotone squeeze; extended canonically to
+all PSD matrices by spectral scaling into the effect interval (conjugation
+by the eigenvector unitary), then to all Hermitian matrices by shifting;
+the density matrix is assembled entry by entry from the extension on a
+Hermitian matrix-unit basis, and uniqueness is read off entrywise through
+the same basis. Axioms: propext, Classical.choice, Quot.sound.
 
 ## The one boundary, stated plainly
 
