@@ -1,291 +1,204 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/mathlib-initiative/formalization.yaml/main/schema/formalization.schema.json
-version: "v0.4"
-
+# formalization.yaml — Mahler degree-window entry (STAGED DRAFT)
+# Disclosure, byline and license cleared per PI direction, 2026-08-30.
+# See TRANSPLANT.md for the ship steps.
 project:
-  name: "The exact CHSH constants: Tsirelson's bound in norm form for every CHSH tuple, the classical constant exactly 2 under one-party commutation, and 2√2 as the attained supremum over M₄(ℝ)"
-  description: >-
-    Kernel-checked exact-constant results for the CHSH operator
-    T = A₀B₀ + A₀B₁ + A₁B₀ − A₁B₁ of an arbitrary CHSH tuple (Mathlib's
-    IsCHSHTuple: self-adjoint involutions with the A's commuting with the
-    B's). (1) The Landau identity: in any *-ring,
-    T² = 4 + [A₀,A₁]·[B₁,B₀] — the exact, representation-independent
-    correction to the naive T² = 8·1 (chsh_mul_self). (2) Tsirelson's bound
-    in norm form: ‖T‖ ≤ 2√2 for every CHSH tuple in every nontrivial unital
-    real C*-normed algebra (chsh_norm_le). (3) The classical constant, exactly:
-    if either party's pair commutes, ‖T‖ = 2 — not merely ≤ 2
-    (chsh_norm_of_comm). (4) Necessity of noncommutativity: any violation
-    ‖T‖ > 2 forces A₀A₁ ≠ A₁A₀ and B₀B₁ ≠ B₁B₀ — noncommutativity within
-    both parties is necessary for any violation of the classical bound
-    (noncomm_of_chsh_norm_gt_two). (5) The exact constant of M₄(ℝ): in the
-    l2 operator norm, 2√2 is the greatest element of the set of CHSH
-    operator norms over 4×4 real matrices — an upper bound for every tuple,
-    attained by an explicit real-Pauli tuple (chsh_opNorm_isGreatest), so
-    the maximal violation 2√2 is possible, not just bounded. The witness
-    side stays compared: the explicit quadruple is verified to be a genuine
-    CHSH tuple, its CHSH operator has eigenvalue exactly 2√2 on the explicit
-    nonzero vector (1,0,0,1) and l2 operator norm exactly 2√2; the ordered
-    star-ring bounds T ≤ (2√2)·1 and (commutative case) T ≤ 2 and the strict
-    gap 2 < 2√2 complete the picture. A falsification is compared alongside:
-    the saturating tuple's T² is not c·1 for ANY real c (chsh_sq_ne
-    quantifies over every scalar), so the scalar-square route to the norm
-    is closed for every scalar; the norm results here go through the
-    C*-identity (and, for the generic bound, the Landau identity) instead.
+  name: "The Mahler degree window: minimal Mahler measures at degrees 2, 3, 4"
+  description: >
+    For each degree d in {2, 3, 4}, the polynomial x^d - x - 1 attains the
+    minimal Mahler measure among monic irreducible integer polynomials of
+    degree d with Mahler measure above one, and the three minimal values
+    are exactly the golden ratio (M^2 = M + 1), the plastic ratio
+    (M^3 = M + 1), and the root of x^4 - x^3 - 1 above one (M^4 = M^3 + 1);
+    by Siegel's classical theorem (1944, cited as background, not
+    formalized here) the latter two are the smallest and second-smallest
+    Pisot numbers. Classically the degree-4 minimizer is not itself a
+    Pisot polynomial, yet its measure lands back on the Pisot list via
+    the reciprocal transform. The minimizers' irreducibility is part of
+    the compared surface. Proofs are
+    by a Graeffe-certificate architecture: an effective coefficient-bound
+    box from Mathlib's norm_coeff_le_choose_mul_mahlerMeasure, then one
+    integer certificate per box element (tie orbit, cyclotomic cofactor,
+    explicit factorization, or an iterated Graeffe coefficient bound),
+    6,171 + 147 + 21 certificates kernel-decided with plain decide — no
+    native_decide anywhere. The exact values follow from a root-inversion
+    identity and a (sigma, s)-reduction localizing the conjugate pairs,
+    with multiplicity excluded by kernel-certified measure brackets.
   authors:
     - "Stephanie Alexander"
-  license: "MIT"
+  license: "MIT"  # verified 2026-08-30: matches pdt-lean's LICENSE (MIT)
   responsible_maintainers:
     - "Stephanie Alexander"
-
 classification:
-  arxiv: ["quant-ph", "math.OA"]
-  msc2020: ["81P40", "81P45", "46L60", "15A18"]
-
+  arxiv:
+    - "math.NT"
+  msc2020:
+    - "11R06"   # Pisot and Salem numbers
+    - "11R09"   # polynomials over global fields
+    - "12D10"   # location of real zeros
 sources:
-  - title: "Quantum generalizations of Bell's inequality"
-    authors:
-      - "B. S. Cirel'son (Boris S. Tsirelson)"
-    id: "Letters in Mathematical Physics 4 (1980), 93–100"
-    type: "article"
-    location: "https://doi.org/10.1007/BF00417500"
+  - title: "Quantum Mechanics as the Arithmetic of a Complex Place (v8B)"
+    # doi 10.5281/zenodo.21971268 — the paper's Edit-8 trace row states the
+    # DEGREE-4 minimality instance (with fourfold attainment) that
+    # quartic_min formalizes; the full d=2,3,4 window and tie sets are in
+    # the deposited computational artifacts beside it (sweep.py,
+    # OUTPUT.txt). "formalizes" is claimed for the degree-4 row.
+    relationship: "formalizes"
+  - title: "C. L. Siegel, Algebraic integers whose conjugates lie in the unit circle, Duke Math. J. 11 (1944), 597-602"
+    # doi 10.1215/S0012-7094-44-01152-X; Zbl 0063.07005. Pages and DOI added
+    # 2026-08-29 (lit-scout).
+    # the identification of rho and theta_4 as the two smallest Pisot
+    # numbers, used in the prose reading of the exact-value theorems.
+    relationship: "background"
+  - title: "D. H. Lehmer, Factorization of certain cyclotomic functions, Ann. of Math. (2) 34 (1933), 461-479"
+    # doi 10.2307/1968172 (resolves to JSTOR 1968172; Zbl 0007.19904).
+    # Verified 2026-08-29 (lit-scout): Lehmer's text states this entry's
+    # three minimality results with this entry's three minimizers. Read as a
+    # verbatim quotation in M.-J. Bertin, "From Salem numbers to Mahler
+    # measure of K3 surfaces (Lecture 1)", Institut Fourier, under her
+    # lead-in "Now I cite Lehmer [Le33]" -- "The best quadratic is x^2-x-1,
+    # for which Omega = 1.61803399... The best cubic is x^3-x-1, for which
+    # Omega = 1.32471796.. The best quartic is x^4-x-1, for which Omega =
+    # 1.380277569..." -- and corroborated independently by Smyth's survey
+    # (arXiv:math/0701397v2 section 8.1). NOT read in the 1933 original.
     relationship: "formalizes"
     note: >-
-      Tsirelson's paper establishes the bound and its attainability. This
-      project formalizes both sides at operator level: the norm-form bound
-      ‖T‖ ≤ 2√2 for every CHSH tuple in a unital real C*-normed algebra
-      (proved via Landau's C*-argument rather than Tsirelson's original
-      route), and a machine-checked attainment witness — an explicit
-      real-Pauli tuple verified to satisfy the CHSH axioms, with the exact
-      eigen-equation and the exact operator-norm equality checked by the
-      kernel, packaged as an IsGreatest statement over M₄(ℝ).
-    license: "unknown"
-    author_endorsement: "n/a"
-  - title: "On the violation of Bell's inequality in quantum theory"
-    authors:
-      - "Lawrence J. Landau"
-    id: "Physics Letters A 120, no. 2 (1987), 54–56"
-    type: "article"
-    location: "https://doi.org/10.1016/0375-9601(87)90075-2"
-    relationship: "formalizes"
+      Lehmer records the same three minimizers and the same three minimal
+      values this entry proves: x^2 - x - 1 at 1.61803399..., x^3 - x - 1 at
+      1.32471796..., x^4 - x - 1 at 1.380277569.... The relationship is
+      scoped to the three minimality theorems and their numerical values.
+      Lehmer states neither the three exact-value identities (M^2 = M + 1,
+      M^3 = M + 1, M^4 = M^3 + 1) nor the minimizers' irreducibility nor the
+      tie sets, and he gives the values as the outcome of an examination,
+      not as a completeness certificate -- supplying that certificate, in
+      the kernel, is what this entry adds. The result is Lehmer's under the
+      standard irreducible reading, which is how the literature states it;
+      the unrestricted monic reading is false at degree 4, since the
+      reducible quartic (x^3 - x - 1)(x + 1) has measure 1.3247... <
+      1.3803.... The paper is also cited as the origin of the
+      minimal-measure problem.
+  - title: "C. J. Smyth, On the product of the conjugates outside the unit circle of an algebraic integer, Bull. London Math. Soc. 3 (1971), 169-175"
+    # Verified 2026-08-29 (lit-scout). Statement and equality case read at
+    # Smyth's own survey, arXiv:math/0701397v2 eq. (15). Already banked in
+    # references/library.md (line 251, verified 2026-06-22).
+    relationship: "independently-proves"
     note: >-
-      Landau's identity T² = 4 + [A₀,A₁]·[B₁,B₀] is formalized as
-      chsh_mul_self (for any CHSH tuple in any *-ring), and the norm-level
-      suite follows Landau's C*-identity argument: the bound ‖T‖ ≤ 2√2
-      (chsh_norm_le), the exact classical constant ‖T‖ = 2 when either
-      party's commutator vanishes (chsh_norm_of_comm), and its
-      contrapositive, that any violation forces noncommutativity in both
-      parties (noncomm_of_chsh_norm_gt_two). Formalized here for real
-      C*-normed algebras; Landau's converse direction (every noncommuting
-      pair admits a violating state) is not formalized.
-    license: "unknown"
-    author_endorsement: "n/a"
-  - title: "Proposed experiment to test local hidden-variable theories"
-    authors:
-      - "John F. Clauser"
-      - "Michael A. Horne"
-      - "Abner Shimony"
-      - "Richard A. Holt"
-    id: "Physical Review Letters 23 (1969), 880–884"
-    type: "article"
-    location: "https://doi.org/10.1103/PhysRevLett.23.880"
+      Scoped to cubic_min ONLY. Smyth proves that a non-reciprocal algebraic
+      integer has Mahler measure at least M(x^3 - x - 1) = 1.3247..., with
+      equality only for conjugates of (+-theta_0)^(+-1/k). Every monic
+      irreducible cubic over Z is non-reciprocal (a reciprocal polynomial of
+      odd degree has +1 or -1 as a root), so his theorem covers this entry's
+      entire degree-3 competitor class and yields cubic_min; his equality
+      case at k = 1 gives the same fourfold degree-3 tie set the
+      certificates enumerate. It does NOT give quadratic_min or quartic_min
+      (both minima lie strictly above his bound, and reciprocal quartics are
+      outside his hypothesis), and it states none of the three exact-value
+      identities or the irreducibility theorems.
+  - title: "C. Smyth, The Mahler measure of algebraic numbers: a survey, in Number Theory and Polynomials, LMS Lecture Note Series 352, CUP (2008), 322-349"
+    # arXiv:math/0701397v2. Read first-hand 2026-08-29: section 8.1
+    # attributes the degree-2,3,4 smallest measures to Lehmer 1933 and
+    # describes the scope of the Boyd and Mossinghoff tables; eq. (15)
+    # states Smyth's 1971 theorem with its equality case. Open access.
     relationship: "background"
     note: >-
-      Origin of the CHSH expression and the classical bound 2. The compared
-      classical_le_two (commutative ordered star-ring, via Mathlib's
-      CHSH_inequality_of_comm) and chsh_norm_of_comm (norm form, exactly 2)
-      are algebraic renderings of that bound, not a formalization of the
-      paper's experimental content.
-    license: "unknown"
-    author_endorsement: "n/a"
-
-related_formalizations:
-  - id: "https://github.com/leanprover-community/mathlib4 (Mathlib's CHSH development: IsCHSHTuple, CHSH_inequality_of_comm, tsirelson_inequality)"
-    relationship: "builds-on"
-    note: >-
-      The two ordered star-ring bounds (chsh_upper, classical_le_two) are
-      supplied by Mathlib's CHSH development. The norm-level suite — the
-      Landau identity, the generic C*-norm bound, the exact classical
-      constant, the bilateral-noncommutativity necessity, and the IsGreatest
-      packaging over M₄(ℝ) — together with the verified saturating tuple and
-      its exact eigen-equation and operator norm, is this project's
-      contribution.
-  - id: "https://github.com/leanprover-community/mathlib4/pull/41847"
-    relationship: "other"
-    note: >-
-      The tightness portion of this material (the saturating tuple, its
-      verification, the eigen-equation, and the gap packaging) is under
-      review for inclusion in Mathlib (PR 41847, review feedback addressed
-      2026-08-12; placement discussion ongoing — main library versus
-      Archive). The exact-constant suite compared here
-      (chsh_mul_self, chsh_norm_le, chsh_norm_of_comm,
-      noncomm_of_chsh_norm_gt_two, chsh_opNorm_isGreatest) is not part of
-      that PR.
-
-status:
-  scope: >-
-    Formalized, 13 compared theorems. Generic: the Landau identity
-    T² = 4 + [A₀,A₁]·[B₁,B₀] for any CHSH tuple in any *-ring; the norm-form
-    Tsirelson bound ‖T‖ ≤ 2√2 in every nontrivial unital real C*-normed
-    algebra; the
-    exact classical constant ‖T‖ = 2 under one-party commutation; the
-    necessity theorem — ‖T‖ > 2 implies noncommutativity within both
-    parties; the ordered star-ring bounds T ≤ (2√2)·1 (any ordered
-    star-ring) and
-    T ≤ 2 (commutative); and the strict gap 2 < 2√2. Over M₄(ℝ) (Mathlib's
-    scoped Matrix.Norms.L2Operator instances): 2√2 is the greatest CHSH
-    operator norm (IsGreatest — upper bound for every 4×4 real CHSH tuple,
-    attained); the explicit real-Pauli quadruple is verified to be a CHSH
-    tuple, with exact eigen-equation on the explicit nonzero vector
-    (1,0,0,1), exact operator norm ‖P‖ = 2√2, and the falsification
-    P·P ≠ c·1 for every real c. No physical claim is part of the compared
-    statements; in
-    particular, the compared theorems state that noncommutativity is
-    necessary for a violation and that the maximal violation is attained in
-    M₄(ℝ) — nothing stronger.
-  sorry_count: 0
-  sorry_in_definitions: 0
-  axioms: []
+      The open-access secondary locus for both classical attributions this
+      entry rests on: that the degree 2, 3 and 4 smallest measures are
+      Lehmer's (section 8.1), and the statement and equality case of Smyth's
+      1971 non-reciprocal bound (eq. 15). Proves nothing formalized here.
+  # CLOSED 2026-08-29 (lit-scout), replacing the standing TODO that assumed
+  # the small-measure tables hold these minima: THEY DO NOT, and no Boyd or
+  # Mossinghoff source belongs here. Checked first-hand -- Mossinghoff's
+  # Mahler-Measure-Database tables are floored at measure < 1.3 (and < 1.25),
+  # while all three minima exceed 1.3; his BestByDegree_200.txt is even-degree
+  # only and its first row is d = 8; Mossinghoff-Rhin-Wu, Exp. Math. 17 (2008)
+  # 451-458 determines the minimum only for even 8 <= d <= 54 (zbMATH Zbl
+  # 1194.11100); and Boyd, Math. Comp. 35 (1980) 1361-1377 and 53 (1989)
+  # 355-357 are restricted to RECIPROCAL polynomials of measure <= 1.3, while
+  # every minimizer here is non-reciprocal. The degrees 2, 3, 4 window sits in
+  # the gap those tables leave; its published loci are Lehmer 1933 above and
+  # Smyth 1971. Source relationships must be precise -- the Gahler lesson.
+alignment:
+  namespace: "MahlerWindow"
+  # ADDED 2026-08-29. This entry compared nine theorems with no claim-to-Lean
+  # trace table at all — the only one of the five staged entries missing its
+  # alignment block. PI: review each source attribution before submission.
+  statements:
+    - source: "Lehmer 1933 (the degree-2 minimum; see the source note for what he does and does not state)"
+      lean: "MahlerWindow.quadratic_min"
+      module: "Solution"
+      status: "proved"
+      note: >-
+        Among monic irreducible integer polynomials of degree 2 with Mahler
+        measure above 1, x^2 - X - 1 attains the minimum. Lehmer records the
+        same minimizer and value; the completeness certificate is this entry's.
+    - source: "this work (exact value; v8B)"
+      lean: "MahlerWindow.quadratic_exact"
+      module: "Solution"
+      status: "proved"
+      note: >-
+        The minimum M satisfies M^2 = M + 1 exactly, and M > 1 — the golden
+        ratio. Not an approximation and not in Lehmer, who gives 1.61803399...
+        as a decimal.
+    - source: "this work (supporting: the minimizer is irreducible)"
+      lean: "MahlerWindow.quadratic_min_irreducible"
+      module: "Solution"
+      status: "proved"
+      note: "x^2 - X - 1 is irreducible over the integers, so it is in the competitor class it minimizes."
+    - source: "Lehmer 1933 (the degree-3 minimum) / Smyth 1971 (independently, over the whole non-reciprocal class)"
+      lean: "MahlerWindow.cubic_min"
+      module: "Solution"
+      status: "proved"
+      note: >-
+        Among monic irreducible integer polynomials of degree 3 with measure
+        above 1, x^3 - X - 1 attains the minimum. This is the one row with two
+        independent published sources: Lehmer states it, and Smyth's 1971 bound
+        for non-reciprocal algebraic integers covers the entire degree-3 class,
+        since every monic irreducible cubic is non-reciprocal.
+    - source: "this work (exact value; v8B)"
+      lean: "MahlerWindow.cubic_exact"
+      module: "Solution"
+      status: "proved"
+      note: "The minimum M satisfies M^3 = M + 1 exactly, and M > 1 — the plastic number."
+    - source: "this work (supporting: the minimizer is irreducible)"
+      lean: "MahlerWindow.cubic_min_irreducible"
+      module: "Solution"
+      status: "proved"
+      note: "x^3 - X - 1 is irreducible over the integers."
+    - source: "Lehmer 1933 (the degree-4 minimum)"
+      lean: "MahlerWindow.quartic_min"
+      module: "Solution"
+      status: "proved"
+      note: >-
+        Among monic irreducible integer polynomials of degree 4 with measure
+        above 1, x^4 - X - 1 attains the minimum. The IRREDUCIBILITY hypothesis
+        is essential and not decorative: the unrestricted monic reading is FALSE
+        here, since the reducible quartic (x^3 - X - 1)(X + 1) has measure
+        1.3247... below this minimum's 1.3803....
+    - source: "this work (exact value; v8B)"
+      lean: "MahlerWindow.quartic_exact"
+      module: "Solution"
+      status: "proved"
+      note: >-
+        The minimum M satisfies M^4 = M^3 + 1 exactly, and M > 1. Note the shape
+        differs from the degree 2 and 3 rows — it is not M^4 = M + 1.
+    - source: "this work (supporting: the minimizer is irreducible)"
+      lean: "MahlerWindow.quartic_min_irreducible"
+      module: "Solution"
+      status: "proved"
+      note: "x^4 - X - 1 is irreducible over the integers."
 
 automation:
   methods:
     - method: "agent"
-      models: ["Anthropic Claude (Opus/Sonnet-class, 2026)"]
+      models: ["Anthropic Claude (Opus/Fable-class, 2026)"]
       framework: "Claude Code"
-      tool_setup: >-
-        AI-assisted proof drafting, refactoring, and error-loop iteration in
-        Claude Code against lake build; the repository's one-cell Colab
-        verifier self-certifies via #print axioms that every declaration
-        depends only on the standard three axioms.
-      cost:
-        wall_time: "several weeks of part-time sessions across the development"
-        spend_usd: "subscription-based"
-        hardware: "local machine"
-      prompting_notes: >-
-        Theorem-by-theorem sessions; statements fixed by the author first,
-        proofs iterated against the compiler.
-    - method: "manual"
-      models: []
-      framework: "n/a"
-      tool_setup: >-
-        Author-directed statement design, mathematical review, and acceptance
-        of every theorem; all statements audited by the author against their
-        informal descriptions.
-      cost:
-        wall_time: "included in the sessions above"
-        spend_usd: "not tracked"
-        hardware: "local machine"
-      prompting_notes: "n/a"
-  spend_usd: "subscription-based"
-  notes: >-
-    Human-directed, machine-verified workflow: the author fixes statements
-    and reviews all mathematics; AI assistance drafts and repairs proofs; the
-    Lean kernel is the acceptance criterion. The tightness portion of the
-    material was submitted to Mathlib (PR 41847) with the LLM-generated
-    label duly applied.
-
-fidelity:
-  divergences: >-
-    The norm-level results are stated for unital real C*-normed algebras
-    (Mathlib's NormedRing + StarRing + CStarRing + NormedAlgebra ℝ, with
-    Nontrivial), whereas Landau 1987 and Tsirelson 1980 work with complex
-    C*-algebras / operators on complex Hilbert space; the real setting is
-    what the M₄(ℝ) instantiation needs, and the C*-identity argument is
-    carried out in it directly. Landau's converse (every noncommuting pair
-    admits a violating state) is not formalized; the necessity direction is.
-    The IsGreatest statement is over 4×4 real matrices specifically — it
-    asserts nothing about other dimensions or carriers. The norm results are
-    stated in Mathlib's scoped l2 operator norm on M₄(ℝ), named explicitly
-    in the Challenge module.
-
+      # Human-directed workflow; every theorem kernel-checked; boxes
+      # decided by plain decide (no native_decide). Disclosure filled
+      # per PI direction, 2026-08-30, matching the registered entries.
 review:
-  status: "self-assessed; the tightness portion is under external review at Mathlib (PR 41847)"
-  reviewers:
-    - "Stephanie Alexander"
-  notes: >-
-    Statements audited by the author; the Mathlib pull request carrying the
-    tightness portion received reviewer feedback (docstring corrected
-    same-day; placement discussion ongoing), which constitutes partial
-    external review of that portion. The exact-constant
-    suite is self-assessed, with the kernel and the axiom audit as the
-    acceptance criteria.
-
-alignment:
-  namespace: "TsirelsonTightness"
-  statements:
-    - source: "Tsirelson 1980 (the bound, ordered form)"
-      lean: "TsirelsonTightness.chsh_upper"
-      module: "Solution"
-      status: "proved"
-      note: "Generic 2√2 bound for CHSH tuples in an ordered star-ring, from Mathlib's tsirelson_inequality."
-    - source: "Landau 1987 (the identity)"
-      lean: "TsirelsonTightness.chsh_mul_self"
-      module: "Solution"
-      status: "proved"
-      note: "T² = 4 + [A₀,A₁]·[B₁,B₀] for any CHSH tuple in any *-ring."
-    - source: "Tsirelson 1980 / Landau 1987 (the bound, norm form)"
-      lean: "TsirelsonTightness.chsh_norm_le"
-      module: "Solution"
-      status: "proved"
-      note: "‖T‖ ≤ 2√2 for every CHSH tuple in every nontrivial unital real C*-normed algebra, via the Landau identity and the C*-identity."
-    - source: "Landau 1987 (easy direction); norm-form rendering this work"
-      lean: "TsirelsonTightness.chsh_norm_of_comm"
-      module: "Solution"
-      status: "proved"
-      note: "One-party commutation forces ‖T‖ = 2 exactly — the classical CHSH constant, not merely an upper bound."
-    - source: "Landau 1987 (easy direction, contrapositive); norm-form rendering this work"
-      lean: "TsirelsonTightness.noncomm_of_chsh_norm_gt_two"
-      module: "Solution"
-      status: "proved"
-      note: "‖T‖ > 2 forces A₀A₁ ≠ A₁A₀ and B₀B₁ ≠ B₁B₀: noncommutativity within both parties is necessary for any violation."
-    - source: "This work (explicit witness)"
-      lean: "TsirelsonTightness.tuple_isCHSH"
-      module: "Solution"
-      status: "proved"
-      note: "The real-Pauli quadruple is a genuine CHSH tuple."
-    - source: "This work (explicit witness)"
-      lean: "TsirelsonTightness.chsh_saturates"
-      module: "Solution"
-      status: "proved"
-      note: "Exact eigen-equation: the CHSH operator sends (1,0,0,1) to (2√2)·(1,0,0,1)."
-    - source: "This work"
-      lean: "TsirelsonTightness.vsat_ne_zero"
-      module: "Solution"
-      status: "proved"
-      note: "The witness vector is nonzero."
-    - source: "CHSH 1969 / Mathlib's CHSH_inequality_of_comm"
-      lean: "TsirelsonTightness.classical_le_two"
-      module: "Solution"
-      status: "proved"
-      note: "Commutative bound ≤ 2."
-    - source: "Elementary"
-      lean: "TsirelsonTightness.bell_gap"
-      module: "Solution"
-      status: "proved"
-      note: "2 < 2√2, so the classical and quantum constants are strictly separated."
-    - source: "This work (operator norm)"
-      lean: "TsirelsonTightness.chsh_opNorm"
-      module: "Solution"
-      status: "proved"
-      note: >-
-        The CHSH operator of the tuple has l2 operator norm exactly 2√2
-        (via the C*-identity; scoped Matrix.Norms.L2Operator instances).
-    - source: "This work (falsification)"
-      lean: "TsirelsonTightness.chsh_sq_ne"
-      module: "Solution"
-      status: "proved"
-      note: >-
-        The square of the same CHSH operator is not any scalar multiple of
-        the identity — the theorem quantifies over every c : ℝ — so the
-        scalar-square route to the norm is closed for every scalar.
-    - source: "This work (the exact constant of M₄(ℝ))"
-      lean: "TsirelsonTightness.chsh_opNorm_isGreatest"
-      module: "Solution"
-      status: "proved"
-      note: >-
-        IsGreatest: 2√2 is an upper bound on the CHSH operator norm of every
-        4×4 real CHSH tuple and is attained — the supremum, achieved.
+  status: "unreviewed"
 
 acknowledgements: >-
-  Built on Mathlib and the Lean 4 toolchain — in particular Mathlib's CHSH
-  development; thanks to the leanprover community. Developed with AI
-  assistance (Anthropic Claude, in Claude Code) under the author's direction.
-  Dedicated to the memory of David N. Schramm.
+  Built on Mathlib and the Lean 4 toolchain — in particular its integer
+  polynomial, coefficient-bound, and decidability machinery; thanks to
+  the leanprover community. Developed with AI assistance (Anthropic
+  Claude, in Claude Code) under the author's direction.

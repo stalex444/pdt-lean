@@ -1,193 +1,98 @@
-import Mathlib
+/-
+# The Mahler degree window: minimality at degrees 2, 3, 4
 
-/-!
-# Challenge: the exact CHSH constants — necessity, attainment, and the supremum over M₄(ℝ)
+For d ∈ {2, 3, 4}, the polynomial `x^d − x − 1` attains the minimal Mahler
+measure among monic irreducible integer polynomials of degree d with Mahler
+measure above one. The minimizers' membership in the competitor class is
+part of the compared surface (irreducibility below; measure above one is
+the second conjunct of each exact-value theorem), and the three minimal
+values are pinned exactly: the golden ratio (M² = M + 1), the plastic
+ratio (M³ = M + 1), and the root of x⁴ − x³ − 1 above one (M⁴ = M³ + 1).
+By Siegel's classical theorem (Duke Math. J. 11, 1944 — cited as
+background, not formalized here) the latter two are the smallest and
+second-smallest Pisot numbers.
 
-This module is the small, trusted surface to audit. Results with `sorry`
-placeholders; proved versions are in `Solution.lean`.
+The degree-4 twist: classically, x⁴ − x − 1 is not itself a Pisot
+polynomial — three of its roots lie outside the unit circle (kernel-backed
+in the ambient repository by `PDT.quartic_conj_norm_gt_one`, not part of
+this compared surface) — yet its Mahler measure lands back on the Pisot
+list, as the Pisot root of the reciprocal transform x⁴ − x³ − 1.
 
-**The suite.** For a CHSH tuple (Mathlib's `IsCHSHTuple`: self-adjoint
-involutions `A₀, A₁, B₀, B₁` with the `A`s commuting with the `B`s), write
-`T = A₀B₀ + A₀B₁ + A₁B₀ − A₁B₁`.
-
-1. **The Landau identity** (`chsh_mul_self`): in any \*-ring,
-   `T² = 4 + [A₀,A₁]·[B₁,B₀]` — the exact, representation-independent
-   correction to the naive `T² = 8·1`.
-2. **Tsirelson's bound in norm form** (`chsh_norm_le`): in every nontrivial
-   unital real C\*-normed algebra, `‖T‖ ≤ 2√2`.
-3. **The classical constant, exactly** (`chsh_norm_of_comm`): if either
-   party's pair commutes, `‖T‖ = 2` exactly — not merely `≤ 2`.
-4. **Necessity of noncommutativity** (`noncomm_of_chsh_norm_gt_two`): any
-   violation `‖T‖ > 2` forces `A₀A₁ ≠ A₁A₀` *and* `B₀B₁ ≠ B₁B₀`.
-5. **The exact constant of `M₄(ℝ)`** (`chsh_opNorm_isGreatest`): in the l2
-   operator norm, `2√2` is the *greatest* element of the set of CHSH operator
-   norms over 4×4 real matrices — an upper bound for every tuple, attained.
-
-Points 4 and 5 are the necessity/possibility pair: noncommutativity within
-both parties is *necessary* for any violation of the classical bound, and the
-explicit real-Pauli tuple below shows the maximal violation `2√2` is
-*possible* (attained).
-
-**The original three beats** remain compared. (1) `chsh_upper`: for any CHSH
-tuple in an ordered star-ring, `T ≤ (2√2) • 1`. (2) Attainment: an explicit
-real-Pauli quadruple in `M₄(ℝ)` — integer matrices up to one scalar `(√2)⁻¹`
-— is a genuine CHSH tuple (`tuple_isCHSH`) whose CHSH operator has eigenvalue
-exactly `2√2` on an explicit nonzero vector (`chsh_saturates`,
-`vsat_ne_zero`), and l2 operator norm exactly `2√2` (`chsh_opNorm`).
-(3) `classical_le_two`: in a *commutative* ordered star-ring the same
-expression is bounded by `2`, and `2 < 2√2` strictly (`bell_gap`). Along the
-way, a falsification (`chsh_sq_ne`): the saturating tuple's `T²` is *not*
-`c • 1` for *any* real `c` (its square is not ANY scalar multiple of the
-identity — `chsh_sq_ne` quantifies over every `c : ℝ`), so the naive
-scalar-square route `T² = c·1 ⇒ ‖T‖ = √c` is closed for every scalar, not
-just `8`; the norm results here go through the C\*-identity (and, for the
-generic bound, the Landau identity) instead.
+The Mahler measure is Mathlib's `Polynomial.mahlerMeasure`; integer
+polynomials enter via `Polynomial.map (Int.castRingHom ℂ)`.
 -/
+import Mathlib.Analysis.Polynomial.MahlerMeasure
+import Mathlib.NumberTheory.MahlerMeasure
 
-namespace TsirelsonTightness
+namespace MahlerWindow
 
-open Matrix
+open Polynomial
 
-/-! ## Generic results: any CHSH tuple, any carrier -/
+/-- Degree 2 minimality: among monic irreducible integer quadratics with
+Mahler measure above one, `x² − x − 1` attains the minimum. -/
+theorem quadratic_min (p : ℤ[X]) (hm : p.Monic) (hd : p.natDegree = 2)
+    (hi : Irreducible p)
+    (h1 : 1 < (p.map (Int.castRingHom ℂ)).mahlerMeasure) :
+    ((((X : ℤ[X]) ^ 2 - X - 1)).map (Int.castRingHom ℂ)).mahlerMeasure
+      ≤ (p.map (Int.castRingHom ℂ)).mahlerMeasure := sorry
 
-/-- **Tsirelson's bound, `2√2` form.** Any CHSH tuple in an ordered star-ring
-satisfies `A₀B₀ + A₀B₁ + A₁B₀ − A₁B₁ ≤ (2√2) • 1`. -/
-theorem chsh_upper
-    {R : Type*} [Ring R] [PartialOrder R] [StarRing R] [StarOrderedRing R]
-    [Algebra ℝ R] [IsOrderedModule ℝ R] [StarModule ℝ R]
-    (A₀ A₁ B₀ B₁ : R) (T : IsCHSHTuple A₀ A₁ B₀ B₁) :
-    A₀ * B₀ + A₀ * B₁ + A₁ * B₀ - A₁ * B₁ ≤ (2 * Real.sqrt 2) • (1 : R) := by
+/-- Degree 2 exact value: the measure of `x² − x − 1` satisfies `M² = M + 1`
+with `M > 1` — it is the golden ratio. -/
+theorem quadratic_exact :
+    ((((X : ℤ[X]) ^ 2 - X - 1)).map (Int.castRingHom ℂ)).mahlerMeasure ^ 2
+        = ((((X : ℤ[X]) ^ 2 - X - 1)).map (Int.castRingHom ℂ)).mahlerMeasure + 1
+      ∧ 1 < ((((X : ℤ[X]) ^ 2 - X - 1)).map (Int.castRingHom ℂ)).mahlerMeasure :=
   sorry
 
-/-- **The Landau identity.** For any CHSH tuple in any \*-ring,
-`T² = 4 + [A₀,A₁]·[B₁,B₀]`: the deviation of `T²` from the scalar `4` is
-exactly the product of the two intra-party commutators (Landau 1987). -/
-theorem chsh_mul_self
-    {R : Type*} [Ring R] [StarRing R] {A₀ A₁ B₀ B₁ : R}
-    (h : IsCHSHTuple A₀ A₁ B₀ B₁) :
-    (A₀ * B₀ + A₀ * B₁ + A₁ * B₀ - A₁ * B₁) * (A₀ * B₀ + A₀ * B₁ + A₁ * B₀ - A₁ * B₁)
-      = 4 + (A₀ * A₁ - A₁ * A₀) * (B₁ * B₀ - B₀ * B₁) := by
+/-- The degree-2 minimizer is in the competitor class: `x² − x − 1` is
+irreducible over ℤ. -/
+theorem quadratic_min_irreducible : Irreducible ((X : ℤ[X]) ^ 2 - X - 1) :=
   sorry
 
-/-- **Tsirelson's inequality in norm form, for every CHSH tuple.** In any
-unital real C\*-normed algebra, `‖A₀B₀ + A₀B₁ + A₁B₀ − A₁B₁‖ ≤ 2√2`. -/
-theorem chsh_norm_le
-    {R : Type*} [NormedRing R] [StarRing R] [CStarRing R] [Nontrivial R]
-    [NormedAlgebra ℝ R] {A₀ A₁ B₀ B₁ : R}
-    (h : IsCHSHTuple A₀ A₁ B₀ B₁) :
-    ‖A₀ * B₀ + A₀ * B₁ + A₁ * B₀ - A₁ * B₁‖ ≤ 2 * Real.sqrt 2 := by
+/-- Degree 3 minimality: among monic irreducible integer cubics with Mahler
+measure above one, `x³ − x − 1` attains the minimum. -/
+theorem cubic_min (p : ℤ[X]) (hm : p.Monic) (hd : p.natDegree = 3)
+    (hi : Irreducible p)
+    (h1 : 1 < (p.map (Int.castRingHom ℂ)).mahlerMeasure) :
+    ((((X : ℤ[X]) ^ 3 - X - 1)).map (Int.castRingHom ℂ)).mahlerMeasure
+      ≤ (p.map (Int.castRingHom ℂ)).mahlerMeasure := sorry
+
+/-- Degree 3 exact value: the measure of `x³ − x − 1` satisfies `M³ = M + 1`
+with `M > 1` — it is the plastic ratio (by Siegel's classical theorem, the
+smallest Pisot number; the ordering is cited, not formalized here). -/
+theorem cubic_exact :
+    ((((X : ℤ[X]) ^ 3 - X - 1)).map (Int.castRingHom ℂ)).mahlerMeasure ^ 3
+        = ((((X : ℤ[X]) ^ 3 - X - 1)).map (Int.castRingHom ℂ)).mahlerMeasure + 1
+      ∧ 1 < ((((X : ℤ[X]) ^ 3 - X - 1)).map (Int.castRingHom ℂ)).mahlerMeasure :=
   sorry
 
-/-- **The classical CHSH constant, exactly.** If either party's observables
-commute, the CHSH operator has norm exactly `2` — the commutator product in
-the Landau identity vanishes, so `T² = 4`. -/
-theorem chsh_norm_of_comm
-    {R : Type*} [NormedRing R] [StarRing R] [CStarRing R] [Nontrivial R]
-    [NormedAlgebra ℝ R] {A₀ A₁ B₀ B₁ : R}
-    (h : IsCHSHTuple A₀ A₁ B₀ B₁)
-    (hcomm : A₀ * A₁ = A₁ * A₀ ∨ B₀ * B₁ = B₁ * B₀) :
-    ‖A₀ * B₀ + A₀ * B₁ + A₁ * B₀ - A₁ * B₁‖ = 2 := by
+/-- The degree-3 minimizer is in the competitor class: `x³ − x − 1` is
+irreducible over ℤ. -/
+theorem cubic_min_irreducible : Irreducible ((X : ℤ[X]) ^ 3 - X - 1) :=
   sorry
 
-/-- **Necessity of noncommutativity.** Any CHSH tuple whose operator norm
-exceeds the classical bound `2` must be noncommuting in **both** parties. -/
-theorem noncomm_of_chsh_norm_gt_two
-    {R : Type*} [NormedRing R] [StarRing R] [CStarRing R] [Nontrivial R]
-    [NormedAlgebra ℝ R] {A₀ A₁ B₀ B₁ : R}
-    (h : IsCHSHTuple A₀ A₁ B₀ B₁)
-    (hgt : 2 < ‖A₀ * B₀ + A₀ * B₁ + A₁ * B₀ - A₁ * B₁‖) :
-    A₀ * A₁ ≠ A₁ * A₀ ∧ B₀ * B₁ ≠ B₁ * B₀ := by
+/-- Degree 4 minimality: among monic irreducible integer quartics with
+Mahler measure above one, `x⁴ − x − 1` attains the minimum. -/
+theorem quartic_min (p : ℤ[X]) (hm : p.Monic) (hd : p.natDegree = 4)
+    (hi : Irreducible p)
+    (h1 : 1 < (p.map (Int.castRingHom ℂ)).mahlerMeasure) :
+    ((((X : ℤ[X]) ^ 4 - X - 1)).map (Int.castRingHom ℂ)).mahlerMeasure
+      ≤ (p.map (Int.castRingHom ℂ)).mahlerMeasure := sorry
+
+/-- Degree 4 exact value: the measure of `x⁴ − x − 1` satisfies `M⁴ = M³ + 1`
+with `M > 1` — it is the root of `x⁴ − x³ − 1` above one (by Siegel's
+classical theorem, the second-smallest Pisot number; the ordering is cited,
+not formalized here — see the module docstring for the non-Pisot twist). -/
+theorem quartic_exact :
+    ((((X : ℤ[X]) ^ 4 - X - 1)).map (Int.castRingHom ℂ)).mahlerMeasure ^ 4
+        = ((((X : ℤ[X]) ^ 4 - X - 1)).map (Int.castRingHom ℂ)).mahlerMeasure ^ 3
+            + 1
+      ∧ 1 < ((((X : ℤ[X]) ^ 4 - X - 1)).map (Int.castRingHom ℂ)).mahlerMeasure :=
   sorry
 
-/-! ## The explicit saturating tuple in `M₄(ℝ)` -/
-
-/-- The scalar `(√2)⁻¹`. -/
-noncomputable def s : ℝ := (Real.sqrt 2)⁻¹
-
-/-- `A₀ = X ⊗ I` (real Pauli `X` on the first factor). -/
-def A₀ : Matrix (Fin 4) (Fin 4) ℝ := !![0,0,1,0; 0,0,0,1; 1,0,0,0; 0,1,0,0]
-
-/-- `A₁ = Z ⊗ I` (real Pauli `Z` on the first factor). -/
-def A₁ : Matrix (Fin 4) (Fin 4) ℝ := !![1,0,0,0; 0,1,0,0; 0,0,-1,0; 0,0,0,-1]
-
-/-- Integer part of `B₀`: `I ⊗ (X + Z)`. -/
-def B₀i : Matrix (Fin 4) (Fin 4) ℝ := !![1,1,0,0; 1,-1,0,0; 0,0,1,1; 0,0,1,-1]
-
-/-- Integer part of `B₁`: `I ⊗ (X − Z)`. -/
-def B₁i : Matrix (Fin 4) (Fin 4) ℝ := !![-1,1,0,0; 1,1,0,0; 0,0,-1,1; 0,0,1,1]
-
-/-- `B₀ = (√2)⁻¹ • (I ⊗ (X + Z))`. -/
-noncomputable def B₀ : Matrix (Fin 4) (Fin 4) ℝ := s • B₀i
-
-/-- `B₁ = (√2)⁻¹ • (I ⊗ (X − Z))`. -/
-noncomputable def B₁ : Matrix (Fin 4) (Fin 4) ℝ := s • B₁i
-
-/-- **The real-Pauli quadruple is a genuine CHSH tuple**: each operator is a
-self-adjoint involution, and the `A`s commute with the `B`s. -/
-theorem tuple_isCHSH : IsCHSHTuple A₀ A₁ B₀ B₁ := by
+/-- The degree-4 minimizer is in the competitor class: `x⁴ − x − 1` is
+irreducible over ℤ. -/
+theorem quartic_min_irreducible : Irreducible ((X : ℤ[X]) ^ 4 - X - 1) :=
   sorry
 
-/-- The eigenvector witnessing saturation: `v = (1, 0, 0, 1)`. -/
-def vsat : Fin 4 → ℝ := ![1, 0, 0, 1]
-
-/-- The witness vector is nonzero. -/
-theorem vsat_ne_zero : vsat ≠ 0 := by
-  sorry
-
-/-- **Saturation.** The CHSH operator of the real-Pauli tuple attains the
-eigenvalue `2√2` on `vsat`:
-`(A₀B₀ + A₀B₁ + A₁B₀ − A₁B₁) · v = (2√2) • v`. -/
-theorem chsh_saturates :
-    (A₀ * B₀ + A₀ * B₁ + A₁ * B₀ - A₁ * B₁).mulVec vsat
-      = (2 * Real.sqrt 2) • vsat := by
-  sorry
-
-/-- **Classical CHSH bound.** In a *commutative* ordered star-ring, any CHSH
-tuple satisfies `A₀B₀ + A₀B₁ + A₁B₀ − A₁B₁ ≤ 2`. -/
-theorem classical_le_two
-    {R : Type*} [CommRing R] [PartialOrder R] [StarRing R] [StarOrderedRing R]
-    [Algebra ℝ R] [IsOrderedModule ℝ R]
-    (A₀ A₁ B₀ B₁ : R) (T : IsCHSHTuple A₀ A₁ B₀ B₁) :
-    A₀ * B₀ + A₀ * B₁ + A₁ * B₀ - A₁ * B₁ ≤ 2 := by
-  sorry
-
-/-- **The gap is strict:** `2 < 2√2`. Commuting observables stop at `2`;
-the noncommutative tuple above reaches `2√2`. -/
-theorem bell_gap : (2 : ℝ) < 2 * Real.sqrt 2 := by
-  sorry
-
-/-! ## Operator-norm results over `M₄(ℝ)` (l2 operator norm) -/
-
-section OperatorNorm
-
-open scoped Matrix.Norms.L2Operator
-
-/-- **Exact operator norm.** The CHSH operator of the real-Pauli tuple has
-l2 operator norm exactly `2√2`, the Tsirelson value. -/
-theorem chsh_opNorm :
-    ‖A₀ * B₀ + A₀ * B₁ + A₁ * B₀ - A₁ * B₁‖ = 2 * Real.sqrt 2 := by
-  sorry
-
-/-- **Falsification:** the square of the CHSH operator is *not* `c • 1` for
-*any* real `c` — the naive scalar-square route to the Tsirelson norm,
-`T² = c·1 ⇒ ‖T‖ = √c`, fails for this representation for every scalar
-(compare the Landau identity `chsh_mul_self`: the commutator product is not
-scalar here). -/
-theorem chsh_sq_ne :
-    ∀ c : ℝ, (A₀ * B₀ + A₀ * B₁ + A₁ * B₀ - A₁ * B₁) * (A₀ * B₀ + A₀ * B₁ + A₁ * B₀ - A₁ * B₁)
-      ≠ c • (1 : Matrix (Fin 4) (Fin 4) ℝ) := by
-  sorry
-
-/-- **The exact CHSH constant of `M₄(ℝ)` is `2√2`:** it is the *greatest*
-element of the set of CHSH operator norms over 4×4 real matrices — an upper
-bound for every CHSH tuple, attained by the real-Pauli tuple above. Not a
-bound plus an example: the supremum, achieved. -/
-theorem chsh_opNorm_isGreatest :
-    IsGreatest {x : ℝ | ∃ A₀ A₁ B₀ B₁ : Matrix (Fin 4) (Fin 4) ℝ,
-        IsCHSHTuple A₀ A₁ B₀ B₁ ∧ x = ‖A₀ * B₀ + A₀ * B₁ + A₁ * B₀ - A₁ * B₁‖}
-      (2 * Real.sqrt 2) := by
-  sorry
-
-end OperatorNorm
-
-end TsirelsonTightness
+end MahlerWindow

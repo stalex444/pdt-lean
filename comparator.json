@@ -2,30 +2,15 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "TsirelsonTightness.chsh_upper",
-    "TsirelsonTightness.chsh_mul_self",
-    "TsirelsonTightness.chsh_norm_le",
-    "TsirelsonTightness.chsh_norm_of_comm",
-    "TsirelsonTightness.noncomm_of_chsh_norm_gt_two",
-    "TsirelsonTightness.tuple_isCHSH",
-    "TsirelsonTightness.vsat_ne_zero",
-    "TsirelsonTightness.chsh_saturates",
-    "TsirelsonTightness.classical_le_two",
-    "TsirelsonTightness.bell_gap",
-    "TsirelsonTightness.chsh_opNorm",
-    "TsirelsonTightness.chsh_sq_ne",
-    "TsirelsonTightness.chsh_opNorm_isGreatest"
+    "MahlerWindow.quadratic_min",
+    "MahlerWindow.quadratic_exact",
+    "MahlerWindow.quadratic_min_irreducible",
+    "MahlerWindow.cubic_min",
+    "MahlerWindow.cubic_exact",
+    "MahlerWindow.cubic_min_irreducible",
+    "MahlerWindow.quartic_min",
+    "MahlerWindow.quartic_exact",
+    "MahlerWindow.quartic_min_irreducible"
   ],
-  "definition_names": [
-    "TsirelsonTightness.s",
-    "TsirelsonTightness.A₀",
-    "TsirelsonTightness.A₁",
-    "TsirelsonTightness.B₀i",
-    "TsirelsonTightness.B₁i",
-    "TsirelsonTightness.B₀",
-    "TsirelsonTightness.B₁",
-    "TsirelsonTightness.vsat"
-  ],
-  "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"],
-  "enable_nanoda": true
+  "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"]
 }

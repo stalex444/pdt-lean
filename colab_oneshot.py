@@ -91,19 +91,35 @@ LOOSE = re.compile(
 def strip_comments(s):
     return re.sub(r"--[^\n]*", "", re.sub(r"/-.*?-/", "", s, flags=re.S))
 
+#    Namespaces may be NESTED (namespace PDT / namespace Mahler), so the prefix
+#    is computed from a scope stack walked line by line: `namespace` pushes,
+#    `section` (incl. noncomputable section) pushes a non-prefix scope, `end`
+#    pops one scope. Scoping keywords sit at column 0 in this repo, so the
+#    matches are column-0 anchored; the scan runs on comment-stripped text, so
+#    commented-out declarations are never enumerated. Stage 5 remains the
+#    guard: an enumerated name that does not resolve fails the audit loudly.
 names, imports, skipped, loose_total = [], set(), [], 0
 for fn in sorted(os.listdir(DIR)):
     if fn.startswith("Pdt") and fn.endswith(".lean"):
-        txt = open(os.path.join(DIR, fn), encoding="utf-8").read()
-        ns  = re.search(r"namespace\s+([^\s({\[]+)", txt)
-        pre = (ns.group(1) + ".") if ns else ""
+        txt = strip_comments(open(os.path.join(DIR, fn), encoding="utf-8").read())
         imports.add(fn[:-5])
-        for m in DECL.finditer(txt):
-            if "private" in m.group("mods"):
-                skipped.append(pre + m.group(2))
+        stack = []  # ("ns", name) | ("sect", None); an `end` pops one scope
+        for line in txt.splitlines():
+            if re.match(r"namespace[ \t]+\S", line):
+                stack.append(("ns", line.split()[1]))
                 continue
-            names.append(pre + m.group(2))
-        loose_total += len(LOOSE.findall(strip_comments(txt)))
+            if re.match(r"(?:noncomputable[ \t]+)?section\b", line):
+                stack.append(("sect", None))
+                continue
+            if re.match(r"end\b", line):
+                if stack:
+                    stack.pop()
+                continue
+            m = DECL.match(line)
+            if m:
+                pre = "".join(n + "." for k, n in stack if k == "ns")
+                (skipped if "private" in m.group("mods") else names).append(pre + m.group(2))
+        loose_total += len(LOOSE.findall(txt))
 
 if loose_total != len(names) + len(skipped):
     print("=" * 64, flush=True)

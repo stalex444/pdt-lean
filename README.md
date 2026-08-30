@@ -4,7 +4,7 @@
 
 ![Lean](https://img.shields.io/badge/Lean-v4.31.0-blue) ![Mathlib](https://img.shields.io/badge/Mathlib-v4.31.0-blue) ![axioms](https://img.shields.io/badge/axioms-standard%20only-green) ![sorry-free](https://img.shields.io/badge/proofs-sorry--free-brightgreen) ![native__decide-free](https://img.shields.io/badge/native__decide--free-brightgreen) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21210683.svg)](https://doi.org/10.5281/zenodo.21210683)
 
-> **284 declarations · 19 modules · no `sorry` outside the Palomar comparator's `Challenge.lean` stubs (which state 13 compared theorems, all proved in `Solution.lean`) · no `native_decide`.** A mix of substantive results, API wrappers, and disclosed elementary numeral identities — the per-module table below states what each module proves; all kernel-clean over the three standard axioms (`propext`, `Classical.choice`, `Quot.sound`). (197 use the `theorem` keyword; the remaining 87 are `lemma` helpers. Six of the 284 are `private` and so are not addressable by name from an importing file: the audit checks the other 278 directly, and those six transitively, since `#print axioms` reports the axioms of everything a result depends on.) The one-command verifier below builds the project and prints **PASS** with the full axiom trace — or fails loudly.
+> **441 declarations · 24 modules · no `sorry` outside the Palomar comparator's `Challenge.lean` stubs (which state 9 compared theorems, all proved in `Solution.lean`) · no `native_decide`.** A mix of substantive results, API wrappers, and disclosed elementary numeral identities — the per-module table below states what each module proves; all kernel-clean over the three standard axioms (`propext`, `Classical.choice`, `Quot.sound`). (210 use the `theorem` keyword; the remaining 231 are `lemma` helpers. Six of the 441 are `private` and so are not addressable by name from an importing file: the audit checks the other 435 directly, and those six transitively, since `#print axioms` reports the axioms of everything a result depends on.) The one-command verifier below builds the project and prints **PASS** with the full axiom trace — or fails loudly.
 
 ---
 
@@ -36,8 +36,42 @@ with **zero adjustable parameters**. The full theory develops those numerical de
 | **PdtClock** | The β-clock's tick word m(n) = ⌊(n+1)β⌋ − ⌊nβ⌋ is **two-valued** (for 0 < β < 1), of **density exactly β** (exact telescoping to ⌊Nβ⌋), **aperiodic** (for irrational β, carried as an explicit hypothesis), and **balanced** — any two equal-length windows differ by at most one tick. Aperiodic but not random, kernel-checked. |
 | **PdtCommitment** | The two archimedean places of ℚ(ρ) and the image σ₂(ℤ[ρ]) ⊆ ℂ of the order ℤ[ρ]. Three groups: (i) the **exact contraction rate** r·\|z\|² = 1, equivalently \|z\| = r^(−1/2) (`tick_contraction`, `norm_z_eq_rpow`) — the norm relation N(ρ) = 1 read at the two places, an identity of the field rather than a numerical estimate; (ii) the **integrality floor** 1 ≤ \|σ₁(x)\|·\|σ₂(x)\|² for every nonzero x ∈ ℤ[ρ], hence \|σ₂(x)\| ≥ \|σ₁(x)\|^(−1/2) (`meyer_separation`, `meyer_separation_rpow`), proved from the norm form of a nonzero element being a nonzero rational integer; (iii) **windowed permanence** — multiplication by z permutes σ₂(ℤ[ρ]) (ρ is a unit); two lattice points whose real embeddings differ by at most H are at least H^(−1/2) apart; and a point within (1/2)·H^(−1/2) of σ₂(ℓ) remains, after any number of multiplications by z, strictly nearest to the image of ℓ among all lattice points in the window (`certification_soundness`). The window hypothesis is explicit and essential — the unwindowed image is dense. Reading these as a dynamics with recorded outcomes is an **identification**, marked as such in the file and not kernel-checked. |
 | **PdtGolden / PdtArithmetic** | The same bedrock re-expressed as elementary integer identities (`decide`/`norm_num`; the genuine field invariants are the API row above): disc(x³−x−1) = −23 = dim 𝔰𝔲(3)+𝔰𝔲(4); disc(x⁴−x−1) = −283; 23, 283 prime; N(2Q−1) = −23; the norm-tower product N(ρQ) = N(ρ)⁴·N(Q)³ = 1⁴·(−1)³ = −1, an elementary numeral identity (the compositum ℚ(ρ,Q) is not formalized); dim 𝔰𝔲(4) = 15. |
+| **PdtMahler / PdtMahlerBox / PdtMahlerMain / PdtMahlerTheta / PdtMahlerWindow** | The **Mahler degree window**: for d ∈ {2, 3, 4}, `x^d − x − 1` attains the **minimal Mahler measure** among monic irreducible integer polynomials of degree d with measure above one, and the minima are pinned exactly — M² = M+1 (φ), M³ = M+1 (ρ), M⁴ = M³+1 (θ₄). Graeffe-certificate architecture: Mathlib's coefficient bound cuts each degree to a finite box; all 6,339 certificates (21 / 147 / 6,171) kernel-decided with plain `decide`. Attainment is theorem-backed (the minimizers' irreducibility is on the compared surface); Siegel 1944 (smallest / second-smallest Pisot) is cited, not formalized. |
 
 A clickable **dependency graph** (built with [`leanblueprint`](https://github.com/PatrickMassot/leanblueprint)) is published on this repo's **GitHub Pages** — the headline statements green, with the lone node the kernel does not check (the identification) set apart.
+
+## The Mahler degree window (PdtMahler*)
+
+For d ∈ {2, 3, 4}, `x^d − x − 1` attains the minimal Mahler measure among
+monic irreducible integer polynomials of degree d with measure above one
+(`quadratic_mahler_min'`, `cubic_mahler_min'`, `quartic_mahler_min'`) —
+attainment is theorem-backed: the minimizers' irreducibility
+(`fam2/3/4_irreducible`) and measure above one are on the compared
+surface. The three minima are pinned exactly (`mahler_quadratic_phi`,
+`mahler_cubic_rho`, `mahler_fam_pisot`): M² = M + 1 at degree 2 (the
+golden ratio), M³ = M + 1 at degree 3 (the plastic ratio), and
+M⁴ = M³ + 1 at degree 4 (the root of x⁴ − x³ − 1 above one). By Siegel's
+classical theorem (1944 — cited, not formalized here) the latter two are
+the smallest and second-smallest Pisot numbers; the literature's symbol
+for the second is θ₁ (Dufresnoy–Pisot), written θ₄ in this repository
+for "the degree-4 floor". The degree-4 twist: classically x⁴ − x − 1 is
+not itself a Pisot polynomial (three roots outside the unit circle;
+kernel-backed here by `PDT.quartic_conj_norm_gt_one`, outside the
+compared surface), yet its measure lands back on the Pisot list.
+
+Method: a Graeffe-certificate architecture. The Mathlib coefficient bound
+`norm_coeff_le_choose_mul_mahlerMeasure` cuts each problem to a finite
+coefficient box at a per-degree rational threshold (81/50, 133/100,
+139/100) inside a kernel-bracketed spectral gap; every box element then
+carries one integer certificate — tie orbit, cyclotomic cofactor of
+Xⁿ − 1, explicit factorization, or an iterated Graeffe coefficient bound
+(sound by M(Graeffe q) = M(q)², proved via the root-squares product
+identity). All 6,339 certificates (21 + 147 + 6,171) are kernel-decided
+with plain `decide`; no `native_decide` anywhere. The exact constants
+come from a root-inversion identity (reversal invariance at unit constant
+term) plus a (σ, s)-reduction in the style of `PdtPisotBoundary`
+localizing the conjugate pairs, with root multiplicity excluded by
+kernel-certified measure brackets rather than discriminants.
 
 ## The one boundary, stated plainly
 

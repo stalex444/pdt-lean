@@ -1,150 +1,65 @@
-import PdtTsirelson
-import PdtTsirelsonNorm
-import PdtTsirelsonExact
-import PdtBellClassical
-
-/-!
-# Solution: proved versions of the Challenge declarations
-
-Each declaration matches its `Challenge.lean` counterpart exactly; proofs are
-supplied by the project modules `PdtTsirelson`, `PdtTsirelsonNorm`,
-`PdtTsirelsonExact`, and `PdtBellClassical`, whose definitions are
-definitionally equal to the Challenge's.
+/-
+Solution module: proofs of the nine Challenge statements, backed by the
+PdtMahler development (Graeffe-certificate architecture: coefficient-bound
+box + per-element integer certificates, all kernel-decided without
+native_decide).
 -/
+import PdtMahlerWindow
 
-namespace TsirelsonTightness
+namespace MahlerWindow
 
-open Matrix
+open Polynomial PDT.Mahler
 
-/-! ## Generic results: any CHSH tuple, any carrier -/
+theorem quadratic_min (p : ℤ[X]) (hm : p.Monic) (hd : p.natDegree = 2)
+    (hi : Irreducible p)
+    (h1 : 1 < (p.map (Int.castRingHom ℂ)).mahlerMeasure) :
+    ((((X : ℤ[X]) ^ 2 - X - 1)).map (Int.castRingHom ℂ)).mahlerMeasure
+      ≤ (p.map (Int.castRingHom ℂ)).mahlerMeasure :=
+  quadratic_mahler_min' p hm hd hi h1
 
-theorem chsh_upper
-    {R : Type*} [Ring R] [PartialOrder R] [StarRing R] [StarOrderedRing R]
-    [Algebra ℝ R] [IsOrderedModule ℝ R] [StarModule ℝ R]
-    (A₀ A₁ B₀ B₁ : R) (T : IsCHSHTuple A₀ A₁ B₀ B₁) :
-    A₀ * B₀ + A₀ * B₁ + A₁ * B₀ - A₁ * B₁ ≤ (2 * Real.sqrt 2) • (1 : R) :=
-  PDT.chsh_le_two_sqrt_two A₀ A₁ B₀ B₁ T
+theorem quadratic_exact :
+    ((((X : ℤ[X]) ^ 2 - X - 1)).map (Int.castRingHom ℂ)).mahlerMeasure ^ 2
+        = ((((X : ℤ[X]) ^ 2 - X - 1)).map (Int.castRingHom ℂ)).mahlerMeasure + 1
+      ∧ 1 < ((((X : ℤ[X]) ^ 2 - X - 1)).map (Int.castRingHom ℂ)).mahlerMeasure := by
+  rw [← zq2_fam]
+  exact mahler_quadratic_phi
 
-theorem chsh_mul_self
-    {R : Type*} [Ring R] [StarRing R] {A₀ A₁ B₀ B₁ : R}
-    (h : IsCHSHTuple A₀ A₁ B₀ B₁) :
-    (A₀ * B₀ + A₀ * B₁ + A₁ * B₀ - A₁ * B₁) * (A₀ * B₀ + A₀ * B₁ + A₁ * B₀ - A₁ * B₁)
-      = 4 + (A₀ * A₁ - A₁ * A₀) * (B₁ * B₀ - B₀ * B₁) :=
-  PDT.chsh_mul_self h
+theorem quadratic_min_irreducible : Irreducible ((X : ℤ[X]) ^ 2 - X - 1) :=
+  fam2_irreducible
 
-theorem chsh_norm_le
-    {R : Type*} [NormedRing R] [StarRing R] [CStarRing R] [Nontrivial R]
-    [NormedAlgebra ℝ R] {A₀ A₁ B₀ B₁ : R}
-    (h : IsCHSHTuple A₀ A₁ B₀ B₁) :
-    ‖A₀ * B₀ + A₀ * B₁ + A₁ * B₀ - A₁ * B₁‖ ≤ 2 * Real.sqrt 2 :=
-  PDT.chsh_norm_le h
+theorem cubic_min (p : ℤ[X]) (hm : p.Monic) (hd : p.natDegree = 3)
+    (hi : Irreducible p)
+    (h1 : 1 < (p.map (Int.castRingHom ℂ)).mahlerMeasure) :
+    ((((X : ℤ[X]) ^ 3 - X - 1)).map (Int.castRingHom ℂ)).mahlerMeasure
+      ≤ (p.map (Int.castRingHom ℂ)).mahlerMeasure :=
+  cubic_mahler_min' p hm hd hi h1
 
-theorem chsh_norm_of_comm
-    {R : Type*} [NormedRing R] [StarRing R] [CStarRing R] [Nontrivial R]
-    [NormedAlgebra ℝ R] {A₀ A₁ B₀ B₁ : R}
-    (h : IsCHSHTuple A₀ A₁ B₀ B₁)
-    (hcomm : A₀ * A₁ = A₁ * A₀ ∨ B₀ * B₁ = B₁ * B₀) :
-    ‖A₀ * B₀ + A₀ * B₁ + A₁ * B₀ - A₁ * B₁‖ = 2 :=
-  PDT.chsh_norm_of_comm h hcomm
+theorem cubic_exact :
+    ((((X : ℤ[X]) ^ 3 - X - 1)).map (Int.castRingHom ℂ)).mahlerMeasure ^ 3
+        = ((((X : ℤ[X]) ^ 3 - X - 1)).map (Int.castRingHom ℂ)).mahlerMeasure + 1
+      ∧ 1 < ((((X : ℤ[X]) ^ 3 - X - 1)).map (Int.castRingHom ℂ)).mahlerMeasure := by
+  rw [← zq3_fam]
+  exact mahler_cubic_rho
 
-theorem noncomm_of_chsh_norm_gt_two
-    {R : Type*} [NormedRing R] [StarRing R] [CStarRing R] [Nontrivial R]
-    [NormedAlgebra ℝ R] {A₀ A₁ B₀ B₁ : R}
-    (h : IsCHSHTuple A₀ A₁ B₀ B₁)
-    (hgt : 2 < ‖A₀ * B₀ + A₀ * B₁ + A₁ * B₀ - A₁ * B₁‖) :
-    A₀ * A₁ ≠ A₁ * A₀ ∧ B₀ * B₁ ≠ B₁ * B₀ :=
-  PDT.noncomm_of_chsh_norm_gt_two h hgt
+theorem cubic_min_irreducible : Irreducible ((X : ℤ[X]) ^ 3 - X - 1) :=
+  fam3_irreducible
 
-/-! ## The explicit saturating tuple in `M₄(ℝ)` -/
+theorem quartic_min (p : ℤ[X]) (hm : p.Monic) (hd : p.natDegree = 4)
+    (hi : Irreducible p)
+    (h1 : 1 < (p.map (Int.castRingHom ℂ)).mahlerMeasure) :
+    ((((X : ℤ[X]) ^ 4 - X - 1)).map (Int.castRingHom ℂ)).mahlerMeasure
+      ≤ (p.map (Int.castRingHom ℂ)).mahlerMeasure :=
+  quartic_mahler_min' p hm hd hi h1
 
-noncomputable def s : ℝ := (Real.sqrt 2)⁻¹
+theorem quartic_exact :
+    ((((X : ℤ[X]) ^ 4 - X - 1)).map (Int.castRingHom ℂ)).mahlerMeasure ^ 4
+        = ((((X : ℤ[X]) ^ 4 - X - 1)).map (Int.castRingHom ℂ)).mahlerMeasure ^ 3
+            + 1
+      ∧ 1 < ((((X : ℤ[X]) ^ 4 - X - 1)).map (Int.castRingHom ℂ)).mahlerMeasure := by
+  rw [← zq4_fam]
+  exact mahler_fam_pisot
 
-def A₀ : Matrix (Fin 4) (Fin 4) ℝ := !![0,0,1,0; 0,0,0,1; 1,0,0,0; 0,1,0,0]
+theorem quartic_min_irreducible : Irreducible ((X : ℤ[X]) ^ 4 - X - 1) :=
+  fam4_irreducible
 
-def A₁ : Matrix (Fin 4) (Fin 4) ℝ := !![1,0,0,0; 0,1,0,0; 0,0,-1,0; 0,0,0,-1]
-
-def B₀i : Matrix (Fin 4) (Fin 4) ℝ := !![1,1,0,0; 1,-1,0,0; 0,0,1,1; 0,0,1,-1]
-
-def B₁i : Matrix (Fin 4) (Fin 4) ℝ := !![-1,1,0,0; 1,1,0,0; 0,0,-1,1; 0,0,1,1]
-
-noncomputable def B₀ : Matrix (Fin 4) (Fin 4) ℝ := s • B₀i
-
-noncomputable def B₁ : Matrix (Fin 4) (Fin 4) ℝ := s • B₁i
-
-theorem tuple_isCHSH : IsCHSHTuple A₀ A₁ B₀ B₁ := by
-  have h := PDT.isCHSH
-  unfold PDT.A₀ PDT.A₁ PDT.B₀ PDT.B₁ PDT.B₀i PDT.B₁i PDT.s at h
-  unfold A₀ A₁ B₀ B₁ B₀i B₁i s
-  exact h
-
-def vsat : Fin 4 → ℝ := ![1, 0, 0, 1]
-
-theorem vsat_ne_zero : vsat ≠ 0 := by
-  intro h
-  have h0 := congrFun h 0
-  simp [vsat] at h0
-
-theorem chsh_saturates :
-    (A₀ * B₀ + A₀ * B₁ + A₁ * B₀ - A₁ * B₁).mulVec vsat
-      = (2 * Real.sqrt 2) • vsat := by
-  have h := PDT.chsh_saturates
-  unfold PDT.A₀ PDT.A₁ PDT.B₀ PDT.B₁ PDT.B₀i PDT.B₁i PDT.s PDT.vsat at h
-  unfold A₀ A₁ B₀ B₁ B₀i B₁i s vsat
-  exact h
-
-theorem classical_le_two
-    {R : Type*} [CommRing R] [PartialOrder R] [StarRing R] [StarOrderedRing R]
-    [Algebra ℝ R] [IsOrderedModule ℝ R]
-    (A₀ A₁ B₀ B₁ : R) (T : IsCHSHTuple A₀ A₁ B₀ B₁) :
-    A₀ * B₀ + A₀ * B₁ + A₁ * B₀ - A₁ * B₁ ≤ 2 :=
-  PDT.chsh_comm_le_two A₀ A₁ B₀ B₁ T
-
-theorem bell_gap : (2 : ℝ) < 2 * Real.sqrt 2 :=
-  PDT.bell_gap
-
-/-! ## Operator-norm results over `M₄(ℝ)` (l2 operator norm) -/
-
-section OperatorNorm
-
-open scoped Matrix.Norms.L2Operator
-
-theorem chsh_opNorm :
-    ‖A₀ * B₀ + A₀ * B₁ + A₁ * B₀ - A₁ * B₁‖ = 2 * Real.sqrt 2 := by
-  have h := PDT.Pchsh_opNorm
-  unfold PDT.Pchsh PDT.A₀ PDT.A₁ PDT.B₀ PDT.B₁ PDT.B₀i PDT.B₁i PDT.s at h
-  unfold A₀ A₁ B₀ B₁ B₀i B₁i s
-  exact h
-
-theorem chsh_sq_ne :
-    ∀ c : ℝ, (A₀ * B₀ + A₀ * B₁ + A₁ * B₀ - A₁ * B₁) * (A₀ * B₀ + A₀ * B₁ + A₁ * B₀ - A₁ * B₁)
-      ≠ c • (1 : Matrix (Fin 4) (Fin 4) ℝ) := by
-  have h := PDT.Pchsh_sq_ne_smul
-  unfold PDT.Pchsh PDT.A₀ PDT.A₁ PDT.B₀ PDT.B₁ PDT.B₀i PDT.B₁i PDT.s at h
-  unfold A₀ A₁ B₀ B₁ B₀i B₁i s
-  exact h
-
-theorem chsh_opNorm_isGreatest :
-    IsGreatest {x : ℝ | ∃ A₀ A₁ B₀ B₁ : Matrix (Fin 4) (Fin 4) ℝ,
-        IsCHSHTuple A₀ A₁ B₀ B₁ ∧ x = ‖A₀ * B₀ + A₀ * B₁ + A₁ * B₀ - A₁ * B₁‖}
-      (2 * Real.sqrt 2) :=
-  PDT.chsh_opNorm_isGreatest
-
-end OperatorNorm
-
-end TsirelsonTightness
-
--- Axiom audit (repo idiom): every compared theorem must depend on at most
--- {propext, Classical.choice, Quot.sound}.
-#print axioms TsirelsonTightness.chsh_upper
-#print axioms TsirelsonTightness.chsh_mul_self
-#print axioms TsirelsonTightness.chsh_norm_le
-#print axioms TsirelsonTightness.chsh_norm_of_comm
-#print axioms TsirelsonTightness.noncomm_of_chsh_norm_gt_two
-#print axioms TsirelsonTightness.tuple_isCHSH
-#print axioms TsirelsonTightness.vsat_ne_zero
-#print axioms TsirelsonTightness.chsh_saturates
-#print axioms TsirelsonTightness.classical_le_two
-#print axioms TsirelsonTightness.bell_gap
-#print axioms TsirelsonTightness.chsh_opNorm
-#print axioms TsirelsonTightness.chsh_sq_ne
-#print axioms TsirelsonTightness.chsh_opNorm_isGreatest
+end MahlerWindow
