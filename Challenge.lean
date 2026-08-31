@@ -1,4 +1,9 @@
-/-
+import Mathlib.LinearAlgebra.Matrix.PosDef
+import Mathlib.Analysis.Matrix.Spectrum
+import Mathlib.Analysis.Matrix.PosDef
+import Mathlib.Analysis.Complex.Order
+
+/-!
 # Busch's theorem: Born-rule uniqueness on quantum effects (finite dimension)
 
 Busch (2003): any generalized probability measure on the effects of a
@@ -9,27 +14,23 @@ This is the uniqueness of the Born rule in the POVM reading, and it holds
 already at dimension 2, where Gleason's theorem (which requires dimension
 at least 3) does not apply.
 
-No continuity is assumed anywhere: additivity together with nonnegativity
-forces real homogeneity on the effect interval (the monotone squeeze),
-which is the analytic heart of the proof. `homogeneity_automatic` states
-that step separately.
+No continuity is assumed anywhere: for a normalized measure, additivity
+together with nonnegativity forces real homogeneity on the effect
+interval (the monotone squeeze), which is the analytic heart of the
+proof. `homogeneity_automatic` states that step separately.
 
 Effects are spelled in Mathlib vocabulary: `a.PosSemidef` together with
 `(1 - a).PosSemidef`. Mathlib's order on matrices is the Loewner order,
 provided as a scoped instance (`open scoped MatrixOrder`, in
 `Mathlib.Analysis.Matrix.Order`, where `Matrix.nonneg_iff_posSemidef`
 gives `0 ≤ A ↔ A.PosSemidef`); the statements here spell the effect
-interval via `PosSemidef` directly, so they need no scoped order
-instance.
+interval via `PosSemidef` directly, so they need no scoped matrix-order
+instance (only the standard scoped `ComplexOrder` on the scalars).
 
 Source: P. Busch, "Quantum states and generalized observables: a simple
 proof of Gleason's theorem", Phys. Rev. Lett. 91, 120403 (2003);
 quant-ph/9909073.
 -/
-import Mathlib.LinearAlgebra.Matrix.PosDef
-import Mathlib.Analysis.Matrix.Spectrum
-import Mathlib.Analysis.Matrix.PosDef
-import Mathlib.Analysis.Complex.Order
 
 namespace BuschTheorem
 

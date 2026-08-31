@@ -14,11 +14,12 @@ project:
     unique density matrix via the trace pairing. Existence and
     uniqueness are both compared (busch_representation). The result is
     the uniqueness of the Born rule in the POVM reading; it is valid in
-    every finite dimension (the compared statement assumes only
-    [Nonempty n]) and holds already at dimension 2, where Gleason's
+    every finite dimension (beyond finiteness and decidable equality
+    of the index type, the compared statement assumes only [Nonempty n])
+    and holds already at dimension 2, where Gleason's
     theorem (which requires dimension at least 3) does not apply. No
-    continuity is assumed: nonnegativity plus additivity force real
-    homogeneity on the effect interval (scalars in [0,1]), compared
+    continuity is assumed: for a normalized measure, nonnegativity
+    plus additivity force real homogeneity on the effect interval (scalars in [0,1]), compared
     separately as homogeneity_automatic. The compared statements use
     only Mathlib vocabulary (Matrix.PosSemidef, Matrix.trace).
   authors:
@@ -57,7 +58,8 @@ sources:
     id: "Journal of Mathematics and Mechanics 6 (1957), 885–893"
     type: "article"
     # DOI verified 2026-08-29 (first-hand): LIVE, and correct.
-    # doi.org 302-redirects to a free 9-page scan whose page-1 footer reads
+    # doi.org 302-redirects to the article's landing page, which serves a
+    # free 9-page scan whose page-1 footer reads
     # verbatim "Journal of Mathematics and Mechanics, Vol. 6, No. 6 (1957)",
     # folio 885, last folio 893. The id line above is the historically
     # correct citation and needs no change. FOR A REFEREE WHO FOLLOWS THE
@@ -99,23 +101,24 @@ related_formalizations:
       Physlib defines POVMs (positive semidefinite matrices summing to
       the identity) and measurement channels but contains no
       Busch/Gleason-type representation theorem for effect measures
-      (checked 2026-08-24) — adjacent infrastructure, not this theorem.
+      (checked at HEAD 4a4de62, 2026-08-24) — adjacent infrastructure, not this theorem.
 
 status:
   scope: >-
     Formalized, 2 compared theorems, finite dimension (matrices over the
-    complex numbers, nonempty finite index type). busch_representation:
+    complex numbers; the representation theorem additionally assumes a
+    nonempty index type). busch_representation:
     existence AND uniqueness — every generalized probability measure on
     effects satisfies f a = trace (rho * a) for exactly one density
     matrix rho (positive semidefinite, trace one).
     homogeneity_automatic: the no-continuity step compared separately —
-    nonnegativity plus additivity force f (t • a) = t * f a for every
+    for a normalized measure, nonnegativity plus additivity force f (t • a) = t * f a for every
     effect a and every scalar t in [0,1]. No physical claim is part of
     the compared statements: they assert the unique trace representation
     of effect measures, nothing stronger.
   sorry_count: 0
   sorry_in_definitions: 0
-  axioms: []
+  axioms: ["propext", "Classical.choice", "Quot.sound"]
 
 automation:
   methods:
@@ -128,7 +131,7 @@ automation:
         axiom-audited (#print axioms: propext, Classical.choice,
         Quot.sound).
       cost:
-        wall_time: "one session, 2026-08-24 (scoping to kernel closure)"
+        wall_time: "one session, 2026-08-24 (kernel closure); surface fixes 2026-08-25"
         spend_usd: "subscription-based"
         hardware: "remote development container"
       prompting_notes: >-
@@ -196,7 +199,11 @@ alignment:
         Real homogeneity on the effect interval (scalars in [0,1]) with
         no continuity hypothesis: additivity gives rational homogeneity
         and monotonicity, and a monotone squeeze upgrades to all real
-        scalars in [0,1].
+        scalars in [0,1]. The statement carries the normalization
+        hypothesis to mirror the measure interface, and needs no
+        [Nonempty n]: the empty case is vacuous (its hypotheses are
+        contradictory there), while the representation theorem's
+        [Nonempty n] reflects the trace-one construction.
 
 acknowledgements: >-
   Built on Mathlib and the Lean 4 toolchain — in particular Mathlib's

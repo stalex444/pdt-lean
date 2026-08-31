@@ -7,12 +7,13 @@ a unique density matrix. Born-rule uniqueness in the POVM reading, valid
 in every finite dimension (the statement assumes only `[Nonempty n]`) —
 in particular at dimension 2, where Gleason's theorem does not apply.
 
-Scoping: frontier/busch_scoping_2026-08-24.md. Positivity is spelled via
+Positivity is spelled via
 `Matrix.PosSemidef` throughout: Mathlib's order on matrices is the
 Loewner order, provided as a scoped instance (`open scoped MatrixOrder`,
 in `Mathlib.Analysis.Matrix.Order`, where `Matrix.nonneg_iff_posSemidef`
 gives `0 ≤ A ↔ A.PosSemidef`); this file spells the effect interval via
-`PosSemidef` directly and never opens that scoped order.
+`PosSemidef` directly and never opens that scoped matrix order (only
+the standard scoped `ComplexOrder` on the scalars).
 -/
 import Mathlib.LinearAlgebra.Matrix.PosDef
 import Mathlib.Analysis.Matrix.Spectrum
@@ -40,8 +41,9 @@ structure IsFrameFunction (f : Matrix n n ℂ → ℝ) : Prop where
     (1 - (a + b)).PosSemidef → f (a + b) = f a + f b
   norm_one : f 1 = 1
 
-/-! ### Gate 2: the bootstrap — additivity forces homogeneity -/
+/-! ### The bootstrap: additivity forces homogeneity -/
 
+omit [DecidableEq n] [Fintype n] in
 /-- Real scalar multiples of PSD matrices by nonnegative reals are PSD. -/
 lemma smul_posSemidef {a : Matrix n n ℂ} (ha : a.PosSemidef)
     {c : ℝ} (hc : 0 ≤ c) : (c • a).PosSemidef := by
@@ -51,10 +53,12 @@ lemma smul_posSemidef {a : Matrix n n ℂ} (ha : a.PosSemidef)
   rw [h]
   exact ha.smul (by exact_mod_cast hc)
 
+omit [Fintype n] in
 lemma effect_zero : IsEffect (0 : Matrix n n ℂ) := by
   refine ⟨PosSemidef.zero, ?_⟩
   simpa using (PosSemidef.one : (1 : Matrix n n ℂ).PosSemidef)
 
+omit [Fintype n] in
 lemma effect_one : IsEffect (1 : Matrix n n ℂ) := by
   refine ⟨PosSemidef.one, ?_⟩
   simpa using (PosSemidef.zero : (0 : Matrix n n ℂ).PosSemidef)
@@ -65,12 +69,14 @@ variable {f : Matrix n n ℂ → ℝ} (hf : IsFrameFunction f)
 
 include hf
 
+omit [Fintype n] in
 lemma frame_zero : f 0 = 0 := by
   have h := hf.add 0 0 PosSemidef.zero PosSemidef.zero
     (by simpa using (PosSemidef.one : (1 : Matrix n n ℂ).PosSemidef))
   simp only [add_zero] at h
   linarith
 
+omit [Fintype n] in
 /-- Monotonicity: if `a` is PSD, `b - a` is PSD, and `b` is an effect,
 then `f a ≤ f b`. -/
 lemma frame_mono {a b : Matrix n n ℂ} (ha : a.PosSemidef)
@@ -88,11 +94,13 @@ lemma frame_mono {a b : Matrix n n ℂ} (ha : a.PosSemidef)
     _ = f (a + (b - a)) := (hadd).symm
     _ = f b := by rw [← hb]
 
+omit [Fintype n] in
 lemma frame_effect_le_one {a : Matrix n n ℂ} (h : IsEffect a) : f a ≤ 1 := by
   have := frame_mono hf h.1 (by simpa using h.2) (by simpa using
     (PosSemidef.zero : (0 : Matrix n n ℂ).PosSemidef))
   simpa [hf.norm_one] using this
 
+omit [Fintype n] in
 /-- Natural scaling: `f (k • a) = k * f a` whenever `k • a` stays an effect. -/
 lemma frame_nsmul {a : Matrix n n ℂ} (ha : a.PosSemidef) :
     ∀ k : ℕ, (1 - (k : ℝ) • a).PosSemidef → f ((k : ℝ) • a) = k * f a := by
@@ -116,6 +124,7 @@ lemma frame_nsmul {a : Matrix n n ℂ} (ha : a.PosSemidef) :
       push_cast
       ring
 
+omit [Fintype n] in
 /-- Division: `f ((1/m) • a) = f a / m` for an effect `a`. -/
 lemma frame_inv_smul {a : Matrix n n ℂ} (ha : a.PosSemidef)
     (h1 : (1 - a).PosSemidef) {m : ℕ} (hm : 0 < m) :
@@ -130,6 +139,7 @@ lemma frame_inv_smul {a : Matrix n n ℂ} (ha : a.PosSemidef)
   rw [eq_div_iff hm0, mul_comm]
   exact h.symm
 
+omit [Fintype n] in
 /-- Rational scaling: `f ((p/m) • a) = (p/m) * f a` for `p ≤ m`. -/
 lemma frame_rat_smul {a : Matrix n n ℂ} (ha : a.PosSemidef)
     (h1 : (1 - a).PosSemidef) {p m : ℕ} (hpm : p ≤ m) (hm : 0 < m) :
@@ -152,6 +162,7 @@ lemma frame_rat_smul {a : Matrix n n ℂ} (ha : a.PosSemidef)
   rw [hsplit, frame_nsmul hf hb p hclose, frame_inv_smul hf ha h1 hm]
   field_simp
 
+omit [Fintype n] in
 /-- Scalar monotonicity in the coefficient. -/
 lemma frame_smul_mono {a : Matrix n n ℂ} (ha : a.PosSemidef)
     (h1 : (1 - a).PosSemidef) {s t : ℝ} (hs : 0 ≤ s) (hst : s ≤ t)
@@ -164,6 +175,7 @@ lemma frame_smul_mono {a : Matrix n n ℂ} (ha : a.PosSemidef)
     rw [this]
     exact h1.add (smul_posSemidef ha (by linarith))
 
+omit [Fintype n] in
 /-- **Real homogeneity by monotone squeeze**: no continuity hypothesis is
 needed; monotonicity substitutes. The analytic heart of Busch's proof. -/
 lemma frame_smul {a : Matrix n n ℂ} (ha : a.PosSemidef)
@@ -260,7 +272,7 @@ lemma frame_smul {a : Matrix n n ℂ} (ha : a.PosSemidef)
 
 end Bootstrap
 
-/-! ### Gate 3: extension from effects to all PSD and Hermitian matrices -/
+/-! ### Extension from effects to all PSD and Hermitian matrices -/
 
 /-- Conjugation by the eigenvector unitary preserves positive
 semidefiniteness of the diagonal core: if the entries are nonnegative,
@@ -345,8 +357,9 @@ noncomputable def ext (f : Matrix n n ℂ → ℝ) (A : Matrix n n ℂ) : ℝ :=
 
 include hf
 
+omit [Fintype n] in
 /-- Scale independence: any valid scale computes the same extension. -/
-lemma scale_indep {A : Matrix n n ℂ} (hA : A.PosSemidef) {c d : ℝ}
+lemma scale_indep {A : Matrix n n ℂ} (_hA : A.PosSemidef) {c d : ℝ}
     (hc : 0 < c) (hd : 0 < d) (hdc : d ≤ c) (hde : IsEffect (d⁻¹ • A)) :
     c * f (c⁻¹ • A) = d * f (d⁻¹ • A) := by
   have hsplit : c⁻¹ • A = (d / c) • (d⁻¹ • A) := by
@@ -476,7 +489,7 @@ lemma ext_smul_one {c : ℝ} (hc : 0 ≤ c) : ext f (c • 1) = c := by
 
 end Extension
 
-/-! ### Gate 3b: the Hermitian layer -/
+/-! ### The Hermitian layer -/
 
 /-- Canonical PSD shift for a Hermitian matrix: one plus the sum of the
 absolute values of its eigenvalues. -/
@@ -603,7 +616,7 @@ lemma extH_neg {A : Matrix n n ℂ} (hH : A.IsHermitian) :
   rw [add_neg_cancel, extH_zero hf] at h
   linarith
 
-omit hf in
+omit [DecidableEq n] [Fintype n] hf in
 lemma isHermitian_real_smul {A : Matrix n n ℂ} (hH : A.IsHermitian)
     (t : ℝ) : (t • A).IsHermitian := by
   show (t • A)ᴴ = t • A
@@ -637,15 +650,17 @@ lemma extH_smul {A : Matrix n n ℂ} (hH : A.IsHermitian) (t : ℝ) :
 
 end HermitianLayer
 
-/-! ### Gate 4: the density matrix -/
+/-! ### The density matrix -/
 
 /-- Matrix unit `e i j` (self-contained; avoids external basis API). -/
 noncomputable def eb (i j : n) : Matrix n n ℂ :=
   of fun p q => if p = i ∧ q = j then 1 else 0
 
+omit [Fintype n] in
 lemma eb_apply (i j p q : n) :
     eb i j p q = if p = i ∧ q = j then 1 else 0 := rfl
 
+omit [Fintype n] in
 lemma eb_conjTranspose (i j : n) : (eb i j)ᴴ = eb j i := by
   ext p q
   simp only [conjTranspose_apply, eb_apply]
@@ -659,10 +674,12 @@ noncomputable def SB (i j : n) : Matrix n n ℂ := eb i j + eb j i
 noncomputable def TB (i j : n) : Matrix n n ℂ :=
   Complex.I • eb i j - Complex.I • eb j i
 
+omit [Fintype n] in
 lemma SB_hermitian (i j : n) : (SB i j).IsHermitian := by
   show (SB i j)ᴴ = SB i j
   rw [SB, conjTranspose_add, eb_conjTranspose, eb_conjTranspose, add_comm]
 
+omit [Fintype n] in
 lemma TB_hermitian (i j : n) : (TB i j).IsHermitian := by
   show (TB i j)ᴴ = TB i j
   rw [TB, conjTranspose_sub, conjTranspose_smul, conjTranspose_smul,
@@ -670,12 +687,15 @@ lemma TB_hermitian (i j : n) : (TB i j).IsHermitian := by
   simp only [Complex.star_def, Complex.conj_I]
   module
 
+omit [Fintype n] in
 lemma SB_symm (i j : n) : SB j i = SB i j := add_comm _ _
 
+omit [Fintype n] in
 lemma TB_antisymm (i j : n) : TB j i = -TB i j := by
   rw [TB, TB]
   module
 
+omit [Fintype n] in
 lemma TB_self (i : n) : TB i i = 0 := by
   rw [TB]
   module
@@ -738,12 +758,12 @@ lemma trace_rho_TB (i j : n) :
   push_cast
   linear_combination (-(extH f (TB i j) : ℂ)) * Complex.I_sq
 
-omit hf in
+omit [DecidableEq n] [Fintype n] hf in
 lemma isHermitian_finsetSum {ι : Type*} {s : Finset ι}
     {g : ι → Matrix n n ℂ} (hg : ∀ k ∈ s, (g k).IsHermitian) :
     (∑ k ∈ s, g k).IsHermitian := by
   induction s using Finset.cons_induction with
-  | empty => simpa using (isHermitian_zero : (0 : Matrix n n ℂ).IsHermitian)
+  | empty => simp
   | cons a s ha ih =>
       rw [Finset.sum_cons]
       exact (hg a (Finset.mem_cons_self a s)).add
@@ -859,10 +879,10 @@ lemma rho_hermitian : (rho f).IsHermitian := by
   push_cast
   simp only [star_div₀, star_add, star_mul, Complex.star_def, Complex.conj_I,
     Complex.conj_ofReal, map_neg, map_ofNat]
-  push_cast
   ring
 
 omit hf in
+omit [DecidableEq n] in
 /-- Outer products are PSD (direct computation). -/
 lemma outer_posSemidef (x : n → ℂ) : (vecMulVec x (star x)).PosSemidef := by
   refine PosSemidef.of_dotProduct_mulVec_nonneg ?_ ?_
@@ -894,8 +914,9 @@ lemma outer_posSemidef (x : n → ℂ) : (vecMulVec x (star x)).PosSemidef := by
 
 end RhoTrace
 
-/-! ### Gate 5: assembly -/
+/-! ### Assembly -/
 
+omit [DecidableEq n] in
 lemma dotProduct_eq_trace (X : Matrix n n ℂ) (x : n → ℂ) :
     star x ⬝ᵥ (X *ᵥ x) = (X * vecMulVec x (star x)).trace := by
   rw [Matrix.trace]
@@ -916,6 +937,7 @@ lemma sum_eb_diag : (∑ i, eb i i) = (1 : Matrix n n ℂ) := by
     · simp [Ne.symm hpq]
     · simp [h1]
 
+omit [Fintype n] in
 lemma eb_diag_hermitian (i : n) : (eb i i).IsHermitian := by
   show (eb i i)ᴴ = eb i i
   rw [eb_conjTranspose]
@@ -995,7 +1017,6 @@ theorem busch [Nonempty n] (f : Matrix n n ℂ → ℝ) (hf : IsFrameFunction f)
       rw [Complex.real_smul, mul_one] at h1
       have h3 : (ρ' * A).trace
           = (ext f (A + shiftOf A • 1) : ℂ) - (shiftOf A : ℂ) := by
-        push_cast at h1 ⊢
         linear_combination h1
       rw [h3, extH]
       push_cast

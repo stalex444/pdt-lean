@@ -9,9 +9,8 @@ namespace BuschTheorem
 open Matrix
 open scoped ComplexOrder
 
-variable {n : Type*} [Fintype n] [DecidableEq n]
-
-private def toFrame {f : Matrix n n ℂ → ℝ}
+private def toFrame {n : Type*} [Fintype n] [DecidableEq n]
+    {f : Matrix n n ℂ → ℝ}
     (h0 : ∀ a : Matrix n n ℂ, a.PosSemidef → (1 - a).PosSemidef → 0 ≤ f a)
     (hadd : ∀ a b : Matrix n n ℂ, a.PosSemidef → b.PosSemidef →
       (1 - (a + b)).PosSemidef → f (a + b) = f a + f b)
@@ -20,7 +19,8 @@ private def toFrame {f : Matrix n n ℂ → ℝ}
   add := hadd
   norm_one := h1
 
-theorem homogeneity_automatic (f : Matrix n n ℂ → ℝ)
+theorem homogeneity_automatic {n : Type*} [Fintype n] [DecidableEq n]
+    (f : Matrix n n ℂ → ℝ)
     (h0 : ∀ a : Matrix n n ℂ, a.PosSemidef → (1 - a).PosSemidef → 0 ≤ f a)
     (hadd : ∀ a b : Matrix n n ℂ, a.PosSemidef → b.PosSemidef →
       (1 - (a + b)).PosSemidef → f (a + b) = f a + f b)
@@ -30,7 +30,8 @@ theorem homogeneity_automatic (f : Matrix n n ℂ → ℝ)
     f (t • a) = t * f a :=
   PDT.Busch.frame_smul (toFrame h0 hadd h1) ha ha1 ht0 ht1
 
-theorem busch_representation [Nonempty n] (f : Matrix n n ℂ → ℝ)
+theorem busch_representation {n : Type*} [Fintype n] [DecidableEq n]
+    [Nonempty n] (f : Matrix n n ℂ → ℝ)
     (h0 : ∀ a : Matrix n n ℂ, a.PosSemidef → (1 - a).PosSemidef → 0 ≤ f a)
     (hadd : ∀ a b : Matrix n n ℂ, a.PosSemidef → b.PosSemidef →
       (1 - (a + b)).PosSemidef → f (a + b) = f a + f b)
@@ -45,3 +46,8 @@ theorem busch_representation [Nonempty n] (f : Matrix n n ℂ → ℝ)
   exact huniq ρ' ⟨hpsd', htr', fun a ha => hrep' a ha.1 ha.2⟩
 
 end BuschTheorem
+
+/-! ### Axiom audit — every build prints the audit for the compared theorems -/
+
+#print axioms BuschTheorem.homogeneity_automatic
+#print axioms BuschTheorem.busch_representation
