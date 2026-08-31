@@ -2,15 +2,8 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "MahlerWindow.quadratic_min",
-    "MahlerWindow.quadratic_exact",
-    "MahlerWindow.quadratic_min_irreducible",
-    "MahlerWindow.cubic_min",
-    "MahlerWindow.cubic_exact",
-    "MahlerWindow.cubic_min_irreducible",
-    "MahlerWindow.quartic_min",
-    "MahlerWindow.quartic_exact",
-    "MahlerWindow.quartic_min_irreducible"
+    "BuschTheorem.homogeneity_automatic",
+    "BuschTheorem.busch_representation"
   ],
   "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"]
 }
