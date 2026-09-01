@@ -127,3 +127,20 @@ Code: MIT (see [`LICENSE`](LICENSE)).
 **Citation (all versions):** Stephanie Alexander ([ORCID 0009-0003-7727-2565](https://orcid.org/0009-0003-7727-2565)), *PDT-Lean: a kernel-verified Lean 4 formalization of the Pisot Dimensional Theory core*, Zenodo, DOI [10.5281/zenodo.21210683](https://doi.org/10.5281/zenodo.21210683) (concept DOI — always resolves to the latest release).
 
 Feedback on the formalization and on the precision of the scope statement above is exactly what this repository invites.
+
+## Palomar registry record
+
+Machine-verified entries by this project, registered at the
+[Palomar registry](https://palomar-registry.org) (mechanical
+kernel verification plus independent editorial review; each ID links a
+pinned commit):
+
+| ID | Entry | Content |
+|---|---|---|
+| PALOMAR-2026-08-19-000006 | [arithmetic-of-time](https://github.com/stalex444/arithmetic-of-time) | the arrow of time as a theorem: the settled history, read backwards, is provably a different object |
+| PALOMAR-2026-08-19-000007 | [pdt-lean](https://github.com/stalex444/pdt-lean) | the quantum-kinematics core: Tsirelson bound and the single-system formalism's arithmetic layer |
+| PALOMAR-2026-08-31-000004 | [mahler-measure-minima](https://github.com/stalex444/mahler-measure-minima) | x^d − x − 1 attains the minimal Mahler measure (monic irreducible) at d = 2, 3, 4, minima pinned exactly |
+| PALOMAR-2026-08-31-000014 | [Busch-theorem](https://github.com/stalex444/Busch-theorem) | Busch's theorem (the generalized Gleason theorem for effects), first formalization in any prover |
+| PALOMAR-2026-09-01-000003 | [werner-window](https://github.com/stalex444/werner-window) | both edges of the Werner window exact: separable to p = 1/3, CHSH-violating above p = 1/√2; general bounds at arbitrary dimensions and settings |
+| PALOMAR-2026-09-01-000005 | [mahler-minimizer-compositum](https://github.com/stalex444/mahler-minimizer-compositum) | the compositum of the two Mahler minimizers: exact measure ρ²Q²ψ, full conjugate census, order-12 recurrence with annihilator ideal exact |
+| *(in review)* | [only-two-morphic-numbers](https://github.com/stalex444/only-two-morphic-numbers) | the Aarts–Fokkink–Kruijtzer classification: the golden ratio and the plastic number are the only morphic numbers — first formalization in any prover |
