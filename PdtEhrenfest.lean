@@ -646,6 +646,312 @@ theorem harmonicOnNhd_euclidean_two :
     HarmonicOnNhd (fun x : EuclideanSpace ℝ (Fin 2) => Real.log ‖x‖) {x | x ≠ 0} :=
   harmonicOnNhd_log_norm finrank_euclideanSpace_fin
 
+/-! ## (D) Classification of the radial solutions
+
+The radial Laplace equation `f'' + (n−1)/r · f' = 0` on `(0, ∞)` has the first integral
+`r^(n−1) f'(r) = c`; hence `f = a + b r^(2−n)` for `n ≠ 2` and `f = a + b log r` for `n = 2`,
+and conversely.  Together with `Δ (f ∘ ‖·‖) = f'' + (n−1)/‖x‖ · f'` this classifies the radial
+harmonic functions on `E ∖ {0}`: they are exactly the Newtonian potentials. -/
+
+/-- The first integral: `φ(r) = r^(n−1) f'(r)` has derivative `r^(n−1) (f'' + (n−1)/r · f')`. -/
+theorem hasDerivAt_rpow_mul {n : ℝ} {f' f'' : ℝ → ℝ} {r : ℝ}
+    (hf' : HasDerivAt f' (f'' r) r) (hr : 0 < r) :
+    HasDerivAt (fun r => r ^ (n - 1) * f' r) (r ^ (n - 1) * (f'' r + (n - 1) / r * f' r)) r := by
+  have h1 := Real.hasDerivAt_rpow_const (x := r) (p := n - 1) (Or.inl hr.ne')
+  refine (h1.mul hf').congr_deriv ?_
+  have e : r ^ (n - 1 - 1) = r ^ (n - 1) / r := by
+    rw [Real.rpow_sub hr, Real.rpow_one]
+  rw [e, div_eq_mul_inv, div_eq_mul_inv]
+  ring
+
+/-- The first integral of the radial ODE: `f'(r) = c · r^(1−n)` on `(0, ∞)`. -/
+theorem radial_ode_deriv_eq {n : ℝ} {f' f'' : ℝ → ℝ}
+    (hf' : ∀ r, 0 < r → HasDerivAt f' (f'' r) r)
+    (hode : ∀ r, 0 < r → f'' r + (n - 1) / r * f' r = 0) :
+    ∃ c : ℝ, ∀ r, 0 < r → f' r = c * r ^ (1 - n) := by
+  have hφ : ∀ r, 0 < r → HasDerivAt (fun r => r ^ (n - 1) * f' r) 0 r := by
+    intro r hr
+    have h := hasDerivAt_rpow_mul (n := n) (hf' r hr) hr
+    rwa [hode r hr, mul_zero] at h
+  obtain ⟨c, hc⟩ := isOpen_Ioi.exists_is_const_of_deriv_eq_zero isPreconnected_Ioi
+    (fun r hr => (hφ r hr).differentiableAt.differentiableWithinAt)
+    (fun r hr => (hφ r hr).deriv)
+  refine ⟨c, fun r hr => ?_⟩
+  have h1 : r ^ (n - 1) * f' r = c := hc r hr
+  have e : r ^ (n - 1) * r ^ (1 - n) = 1 := by
+    rw [← Real.rpow_add hr]
+    have : n - 1 + (1 - n) = 0 := by ring
+    rw [this, Real.rpow_zero]
+  linear_combination (r ^ (1 - n)) * h1 - (f' r) * e
+
+/-- (D) Solutions of the radial Laplace equation for `n ≠ 2`: `f = a + b r^(2−n)` on `(0, ∞)`. -/
+theorem radial_ode_solution {n : ℕ} {f f' f'' : ℝ → ℝ}
+    (hf : ∀ r, 0 < r → HasDerivAt f (f' r) r) (hf' : ∀ r, 0 < r → HasDerivAt f' (f'' r) r)
+    (hode : ∀ r, 0 < r → f'' r + ((n : ℝ) - 1) / r * f' r = 0) (hn : n ≠ 2) :
+    ∃ a b : ℝ, ∀ r, 0 < r → f r = a + b * r ^ (2 - (n : ℝ)) := by
+  obtain ⟨c, hc⟩ := radial_ode_deriv_eq hf' hode
+  have hn2 : (2 : ℝ) - n ≠ 0 := by
+    intro h
+    apply hn
+    have : (n : ℝ) = 2 := by linarith
+    exact_mod_cast this
+  have hg : ∀ r, 0 < r → HasDerivAt (fun r : ℝ => c / (2 - (n : ℝ)) * r ^ (2 - (n : ℝ)))
+      (c * r ^ (1 - (n : ℝ))) r := by
+    intro r hr
+    have h := (Real.hasDerivAt_rpow_const (x := r) (p := 2 - (n : ℝ))
+      (Or.inl hr.ne')).const_mul (c / (2 - (n : ℝ)))
+    refine h.congr_deriv ?_
+    have e : 2 - (n : ℝ) - 1 = 1 - n := by ring
+    rw [e, div_eq_mul_inv]
+    have hinv : (2 - (n : ℝ)) * (2 - (n : ℝ))⁻¹ = 1 := mul_inv_cancel₀ hn2
+    linear_combination (c * r ^ (1 - (n : ℝ))) * hinv
+  obtain ⟨a, ha⟩ := isOpen_Ioi.exists_eq_add_of_deriv_eq isPreconnected_Ioi
+    (fun r hr => (hf r hr).differentiableAt.differentiableWithinAt)
+    (fun r hr => (hg r hr).differentiableAt.differentiableWithinAt)
+    (fun r hr => by rw [(hf r hr).deriv, (hg r hr).deriv]; exact hc r hr)
+  refine ⟨a, c / (2 - (n : ℝ)), fun r hr => ?_⟩
+  have h : f r = c / (2 - (n : ℝ)) * r ^ (2 - (n : ℝ)) + a := ha hr
+  rw [h]; ring
+
+/-- (D) Solutions of the radial Laplace equation for `n = 2`: `f = a + b log r` on `(0, ∞)`. -/
+theorem radial_ode_solution_two {n : ℕ} {f f' f'' : ℝ → ℝ}
+    (hf : ∀ r, 0 < r → HasDerivAt f (f' r) r) (hf' : ∀ r, 0 < r → HasDerivAt f' (f'' r) r)
+    (hode : ∀ r, 0 < r → f'' r + ((n : ℝ) - 1) / r * f' r = 0) (hn : n = 2) :
+    ∃ a b : ℝ, ∀ r, 0 < r → f r = a + b * Real.log r := by
+  obtain ⟨c, hc⟩ := radial_ode_deriv_eq hf' hode
+  have hg : ∀ r, 0 < r → HasDerivAt (fun r : ℝ => c * Real.log r) (c * r ^ (1 - (n : ℝ))) r := by
+    intro r hr
+    refine ((Real.hasDerivAt_log hr.ne').const_mul c).congr_deriv ?_
+    have e : 1 - (n : ℝ) = -1 := by rw [hn]; norm_num
+    rw [e, Real.rpow_neg_one]
+  obtain ⟨a, ha⟩ := isOpen_Ioi.exists_eq_add_of_deriv_eq isPreconnected_Ioi
+    (fun r hr => (hf r hr).differentiableAt.differentiableWithinAt)
+    (fun r hr => (hg r hr).differentiableAt.differentiableWithinAt)
+    (fun r hr => by rw [(hf r hr).deriv, (hg r hr).deriv]; exact hc r hr)
+  refine ⟨a, c, fun r hr => ?_⟩
+  have h : f r = c * Real.log r + a := ha hr
+  rw [h]; ring
+
+/-- `r ↦ a + b r^(2−n)` and its derivative, for any real `n`. -/
+theorem hasDerivAt_affine_radial (a b n : ℝ) {r : ℝ} (hr : r ≠ 0) :
+    HasDerivAt (fun r : ℝ => a + b * r ^ (2 - n)) (b * ((2 - n) * r ^ (1 - n))) r :=
+  ((hasDerivAt_radial n hr).const_mul b).const_add a
+
+theorem deriv_of_eq_affine_radial {n : ℕ} {f : ℝ → ℝ} {a b : ℝ}
+    (h : ∀ r, 0 < r → f r = a + b * r ^ (2 - (n : ℝ))) {r : ℝ} (hr : 0 < r) :
+    deriv f r = b * ((2 - (n : ℝ)) * r ^ (1 - (n : ℝ))) := by
+  have hev : f =ᶠ[𝓝 r] fun r => a + b * r ^ (2 - (n : ℝ)) := by
+    filter_upwards [Ioi_mem_nhds hr] with x hx
+    exact h x hx
+  rw [hev.deriv_eq]
+  exact (hasDerivAt_affine_radial a b n hr.ne').deriv
+
+/-- (D, converse) `f = a + b r^(2−n)` on `(0, ∞)` satisfies the radial Laplace equation there. -/
+theorem radial_ode_of_eq {n : ℕ} {f : ℝ → ℝ} {a b : ℝ}
+    (h : ∀ r, 0 < r → f r = a + b * r ^ (2 - (n : ℝ))) {r : ℝ} (hr : 0 < r) :
+    deriv (deriv f) r + ((n : ℝ) - 1) / r * deriv f r = 0 := by
+  have hev : deriv f =ᶠ[𝓝 r] fun x => b * ((2 - (n : ℝ)) * x ^ (1 - (n : ℝ))) := by
+    filter_upwards [Ioi_mem_nhds hr] with x hx
+    exact deriv_of_eq_affine_radial h hx
+  rw [hev.deriv_eq, deriv_of_eq_affine_radial h hr]
+  have h2 : HasDerivAt (fun x : ℝ => b * ((2 - (n : ℝ)) * x ^ (1 - (n : ℝ))))
+      (b * ((2 - (n : ℝ)) * ((1 - (n : ℝ)) * r ^ (1 - (n : ℝ) - 1)))) r :=
+    ((Real.hasDerivAt_rpow_const (x := r) (p := 1 - (n : ℝ))
+      (Or.inl hr.ne')).const_mul (2 - (n : ℝ))).const_mul b
+  rw [h2.deriv]
+  have e : r ^ (1 - (n : ℝ) - 1) = r ^ (1 - (n : ℝ)) / r := by
+    rw [Real.rpow_sub hr, Real.rpow_one]
+  rw [e, div_eq_mul_inv, div_eq_mul_inv]
+  ring
+
+/-- (D, converse, with named derivatives) `f = a + b r^(2−n)` on `(0, ∞)` satisfies
+`f'' + (n−1)/r · f' = 0` there. -/
+theorem radial_ode_of_eq' {n : ℕ} {f f' f'' : ℝ → ℝ}
+    (hf : ∀ r, 0 < r → HasDerivAt f (f' r) r) (hf' : ∀ r, 0 < r → HasDerivAt f' (f'' r) r)
+    {a b : ℝ} (h : ∀ r, 0 < r → f r = a + b * r ^ (2 - (n : ℝ))) {r : ℝ} (hr : 0 < r) :
+    f'' r + ((n : ℝ) - 1) / r * f' r = 0 := by
+  have h1 : deriv f =ᶠ[𝓝 r] f' := by
+    filter_upwards [Ioi_mem_nhds hr] with x hx
+    exact (hf x hx).deriv
+  have h2 : deriv (deriv f) r = f'' r := by
+    rw [h1.deriv_eq]; exact (hf' r hr).deriv
+  have h3 := radial_ode_of_eq h hr
+  rwa [h2, (hf r hr).deriv] at h3
+
+/-- `r ↦ a + b log r` and its derivative. -/
+theorem hasDerivAt_affine_log (a b : ℝ) {r : ℝ} (hr : r ≠ 0) :
+    HasDerivAt (fun r : ℝ => a + b * Real.log r) (b * r⁻¹) r :=
+  ((Real.hasDerivAt_log hr).const_mul b).const_add a
+
+theorem deriv_of_eq_affine_log {f : ℝ → ℝ} {a b : ℝ}
+    (h : ∀ r, 0 < r → f r = a + b * Real.log r) {r : ℝ} (hr : 0 < r) :
+    deriv f r = b * r⁻¹ := by
+  have hev : f =ᶠ[𝓝 r] fun r => a + b * Real.log r := by
+    filter_upwards [Ioi_mem_nhds hr] with x hx
+    exact h x hx
+  rw [hev.deriv_eq]
+  exact (hasDerivAt_affine_log a b hr.ne').deriv
+
+/-- (D, converse, `n = 2`) `f = a + b log r` on `(0, ∞)` satisfies the radial Laplace equation. -/
+theorem radial_ode_of_eq_two {n : ℕ} {f : ℝ → ℝ} {a b : ℝ} (hn : n = 2)
+    (h : ∀ r, 0 < r → f r = a + b * Real.log r) {r : ℝ} (hr : 0 < r) :
+    deriv (deriv f) r + ((n : ℝ) - 1) / r * deriv f r = 0 := by
+  have hev : deriv f =ᶠ[𝓝 r] fun x => b * x⁻¹ := by
+    filter_upwards [Ioi_mem_nhds hr] with x hx
+    exact deriv_of_eq_affine_log h hx
+  rw [hev.deriv_eq, deriv_of_eq_affine_log h hr]
+  have h2 : HasDerivAt (fun x : ℝ => b * x⁻¹) (b * (-(r ^ 2)⁻¹)) r :=
+    (hasDerivAt_inv hr.ne').const_mul b
+  rw [h2.deriv, hn]
+  have e : ((2 : ℕ) : ℝ) - 1 = 1 := by norm_num
+  rw [e, sq, mul_inv, div_eq_mul_inv]
+  ring
+
+theorem radial_ode_of_eq_two' {n : ℕ} {f f' f'' : ℝ → ℝ}
+    (hf : ∀ r, 0 < r → HasDerivAt f (f' r) r) (hf' : ∀ r, 0 < r → HasDerivAt f' (f'' r) r)
+    (hn : n = 2) {a b : ℝ} (h : ∀ r, 0 < r → f r = a + b * Real.log r) {r : ℝ} (hr : 0 < r) :
+    f'' r + ((n : ℝ) - 1) / r * f' r = 0 := by
+  have h1 : deriv f =ᶠ[𝓝 r] f' := by
+    filter_upwards [Ioi_mem_nhds hr] with x hx
+    exact (hf x hx).deriv
+  have h2 : deriv (deriv f) r = f'' r := by
+    rw [h1.deriv_eq]; exact (hf' r hr).deriv
+  have h3 := radial_ode_of_eq_two hn h hr
+  rwa [h2, (hf r hr).deriv] at h3
+
+/-- (D) The one-variable classification, `n ≠ 2`: a `C²` profile on `(0, ∞)` solves the radial
+Laplace equation iff it is `a + b r^(2−n)`. -/
+theorem radial_ode_iff {n : ℕ} {f f' f'' : ℝ → ℝ}
+    (hf : ∀ r, 0 < r → HasDerivAt f (f' r) r) (hf' : ∀ r, 0 < r → HasDerivAt f' (f'' r) r)
+    (hn : n ≠ 2) :
+    (∀ r, 0 < r → f'' r + ((n : ℝ) - 1) / r * f' r = 0) ↔
+      ∃ a b : ℝ, ∀ r, 0 < r → f r = a + b * r ^ (2 - (n : ℝ)) :=
+  ⟨fun hode => radial_ode_solution hf hf' hode hn,
+   fun ⟨_, _, h⟩ _ hr => radial_ode_of_eq' hf hf' h hr⟩
+
+/-- (D) The one-variable classification, `n = 2`: a `C²` profile on `(0, ∞)` solves the radial
+Laplace equation iff it is `a + b log r`. -/
+theorem radial_ode_iff_two {n : ℕ} {f f' f'' : ℝ → ℝ}
+    (hf : ∀ r, 0 < r → HasDerivAt f (f' r) r) (hf' : ∀ r, 0 < r → HasDerivAt f' (f'' r) r)
+    (hn : n = 2) :
+    (∀ r, 0 < r → f'' r + ((n : ℝ) - 1) / r * f' r = 0) ↔
+      ∃ a b : ℝ, ∀ r, 0 < r → f r = a + b * Real.log r :=
+  ⟨fun hode => radial_ode_solution_two hf hf' hode hn,
+   fun ⟨_, _, h⟩ _ hr => radial_ode_of_eq_two' hf hf' hn h hr⟩
+
+/-! ## (D) The Laplacian of a radial function in the norm parametrization -/
+
+/-- (D) `Δ (f ∘ ‖·‖) x = f''(‖x‖) + (n−1)/‖x‖ · f'(‖x‖)` for `x ≠ 0`, `n = finrank ℝ E`, for any
+profile `f` that is twice differentiable on `(0, ∞)`. -/
+theorem laplacian_comp_norm {f f' f'' : ℝ → ℝ}
+    (hf : ∀ r, 0 < r → HasDerivAt f (f' r) r) (hf' : ∀ r, 0 < r → HasDerivAt f' (f'' r) r)
+    {x : E} (hx : x ≠ 0) :
+    Δ (fun y : E => f ‖y‖) x
+      = f'' ‖x‖ + ((Module.finrank ℝ E : ℝ) - 1) / ‖x‖ * f' ‖x‖ := by
+  have hx0 : 0 < ‖x‖ := norm_pos_iff.mpr hx
+  have hfun : (fun y : E => f ‖y‖) = fun y : E => f (Real.sqrt (‖y‖ ^ 2)) := by
+    funext y; rw [Real.sqrt_sq (norm_nonneg y)]
+  have hg : ∀ t : ℝ, 0 < t → HasDerivAt (fun t : ℝ => f (Real.sqrt t))
+      (f' (Real.sqrt t) * (1 / (2 * Real.sqrt t))) t := by
+    intro t ht
+    exact (hf _ (Real.sqrt_pos.mpr ht)).comp t (Real.hasDerivAt_sqrt ht.ne')
+  have hg' : ∀ t : ℝ, 0 < t →
+      HasDerivAt (fun t : ℝ => f' (Real.sqrt t) * (1 / (2 * Real.sqrt t)))
+        (f'' (Real.sqrt t) * (1 / (2 * Real.sqrt t)) * (1 / (2 * Real.sqrt t))
+          + f' (Real.sqrt t) * ((0 * (2 * Real.sqrt t) - 1 * (2 * (1 / (2 * Real.sqrt t))))
+            / (2 * Real.sqrt t) ^ 2)) t := by
+    intro t ht
+    have hs := Real.hasDerivAt_sqrt ht.ne'
+    have hst : 0 < Real.sqrt t := Real.sqrt_pos.mpr ht
+    have h1 : HasDerivAt (fun t : ℝ => f' (Real.sqrt t))
+        (f'' (Real.sqrt t) * (1 / (2 * Real.sqrt t))) t :=
+      (hf' _ hst).comp t hs
+    have h2 : HasDerivAt (fun t : ℝ => 1 / (2 * Real.sqrt t))
+        ((0 * (2 * Real.sqrt t) - 1 * (2 * (1 / (2 * Real.sqrt t)))) / (2 * Real.sqrt t) ^ 2)
+        t :=
+      (hasDerivAt_const (x := t) (c := (1 : ℝ))).fun_div (hs.const_mul 2)
+        (mul_pos two_pos hst).ne'
+    exact h1.mul h2
+  rw [hfun, laplacian_comp_normSq (g := fun t : ℝ => f (Real.sqrt t))
+    (g' := fun t : ℝ => f' (Real.sqrt t) * (1 / (2 * Real.sqrt t)))
+    (g'' := fun t : ℝ => f'' (Real.sqrt t) * (1 / (2 * Real.sqrt t)) * (1 / (2 * Real.sqrt t))
+      + f' (Real.sqrt t) * ((0 * (2 * Real.sqrt t) - 1 * (2 * (1 / (2 * Real.sqrt t))))
+        / (2 * Real.sqrt t) ^ 2)) hg hg' hx]
+  rw [Real.sqrt_sq hx0.le]
+  have hinv : ‖x‖ * ‖x‖⁻¹ = 1 := mul_inv_cancel₀ hx0.ne'
+  linear_combination ((f'' ‖x‖ - f' ‖x‖ * ‖x‖⁻¹) * (‖x‖ * ‖x‖⁻¹ + 1)) * hinv
+
+/-! ## (D) The classification of radial harmonic functions on `E ∖ {0}` -/
+
+/-- (D) Uniqueness of the Newtonian potential, `n ≠ 2`: a radial function `f(‖y‖)`, with `f`
+twice differentiable on `(0, ∞)`, is harmonic on `E ∖ {0}` iff `f = a + b r^(2−n)` on `(0, ∞)`,
+`n = finrank ℝ E`. -/
+theorem harmonicOnNhd_radial_iff [Nontrivial E] {f f' f'' : ℝ → ℝ}
+    (hf : ∀ r, 0 < r → HasDerivAt f (f' r) r) (hf' : ∀ r, 0 < r → HasDerivAt f' (f'' r) r)
+    (hn : Module.finrank ℝ E ≠ 2) :
+    HarmonicOnNhd (fun y : E => f ‖y‖) {x : E | x ≠ 0} ↔
+      ∃ a b : ℝ, ∀ r, 0 < r → f r = a + b * r ^ (2 - (Module.finrank ℝ E : ℝ)) := by
+  constructor
+  · intro h
+    refine radial_ode_solution hf hf' ?_ hn
+    intro r hr
+    obtain ⟨x, hx⟩ := exists_norm_eq E hr.le
+    have hx0 : x ≠ 0 := by
+      intro h0; rw [h0, norm_zero] at hx; linarith
+    have h3 : Δ (fun y : E => f ‖y‖) x = 0 := (h x hx0).2.eq_of_nhds
+    rwa [laplacian_comp_norm hf hf' hx0, hx] at h3
+  · rintro ⟨a, b, hab⟩
+    have hH : HarmonicOnNhd (fun y : E => a + b * ‖y‖ ^ (2 - (Module.finrank ℝ E : ℝ)))
+        {x : E | x ≠ 0} := by
+      have h1 := (harmonicOnNhd_const (E := E) (s := {x : E | x ≠ 0}) a).add
+        ((harmonicOnNhd_normPow (E := E)).const_smul (c := b))
+      have e : ((fun _ : E => a) + b • fun y : E => ‖y‖ ^ (2 - (Module.finrank ℝ E : ℝ)))
+          = fun y : E => a + b * ‖y‖ ^ (2 - (Module.finrank ℝ E : ℝ)) := by
+        funext y
+        simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul]
+      rwa [e] at h1
+    intro x hx
+    have hx : x ≠ 0 := hx
+    have hev : (fun y : E => f ‖y‖) =ᶠ[𝓝 x]
+        fun y : E => a + b * ‖y‖ ^ (2 - (Module.finrank ℝ E : ℝ)) := by
+      filter_upwards [eventually_ne_nhds hx] with y hy
+      exact hab ‖y‖ (norm_pos_iff.mpr hy)
+    exact (harmonicAt_congr_nhds hev).mpr (hH x hx)
+
+/-- (D) Uniqueness of the logarithmic potential, `n = 2`: a radial function `f(‖y‖)`, with `f`
+twice differentiable on `(0, ∞)`, is harmonic on `E ∖ {0}` iff `f = a + b log r` on `(0, ∞)`.
+(`E` is automatically nontrivial, since `finrank ℝ E = 2`.) -/
+theorem harmonicOnNhd_radial_iff_two {f f' f'' : ℝ → ℝ}
+    (hf : ∀ r, 0 < r → HasDerivAt f (f' r) r) (hf' : ∀ r, 0 < r → HasDerivAt f' (f'' r) r)
+    (h2 : Module.finrank ℝ E = 2) :
+    HarmonicOnNhd (fun y : E => f ‖y‖) {x : E | x ≠ 0} ↔
+      ∃ a b : ℝ, ∀ r, 0 < r → f r = a + b * Real.log r := by
+  haveI : Nontrivial E := Module.nontrivial_of_finrank_pos (R := ℝ) (by omega)
+  constructor
+  · intro h
+    refine radial_ode_solution_two hf hf' ?_ h2
+    intro r hr
+    obtain ⟨x, hx⟩ := exists_norm_eq E hr.le
+    have hx0 : x ≠ 0 := by
+      intro h0; rw [h0, norm_zero] at hx; linarith
+    have h3 : Δ (fun y : E => f ‖y‖) x = 0 := (h x hx0).2.eq_of_nhds
+    rwa [laplacian_comp_norm hf hf' hx0, hx] at h3
+  · rintro ⟨a, b, hab⟩
+    have hH : HarmonicOnNhd (fun y : E => a + b * Real.log ‖y‖) {x : E | x ≠ 0} := by
+      have h1 := (harmonicOnNhd_const (E := E) (s := {x : E | x ≠ 0}) a).add
+        ((harmonicOnNhd_log_norm h2).const_smul (c := b))
+      have e : ((fun _ : E => a) + b • fun y : E => Real.log ‖y‖)
+          = fun y : E => a + b * Real.log ‖y‖ := by
+        funext y
+        simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul]
+      rwa [e] at h1
+    intro x hx
+    have hx : x ≠ 0 := hx
+    have hev : (fun y : E => f ‖y‖) =ᶠ[𝓝 x] fun y : E => a + b * Real.log ‖y‖ := by
+      filter_upwards [eventually_ne_nhds hx] with y hy
+      exact hab ‖y‖ (norm_pos_iff.mpr hy)
+    exact (harmonicAt_congr_nhds hev).mpr (hH x hx)
+
 end Harmonic
 
 end Ehrenfest
@@ -710,3 +1016,20 @@ end
 #print axioms Ehrenfest.harmonicOnNhd_log_norm
 #print axioms Ehrenfest.harmonicOnNhd_euclidean
 #print axioms Ehrenfest.harmonicOnNhd_euclidean_two
+#print axioms Ehrenfest.hasDerivAt_rpow_mul
+#print axioms Ehrenfest.radial_ode_deriv_eq
+#print axioms Ehrenfest.radial_ode_solution
+#print axioms Ehrenfest.radial_ode_solution_two
+#print axioms Ehrenfest.hasDerivAt_affine_radial
+#print axioms Ehrenfest.deriv_of_eq_affine_radial
+#print axioms Ehrenfest.radial_ode_of_eq
+#print axioms Ehrenfest.radial_ode_of_eq'
+#print axioms Ehrenfest.hasDerivAt_affine_log
+#print axioms Ehrenfest.deriv_of_eq_affine_log
+#print axioms Ehrenfest.radial_ode_of_eq_two
+#print axioms Ehrenfest.radial_ode_of_eq_two'
+#print axioms Ehrenfest.radial_ode_iff
+#print axioms Ehrenfest.radial_ode_iff_two
+#print axioms Ehrenfest.laplacian_comp_norm
+#print axioms Ehrenfest.harmonicOnNhd_radial_iff
+#print axioms Ehrenfest.harmonicOnNhd_radial_iff_two
