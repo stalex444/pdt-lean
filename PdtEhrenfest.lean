@@ -819,7 +819,7 @@ theorem radial_ode_of_eq_two' {n : ℕ} {f f' f'' : ℝ → ℝ}
   have h3 := radial_ode_of_eq_two hn h hr
   rwa [h2, (hf r hr).deriv] at h3
 
-/-- (D) The one-variable classification, `n ≠ 2`: a `C²` profile on `(0, ∞)` solves the radial
+/-- (D) The one-variable classification, `n ≠ 2`: a twice differentiable profile (`f''` not assumed continuous) on `(0, ∞)` solves the radial
 Laplace equation iff it is `a + b r^(2−n)`. -/
 theorem radial_ode_iff {n : ℕ} {f f' f'' : ℝ → ℝ}
     (hf : ∀ r, 0 < r → HasDerivAt f (f' r) r) (hf' : ∀ r, 0 < r → HasDerivAt f' (f'' r) r)
@@ -829,7 +829,7 @@ theorem radial_ode_iff {n : ℕ} {f f' f'' : ℝ → ℝ}
   ⟨fun hode => radial_ode_solution hf hf' hode hn,
    fun ⟨_, _, h⟩ _ hr => radial_ode_of_eq' hf hf' h hr⟩
 
-/-- (D) The one-variable classification, `n = 2`: a `C²` profile on `(0, ∞)` solves the radial
+/-- (D) The one-variable classification, `n = 2`: a twice differentiable profile (`f''` not assumed continuous) on `(0, ∞)` solves the radial
 Laplace equation iff it is `a + b log r`. -/
 theorem radial_ode_iff_two {n : ℕ} {f f' f'' : ℝ → ℝ}
     (hf : ∀ r, 0 < r → HasDerivAt f (f' r) r) (hf' : ∀ r, 0 < r → HasDerivAt f' (f'' r) r)
