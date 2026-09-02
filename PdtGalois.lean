@@ -1,6 +1,5 @@
 import Mathlib
-import PdtTraceLink
-import PdtTraceCompositum
+import PdtIrreducible
 
 /-!
 # Galois groups of `x³ − x − 1` and `x⁴ − x − 1`
