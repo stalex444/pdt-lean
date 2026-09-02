@@ -1,5 +1,5 @@
 name = "PdtQm"
-defaultTargets = ["Challenge", "Solution", "PdtQm", "PdtGolden", "PdtArithmetic", "PdtSignature", "PdtSignatureRho", "PdtTsirelson", "PdtTsirelsonNorm", "PdtTsirelsonExact", "PdtBellClassical", "PdtIrreducible", "PdtNorm", "PdtDiscriminant", "PdtTraceForm", "PdtLinks", "PdtSymplectic", "PdtPisotBoundary", "PdtClock", "PdtStabilizer", "PdtCommitment", "PdtMahler", "PdtMahlerBox", "PdtMahlerMain", "PdtMahlerTheta", "PdtMahlerWindow", "PdtBusch", "PdtTraceLink", "PdtTraceSignature", "PdtTraceCompositum", "PdtTraceTensor", "PdtGalois", "PdtEhrenfest"]
+defaultTargets = ["Challenge", "Solution", "PdtQm", "PdtGolden", "PdtArithmetic", "PdtSignature", "PdtSignatureRho", "PdtTsirelson", "PdtTsirelsonNorm", "PdtTsirelsonExact", "PdtBellClassical", "PdtIrreducible", "PdtNorm", "PdtDiscriminant", "PdtTraceForm", "PdtLinks", "PdtSymplectic", "PdtPisotBoundary", "PdtClock", "PdtStabilizer", "PdtCommitment", "PdtMahler", "PdtMahlerBox", "PdtMahlerMain", "PdtMahlerTheta", "PdtMahlerWindow", "PdtBusch", "PdtTraceLink", "PdtTraceSignature", "PdtTraceCompositum", "PdtTraceTensor", "PdtGalois", "PdtEhrenfest", "PdtGleason"]
 
 [[require]]
 name = "mathlib"
@@ -104,3 +104,6 @@ name = "PdtGalois"
 
 [[lean_lib]]
 name = "PdtEhrenfest"
+
+[[lean_lib]]
+name = "PdtGleason"
