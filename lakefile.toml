@@ -1,5 +1,5 @@
 name = "PdtQm"
-defaultTargets = ["Challenge", "Solution", "PdtQm", "PdtGolden", "PdtArithmetic", "PdtSignature", "PdtSignatureRho", "PdtTsirelson", "PdtTsirelsonNorm", "PdtTsirelsonExact", "PdtBellClassical", "PdtIrreducible", "PdtNorm", "PdtDiscriminant", "PdtTraceForm", "PdtLinks", "PdtSymplectic", "PdtPisotBoundary", "PdtClock", "PdtStabilizer", "PdtCommitment", "PdtMahler", "PdtMahlerBox", "PdtMahlerMain", "PdtMahlerTheta", "PdtMahlerWindow", "PdtBusch"]
+defaultTargets = ["Challenge", "Solution", "PdtQm", "PdtGolden", "PdtArithmetic", "PdtSignature", "PdtSignatureRho", "PdtTsirelson", "PdtTsirelsonNorm", "PdtTsirelsonExact", "PdtBellClassical", "PdtIrreducible", "PdtNorm", "PdtDiscriminant", "PdtTraceForm", "PdtLinks", "PdtSymplectic", "PdtPisotBoundary", "PdtClock", "PdtStabilizer", "PdtCommitment", "PdtMahler", "PdtMahlerBox", "PdtMahlerMain", "PdtMahlerTheta", "PdtMahlerWindow", "PdtBusch", "PdtTraceLink", "PdtTraceSignature"]
 
 [[require]]
 name = "mathlib"
@@ -86,3 +86,9 @@ name = "PdtMahlerWindow"
 
 [[lean_lib]]
 name = "PdtBusch"
+
+[[lean_lib]]
+name = "PdtTraceLink"
+
+[[lean_lib]]
+name = "PdtTraceSignature"
