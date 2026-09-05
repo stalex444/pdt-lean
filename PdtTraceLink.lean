@@ -1,4 +1,5 @@
 import Mathlib
+import PdtNorm
 import PdtSignature
 import PdtSignatureRho
 
@@ -26,13 +27,10 @@ namespace PDT
 
 open Polynomial Module
 
-/-! ### The two polynomials -/
+/-! ### The two polynomials
 
-/-- The quartic `X⁴ − X − 1`. -/
-noncomputable def fQ : ℚ[X] := X ^ 4 - X - 1
-
-/-- The cubic `X³ − X − 1`. -/
-noncomputable def fρ : ℚ[X] := X ^ 3 - X - 1
+`fQ = X⁴ − X − 1` and `fρ = X³ − X − 1` are taken from `PdtNorm` rather than
+re-declared here, so that this module and `PdtNorm` can be imported together. -/
 
 theorem fQ_monic : fQ.Monic := by
   unfold fQ; monicity!

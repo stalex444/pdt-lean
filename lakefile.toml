@@ -1,5 +1,5 @@
 name = "PdtQm"
-defaultTargets = ["Challenge", "Solution", "PdtQm", "PdtGolden", "PdtArithmetic", "PdtSignature", "PdtSignatureRho", "PdtTsirelson", "PdtTsirelsonNorm", "PdtTsirelsonExact", "PdtBellClassical", "PdtIrreducible", "PdtNorm", "PdtDiscriminant", "PdtTraceForm", "PdtLinks", "PdtSymplectic", "PdtPisotBoundary", "PdtClock", "PdtStabilizer", "PdtCommitment", "PdtMahler", "PdtMahlerBox", "PdtMahlerMain", "PdtMahlerTheta", "PdtMahlerWindow", "PdtBusch", "PdtTraceLink", "PdtTraceSignature", "PdtTraceCompositum", "PdtTraceTensor", "PdtGalois", "PdtEhrenfest", "PdtGleason"]
+defaultTargets = ["Challenge", "Solution", "PdtQm", "PdtGolden", "PdtArithmetic", "PdtSignature", "PdtSignatureRho", "PdtTsirelson", "PdtTsirelsonNorm", "PdtTsirelsonExact", "PdtBellClassical", "PdtIrreducible", "PdtNorm", "PdtDiscriminant", "PdtTraceForm", "PdtLinks", "PdtSymplectic", "PdtPisotBoundary", "PdtClock", "PdtStabilizer", "PdtCommitment", "PdtMahler", "PdtMahlerBox", "PdtMahlerMain", "PdtMahlerTheta", "PdtMahlerWindow", "PdtBusch", "PdtTraceLink", "PdtTraceSignature", "PdtTraceCompositum", "PdtTraceTensor", "PdtGalois", "PdtEhrenfest", "PdtSignatureForcing", "PdtTimeStepTrace", "PdtLuders", "PdtHamiltonianBoundary", "PdtSphereSurface"]
 
 [[require]]
 name = "mathlib"
@@ -106,4 +106,16 @@ name = "PdtGalois"
 name = "PdtEhrenfest"
 
 [[lean_lib]]
-name = "PdtGleason"
+name = "PdtSignatureForcing"
+
+[[lean_lib]]
+name = "PdtTimeStepTrace"
+
+[[lean_lib]]
+name = "PdtLuders"
+
+[[lean_lib]]
+name = "PdtHamiltonianBoundary"
+
+[[lean_lib]]
+name = "PdtSphereSurface"

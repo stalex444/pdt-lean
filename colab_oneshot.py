@@ -141,14 +141,38 @@ print(f"\nChecking {len(names)} declarations across {len(imports)} modules "
 res = sh("lake env lean CheckAll.lean", capture=True)
 os.remove("CheckAll.lean")
 bad, seen = [], set()
+# Lean's verdicts must be reassembled before they are matched, for two reasons, each of
+# which silently DROPPED verdicts (they landed in `unresolved` below, so the audit failed
+# closed rather than passing incomplete — but it failed for the wrong reason):
+#   * a long declaration name makes Lean WRAP the axiom list over several lines, so a
+#     per-line `\[...\]` match never sees a closing bracket;
+#   * a name may itself end in a prime (`quartic_mahler_min'`), which prints as
+#     `'quartic_mahler_min'' depends on ...` and truncates a `[^']+` capture.
+# A verdict begins at column 0 with a quote; continuation lines are indented. Rebuild the
+# records on that rule, then anchor the match and let the name capture reach the literal
+# `' depends on axioms: [` — non-greedy, so a record can never span two declarations.
+records, cur = [], None
 for line in (res.stdout or "").splitlines():
-    m = re.search(r"'([^']+)' depends on axioms: \[([^\]]*)\]", line)
+    if line.startswith("'"):
+        if cur is not None:
+            records.append(cur)
+        cur = line
+    elif cur is not None:
+        cur += " " + line.strip()
+if cur is not None:
+    records.append(cur)
+
+DEPENDS = re.compile(r"^'(.+?)' depends on axioms: \[([^\]]*)\]")
+NO_AXIOMS = re.compile(r"^'(.+?)' does not depend on any axioms")
+for record in records:
+    m = DEPENDS.match(record)
     if m:
         seen.add(m.group(1))
         ax = {a.strip() for a in m.group(2).split(",") if a.strip()}
         if not ax <= STD:            # sorryAx / native_decide / custom land here
             bad.append((m.group(1), sorted(ax - STD)))
-    m = re.search(r"'([^']+)' does not depend on any axioms", line)
+        continue
+    m = NO_AXIOMS.match(record)
     if m:
         seen.add(m.group(1))
 
