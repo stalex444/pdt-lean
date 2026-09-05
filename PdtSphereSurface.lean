@@ -24,8 +24,9 @@ What is *not* in Mathlib is the closed-form evaluation of this total mass for
   Equivalently `2 π^{n/2} / Γ(n/2)`, the standard surface area of the `(n-1)`-sphere.
 
 * `EuclideanSpace.volume_toSphere_univ_fin_four` : the special case `n = 4`, giving the
-  surface area of `S³ ⊆ ℝ⁴` as `2π²`.  This is the geometric input to the
-  `π² → RP³` volume chain (`vol(B⁴) = π²/2`, `surface(S³) = 4·vol(B⁴) = 2π²`).
+  surface area of `S³ ⊆ ℝ⁴` as `2π²`.  Together with `EuclideanSpace.volume_ball`
+  (`vol(B⁴) = π²/2`) and `Measure.toSphere_apply_univ`, this is the classical
+  `surface(S³) = 4·vol(B⁴) = 2π²`; only the surface value is stated as a theorem below.
 
 ## Note on the surface measure used
 

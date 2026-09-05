@@ -9,8 +9,9 @@ witness `tW = 4*r4 - 3*r4^2` has trace-square -36, whereas `r4*tW` has trace-squ
 Consequently this update does not preserve the timelike set of the genuine trace form.
 
 This is a statement about a specific linear action and a specific quadratic form.
-It does not address the Padovan language's handedness, the interpretation of physical
-time, or transports using a different event map. No physical identification is assumed.
+It does not address the combinatorial word models of the companion `arithmetic-of-time`
+repository, the interpretation of physical time, or transports using a different event
+map. No physical identification is assumed.
 -/
 
 namespace PDT

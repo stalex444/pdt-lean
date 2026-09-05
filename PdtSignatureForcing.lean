@@ -6,10 +6,10 @@ import PdtSignatureRho
 /-!
 # The signature-forcing step: a complex place forbids a positive-definite intrinsic metric
 
-This module supplies the **implication** that sits between two facts already banked in this
-repository — that `K = ℚ[x]/(x⁴ − x − 1)` has one complex place, and that its trace form has
-signature `(3,1)` (`PdtSignature.signature_3_1`, F:103/F:105) — and it supplies it in the
-CORRECTED form the repo already prescribes.
+This module supplies the **implication** that sits between two facts established elsewhere in
+this repository — that `K = ℚ[x]/(x⁴ − x − 1)` has one complex place, and that its trace form
+has signature `(3,1)` (`PdtSignature.signature_3_1`, with the Gram-matrix identification in
+`PdtTraceLink` and the basis-free invariants in `PdtTraceSignature`).
 
 ## The correction this module carries (binding; do not drop)
 
@@ -20,12 +20,10 @@ directions** and must never be written:
 * `ℚ(i)`, `ℚ(√−23)`, `ℚ(ζ₅)` **are** CM and their trace forms are indefinite —
   §4 below proves the `ℚ(ζ₅)` half, signature `(2,2)`.
 
-See `papers/DECISIONS_PACKET_2026-08-03.md` item **[40]** (*"Do NOT dispatch
-`no_invariant_posdef_of_not_CM` to lean-loop — it is FALSE (ℚ(√2))"*) and
-`frontier/ok_polarization_2026-08-12/README.md` **O7** ("FORBIDDEN INFERENCE, FLAGGED").
-**The correct criterion is `r₂ ≥ 1`**, and item [40] names the correct kernel goal verbatim:
-*"complex-place block det = −|λ_v|² ⇒ negative index ≥ r₂, instantiated at r₂ = 1 for both
-polynomials, using the existing `PdtTraceForm`/`PdtSignature`."* That is what is proved here.
+The two counterexamples above settle it in both directions, so CM-ness is simply the wrong
+criterion.  **The right one is `r₂ ≥ 1`**: the block of an associative form at a complex place
+has determinant `−|λ_v|²`, hence negative index `≥ r₂`, instantiated at `r₂ = 1` for both
+polynomials using `PdtTraceForm` and `PdtSignature`.  That is what is proved here.
 
 ## What is proved
 
@@ -65,9 +63,10 @@ with `ℚ(Q)` on the TWIST, not on the trace form.**
 
 ## What is NOT proved here (stated exactly, so nothing is overclaimed)
 
-1. **`Aut(ℚ(Q)/ℚ) = 1` / `ℚ(Q)` is not CM** is NOT proved here. It is the banked premise
-   (RATIFIED §1: `Gal = S₄`, order 24 ≠ generalized-dihedral `2h = 8`) and is re-verified
-   computationally in `frontier/cm_control_qzeta5_2026-08-28/` (exhaustive, exactly verified).
+1. **`Aut(ℚ(Q)/ℚ) = 1` / `ℚ(Q)` is not CM** is NOT proved here. It is quoted from the
+   splitting-field computation `Gal(x⁴ − x − 1) = S₄` (see `PdtGalois`), whose order 24 is not
+   the generalized-dihedral order `2h = 8` a CM field would require, and it is used here only
+   as commentary — no theorem below depends on it.
 2. **The global quantifier over `λ`** — that for EVERY `λ ∈ K` the invariant form
    `T_λ(x,y) = Tr(λxy)` on `K` itself fails to be positive definite — is NOT proved here.
    §2b proves it at the complex place; transporting it to `K` needs
@@ -76,15 +75,17 @@ with `ℚ(Q)` on the TWIST, not on the trace form.**
 3. **The general signature theorem** "`(r₁+r₂, r₂)`, positive definite iff totally real" is NOT
    proved here, for the same missing decomposition. Both PDT instances are proved concretely.
 4. **`r₁ = 2, r₂ = 1`** for `x⁴ − x − 1` (and `r₁ = 1, r₂ = 1` for `x³ − x − 1`) is NOT proved
-   here; it is computed (F:57) and re-verified in the control directory.
-5. That `Mz`, `Hz` **are** `ℚ(ζ₅)`'s power-basis Gram matrices is verified in the control
-   directory, not here; §4 proves the linear algebra about them.
+   here; it is the standard real-root count of each polynomial, quoted.
+5. That `Mz`, `Hz` **are** `ℚ(ζ₅)`'s power-basis Gram matrices is asserted, not proved here:
+   they are the matrices `Mz i j = Tr(ζ^{i+j})` and `Hz i j = Tr(ζ^{i-j}) = 5·I − J`, with
+   `Tr(ζ^k) = 4` when `5 ∣ k` and `−1` otherwise, which the reader can check directly. §4
+   proves the linear algebra about them.
 6. **SCOPE, and it is not small.** "No positive intrinsic metric" is a statement about
    ASSOCIATIVE forms on the `ℚ`-algebra. It is NOT true that `K ⊗ ℝ` carries no
    positive-definite form at all: the Minkowski form `Σ_v ‖σ_v(x)‖²` is positive definite for
    EVERY number field. Restricting attention to the associative forms on the bare `ℚ`-algebra
-   is the ruler posit **P2 (T4)**, not a theorem — so nothing here promotes the identification
-   of the trace form with the spacetime metric above its ratified tier.
+   is a MODELLING CHOICE, not a theorem — so nothing here licenses identifying the trace form
+   with a spacetime metric, and no theorem below makes that identification.
 
 No `sorry`, no `native_decide`.
 -/
@@ -178,9 +179,9 @@ theorem complex_place_dichotomy :
 
 /-! ## §2b — The complex-place BLOCK DETERMINANT, for EVERY twist `λ`
 
-`papers/DECISIONS_PACKET_2026-08-03.md` item [40] names this as the correct lean-loop goal:
-*"complex-place block det = −|λ_v|² ⇒ negative index ≥ r₂, instantiated at r₂ = 1 for both
-polynomials"*. Here is the local half, in full generality over `λ`.
+The goal is: the complex-place block determinant is `−|λ_v|²`, hence the negative index is
+`≥ r₂`, instantiated at `r₂ = 1` for both polynomials. Here is the local half, in full
+generality over `λ`.
 
 The invariant (associative) forms on a number field are exactly `T_λ(x,y) = Tr(λxy)`. At a
 complex place `v` the local algebra is `ℂ` and the form is `z, w ↦ Tr_{ℂ/ℝ}(λ·z·w)`. Its
@@ -528,8 +529,9 @@ below are its power-basis (`{1, ζ, ζ², ζ³}`) Gram matrices:
 * `Mz i j = Tr(ζ^{i+j})` — the untwisted trace form, `p_k = 4` if `5 ∣ k` else `-1`;
 * `Hz i j = Tr(ζ^i · conj(ζ^j)) = Tr(ζ^{i-j})` — the conjugation-twisted form, `= 5·I - J`.
 
-The identification of these matrices with `ℚ(ζ₅)`'s forms is verified by PARI in
-`frontier/cm_control_qzeta5_2026-08-28/`; what is proved HERE is the linear algebra:
+The identification of these matrices with `ℚ(ζ₅)`'s forms is asserted, not proved here — they
+are `Mz i j = Tr(ζ^{i+j})` and `Hz i j = Tr(ζ^{i-j})`, with `Tr(ζ^k) = 4` when `5 ∣ k` and `−1`
+otherwise. What is proved HERE is the linear algebra:
 `Mz` is `(2,2)` and has the explicit timelike vector `(1,4,0,0)` (the field element
 `1 + 4ζ`, `Tr(x²) = -20`), while `Hz` is positive definite. -/
 
@@ -636,9 +638,9 @@ theorem qform_Hz_pos {a b c d : ℚ} (h : a ≠ 0 ∨ b ≠ 0 ∨ c ≠ 0 ∨ d 
 
 /-- **The control, in one statement.** On the UNTWISTED intrinsic (trace) form both fields
 behave alike — each has an explicit timelike direction, so neither is Euclidean. They part
-company on the TWIST: the CM field's conjugation-twisted form is positive definite. Since
-`Aut(ℚ(Q)/ℚ) = 1` (banked premise, RATIFIED §1: `Gal = S₄`, order 24 ≠ 8), the PDT quartic
-has no twist to take, and its intrinsic metric is the `(3,1)` trace form. -/
+company on the TWIST: the CM field's conjugation-twisted form is positive definite. §2b already
+rules out EVERY twist at a complex place, for any field, so the contrast here is about which
+fields possess a conjugation to twist by at all — not an extra hypothesis about `ℚ(Q)`. -/
 theorem cm_control_contrast :
     qform PDT.M ![0,4,-3,0] = -36 ∧
     qform Mz ![1,4,0,0] = -20 ∧

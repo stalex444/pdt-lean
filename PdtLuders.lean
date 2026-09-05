@@ -48,8 +48,9 @@ The Lüders update *map* is already formalized elsewhere — as `density_collaps
 in the Isabelle/AFP entry `Projective_Measurements` (Echenim, 2021) and as
 `POVM.measurementMap` / `POVM.measureForget` / `pinching_map` in Lean's
 `physlib` and its ancestor `Lean-QuantumInfo` (Meiburg, Lessa).  What is
-formalized here is the *theorems*, for which no prior formalization was found in
-any proof assistant as of 2026-08-27.
+formalized here is the *theorems* about that map.  A search of those libraries
+on 2026-08-27 did not turn up either theorem; that is a statement about what was
+searched on that date, not a priority claim.
 -/
 
 namespace PDT
@@ -73,7 +74,7 @@ theorem ludersMap_apply {ι n : Type*} [Fintype ι] [Fintype n]
     (A : ι → Matrix n n ℂ) (B : Matrix n n ℂ) :
     ludersMap A B = ∑ i, A i * B * A i := rfl
 
-/-! ## GATE 1 — the generalized Lüders non-disturbance theorem (AGG 3.5(a)) -/
+/-! ## 1. The generalized (unsharp) non-disturbance theorem (AGG 3.5(a)) -/
 
 /-- **The finite-dimensional generalized (unsharp) Lüders non-disturbance
 theorem, square-root form.**  Let `A : ι → Matrix n n ℂ` be Hermitian with
@@ -183,7 +184,7 @@ theorem luders_fixed_iff_commute_effects {ι n : Type*} [Fintype ι] [Fintype n]
     have : Commute (cfcₙ NNReal.sqrt (E i)) B := (h i).cfcₙ_nnreal NNReal.sqrt
     exact this
 
-/-! ## GATE 3 — elementary properties of the sharp Lüders update
+/-! ## 2. Elementary properties of the sharp Lüders update
 
 These are stated first because Gate 2 uses `IsOrthProj` and `posSemidef_luders`. -/
 
@@ -227,7 +228,7 @@ theorem luders_coherent {n : Type*} [Fintype n] [DecidableEq n]
   have e2 : Q * (P * Q * ρ) = (Q * P * Q) * ρ := by noncomm_ring
   rw [e2, hQP, hPQ]
 
-/-! ## GATE 2 — the coherence characterization of the Lüders rule
+/-! ## 3. The coherence characterization of the Lüders rule
 
 **Fiorentino & Weigert, "Beyond the Projection Postulate and Back: Quantum
 Theories with Generalised State-Update Rules", Phys. Rev. A 113, 012204 (2026),
