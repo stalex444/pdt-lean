@@ -38,7 +38,7 @@ positive-definiteness outright (`no_posDef_assoc_of_sq_neg_one`).
 conjugation twist `H z w = Tr(z · conj w)`, which satisfies `H z z = 2‖z‖² > 0`
 (`cmTwist_posDef`): positive-definiteness at a complex place needs a nontrivial involution.
 
-**§2b — the block determinant, for EVERY twist `λ` (item [40]'s goal).** The associative forms
+**§2b — the block determinant, for EVERY twist `λ`.** The associative forms
 at a complex place are `z, w ↦ Tr_{ℂ/ℝ}(λ·z·w)`; the Gram block in `{1, i}` is
 `!![2a, -2b; -2b, -2a]` for `λ = a + bi`, with determinant `-4‖λ‖² < 0` for `λ ≠ 0`
 (`lamForm_block_det`, `lamForm_block_det_neg`), and an explicit negative direction is produced
@@ -218,7 +218,7 @@ theorem lamForm_cross (lam : ℂ) : lamForm lam 1 Complex.I = -2 * lam.im := by
   simp
 
 /-- **The complex-place block determinant is `-4‖λ‖²`.** (The factor `4` is the
-`Tr_{ℂ/ℝ} = 2·Re` convention; item [40] quotes it as `-|λ_v|²` up to that normalisation.) -/
+`Tr_{ℂ/ℝ} = 2·Re` convention; the usual statement is `-|λ_v|²`, up to that normalisation.) -/
 theorem lamForm_block_det (lam : ℂ) :
     lamForm lam 1 1 * lamForm lam Complex.I Complex.I - lamForm lam 1 Complex.I ^ 2
       = -4 * Complex.normSq lam := by
@@ -324,7 +324,7 @@ theorem lorentzian_signature_of_pdt_quartic :
 
 /-! ## §3b — The same instance for the cubic `x³ − x − 1` (ρ's field, `r₂ = 1` also)
 
-Item [40] asks for the instantiation at `r₂ = 1` for **both** PDT polynomials. `PdtTraceForm`
+The instantiation at `r₂ = 1` is wanted for **both** polynomials. `PdtTraceForm`
 covers only the quartic (its docstring claims `n = 3` too, but no cubic declaration exists),
 so the genuine cubic trace form is built here, in the same style, and shown to equal the
 matrix `PdtSignatureRho.Mρ` whose signature `(2,1)` is already kernel-verified. -/
@@ -638,9 +638,10 @@ theorem qform_Hz_pos {a b c d : ℚ} (h : a ≠ 0 ∨ b ≠ 0 ∨ c ≠ 0 ∨ d 
 
 /-- **The control, in one statement.** On the UNTWISTED intrinsic (trace) form both fields
 behave alike — each has an explicit timelike direction, so neither is Euclidean. They part
-company on the TWIST: the CM field's conjugation-twisted form is positive definite. §2b already
-rules out EVERY twist at a complex place, for any field, so the contrast here is about which
-fields possess a conjugation to twist by at all — not an extra hypothesis about `ℚ(Q)`. -/
+company on the TWIST: the CM field's conjugation-twisted form is positive definite. §2b rules
+out every MULTIPLICATIVE twist `Tr(λ·z·w)` at a complex place, for any field; the conjugation
+twist is not of that form (`cmTwist_posDef`), which is exactly how a CM field escapes. So the
+contrast here is about which fields possess a conjugation to twist by at all. -/
 theorem cm_control_contrast :
     qform PDT.M ![0,4,-3,0] = -36 ∧
     qform Mz ![1,4,0,0] = -20 ∧

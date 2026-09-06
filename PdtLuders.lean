@@ -186,7 +186,8 @@ theorem luders_fixed_iff_commute_effects {ι n : Type*} [Fintype ι] [Fintype n]
 
 /-! ## 2. Elementary properties of the sharp Lüders update
 
-These are stated first because Gate 2 uses `IsOrthProj` and `posSemidef_luders`. -/
+These come before section 3, whose coherence theorem uses `IsOrthProj` and
+`posSemidef_luders`. -/
 
 /-- An **orthogonal projection**: a Hermitian idempotent.  (The second
 component is definitionally `IsIdempotentElem M`; Mathlib at this pin has no

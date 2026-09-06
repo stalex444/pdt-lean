@@ -12,10 +12,11 @@ Hamiltonian.
 The cubic and quartic bounds then put the NON-REAL CONJUGATES of the two
 polynomials on opposite sides of the radial boundary — those of `x³ − x − 1`
 inside the unit circle, those of `x⁴ − x − 1` outside — while placing both raw
-ticks outside scalar Hermitian evolution.  (Each polynomial has a real root
-greater than one, so the real roots do not separate the two cases; the conjugate
-pair does.  The quartic also has a second, negative real root, which the radial
-statement does not concern.)  These are
+ticks outside scalar Hermitian evolution.  (The two roots at issue, `ρ ≈ 1.3247`
+and `Q ≈ 1.2207`, are both real and both exceed one, so they sit on the SAME side
+of the boundary and do not separate the two cases; the conjugate pairs do.  The
+quartic has a second real root, `≈ −0.7245`, of modulus below one; the radial
+statement here does not concern it.)  These are
 mathematical statements about one complex mode.  They do not choose a physical
 tick duration, logarithm branch, observable algebra, or open-system dynamics,
 and they do not turn the opposite radial directions into a physical arrow of
