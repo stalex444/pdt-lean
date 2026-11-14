@@ -174,6 +174,7 @@ registry page, and each entry links the pinned commit of its current version):
 | [PALOMAR-2026-11-06-000005](https://palomar-registry.org/entry.html?id=PALOMAR-2026-11-06-000005) | [arithmetic-of-time-settling-sum](https://github.com/stalex444/arithmetic-of-time-settling-sum/tree/a0f3d9903e91e4e99f80b70d1eeade39b82d7d3e) | The settling sum of the plastic number: sum_{n >= 1} \|\|rho^n\|\|^2 = rho. The squared distances from the powers of the plastic number to the nearest integers sum to the plastic number itself … | 6 | 2026-11-06 |
 | [PALOMAR-2026-11-11-000008](https://palomar-registry.org/entry.html?id=PALOMAR-2026-11-11-000008) | [herstein-jordan-homomorphisms](https://github.com/stalex444/herstein-jordan-homomorphisms/tree/34dffa8aace3a1b565b11cbb561db3a58fa203da) | Herstein's theorem on Jordan homomorphisms onto prime rings, in Smiley's form for characteristic different from 2 and in his form for every characteristic, with the Jacobson-Rickart domain theorem and an example for each hypothesis | 6 | 2026-11-11 |
 | [PALOMAR-2026-11-12-000002](https://palomar-registry.org/entry.html?id=PALOMAR-2026-11-12-000002) (v2) | [conformal-killing-flat](https://github.com/stalex444/conformal-killing-flat/tree/8869b23e96d737ef9424dbb8796d91c6256b7acd) | Conformal Killing and Killing fields of flat pseudo-Euclidean space: classification for n >= 3 in every signature, the two dimension counts, and the divergence of the current of a symmetric tensor field | 9 | 2026-11-12 (v2 2026-11-13) |
+| [PALOMAR-2026-11-14-000019](https://palomar-registry.org/entry.html?id=PALOMAR-2026-11-14-000019) | [minkowski-lorentz-algebra](https://github.com/stalex444/minkowski-lorentz-algebra/tree/91aee70f9daddadda2f97f4694b9b4352430ecba) | Invariant bilinear forms on the Lorentz Lie algebra so(3,1): the two-parameter family a tr(XY) + b tr(H(X)Y), with sl(2,C), the exponential criterion and the complexification | 9 | 2026-11-14 |
 
 Content is the registered title, cut where marked with an ellipsis; where the registered title
 is the repository name (PALOMAR-2026-08-19-000007, PALOMAR-2026-08-31-000004,
@@ -182,8 +183,9 @@ PALOMAR-2026-08-31-000014), it is the opening of the registered abstract.
 Prior work: the existence half of Busch's theorem was formalized earlier by M. J. Soares
 (gleason-busch-lean, April 2026). In the Herstein entry (PALOMAR-2026-11-11-000008), statements
 1, 2 and 6 formalize prior work, and nothing in the entry is a new theorem. The results of the
-conformal Killing entry (PALOMAR-2026-11-12-000002) are classical, and no statement in it is
-claimed as a new theorem.
+conformal Killing entry (PALOMAR-2026-11-12-000002) and of the Lorentz entry
+(PALOMAR-2026-11-14-000019) are classical, and no statement in either is claimed as a new
+theorem.
 
 Earlier versions (each superseded by version 2 of the same ID; the registry keeps every version):
 
